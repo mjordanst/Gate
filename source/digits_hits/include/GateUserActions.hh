@@ -130,6 +130,9 @@ protected:
 
   std::map<G4int,GateTrackIDInfo> theListOfTrackIDInfo;
 
+  //OK: GND 2022
+  G4int HitsCollectionID;
+
 
 };
 

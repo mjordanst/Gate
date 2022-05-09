@@ -22,11 +22,17 @@ See LICENSE.md for further details
 #include "G4SteppingManager.hh"
 #include "G4SliceTimer.hh"
 
+#include "GateDigitizer.hh"
+#include "GateCrystalSD.hh"
+
+
+
 //class GateRecorderBase;
 GateUserActions* GateUserActions::pUserActions=0;
 
 //-----------------------------------------------------------------------------
-GateUserActions::GateUserActions(GateRunManager* m)
+GateUserActions::GateUserActions(GateRunManager* m):
+HitsCollectionID(-1)
 {
   GateMessage("Core", 4,"GateUserActions Constructor start.\n");
 
@@ -126,6 +132,16 @@ void GateUserActions::BeginOfEventAction(const G4Event* evt)
   mEventNumber++;
   theListOfTrackIDInfo.clear();
   GateActorManager::GetInstance()->BeginOfEventAction(evt);
+
+  //OK: GND 2022
+  G4SDManager * SDman = G4SDManager::GetSDMpointer();
+
+  if ( HitsCollectionID ==-1)
+  	  {
+	  HitsCollectionID = SDman->GetCollectionID(GateCrystalSD::GetCrystalCollectionName() ); //defined in constructor of SD
+  	  }
+	//
+
 }
 //-----------------------------------------------------------------------------
 
@@ -144,6 +160,12 @@ void GateUserActions::EndOfEventAction(const G4Event* evt)
    theListOfTrackIDInfo.erase(i++);
  }
  theListOfTrackIDInfo.clear();
+
+ //OK: GND 2022
+ GateDigitizer* digitizer=GateDigitizer::GetInstance();
+ //digitizer->RunDigitizer();
+ //
+
 }
 //-----------------------------------------------------------------------------
 

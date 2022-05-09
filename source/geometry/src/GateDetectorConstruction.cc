@@ -106,7 +106,9 @@ GateDetectorConstruction::GateDetectorConstruction()
   G4SDManager* SDman = G4SDManager::GetSDMpointer();
 
   if(!m_crystalSD) {
-    G4String crystalSDname = "/gate/crystal";
+	//OK GND 2022
+    G4String crystalSDname = GateCrystalSD::GetCrystalCollectionName();//check GateCrystalSD class for hardcoded value
+    //
     m_crystalSD = new GateCrystalSD(crystalSDname);
     SDman->AddNewDetector(m_crystalSD);
   }
@@ -116,6 +118,7 @@ GateDetectorConstruction::GateDetectorConstruction()
     m_phantomSD = new GatePhantomSD(phantomSDname);
     SDman->AddNewDetector(m_phantomSD);
   }
+
   GateMessage("Geometry", 5, "  GateDetectorConstruction constructor -- end ");
 
 
@@ -125,6 +128,7 @@ GateDetectorConstruction::GateDetectorConstruction()
   m_ARFSD = 0;
 }
 //---------------------------------------------------------------------------------
+
 
 //---------------------------------------------------------------------------------
 GateDetectorConstruction::~GateDetectorConstruction()
@@ -176,6 +180,7 @@ G4VPhysicalVolume* GateDetectorConstruction::Construct()
   return pworldPhysicalVolume;
 }
 //---------------------------------------------------------------------------------
+
 
 //---------------------------------------------------------------------------------
 // Adds a Material Database

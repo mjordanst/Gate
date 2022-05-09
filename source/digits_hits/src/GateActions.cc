@@ -159,11 +159,11 @@ inline void GateEventAction::EndOfEventAction(const G4Event* anEvent)
   GateSteppingAction* myAction = ( (GateSteppingAction *)(GateRunManager::GetRunManager()->GetUserSteppingAction() ) );
   TrackingMode theMode = myAction->GetMode();
 
+
   if ( theMode == TrackingMode::kTracker )
     {
-
-      G4int CHCollID = G4SDManager::GetSDMpointer()->GetCollectionID(GateCrystalSD::GetCrystalCollectionName() ); //"crystalCollection");
-      GateCrystalHitsCollection * CHC = (GateCrystalHitsCollection *) ( anEvent->GetHCofThisEvent()->GetHC( CHCollID ) );
+	  G4int CHCollID = G4SDManager::GetSDMpointer()->GetCollectionID(GateCrystalSD::GetCrystalCollectionName() ); //"crystalCollection");
+      GateHitsCollection * CHC = (GateHitsCollection *) ( anEvent->GetHCofThisEvent()->GetHC( CHCollID ) );
 
       if (CHC != 0)
 	{ if ( CHC->GetSize() > 0 )
