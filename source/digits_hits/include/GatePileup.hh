@@ -38,7 +38,7 @@ class GatePileup : public GateVPulseProcessor
 {
   public:
 
-    //! Constructs a new Pileup attached to a GateDigitizer
+    //! Constructs a new Pileup attached to a GateDigitizerOld
     GatePileup(GatePulseProcessorChain* itsChain,const G4String& itsName) ;
 
     //! Destructor

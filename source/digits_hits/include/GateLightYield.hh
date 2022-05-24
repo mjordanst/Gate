@@ -49,7 +49,7 @@ class GateLightYield : public GateVPulseProcessor
     virtual ~GateLightYield() ;
 
   private:
-    //!< Private constructor which Constructs a new blurring module attached to a GateDigitizer:
+    //!< Private constructor which Constructs a new blurring module attached to a GateDigitizerOld:
     //! this function should only be called from GetInstance()
   GateLightYield(GatePulseProcessorChain* itsChain,
 		 const G4String& itsName);
@@ -81,7 +81,7 @@ class GateLightYield : public GateVPulseProcessor
     //@}
 
 
-    //! Implementation of the pure virtual method declared by the base class GateDigitizerComponent
+    //! Implementation of the pure virtual method declared by the base class GateDigitizerOldComponent
     //! print-out the attributes specific of the blurring
     virtual void DescribeMyself(size_t indent);
 

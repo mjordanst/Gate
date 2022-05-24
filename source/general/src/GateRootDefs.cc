@@ -12,6 +12,7 @@
 
 #include "GateRootDefs.hh"
 #include "GateHit.hh"
+#include "GateDigi.hh"
 #include "GateSingleDigi.hh"
 #include "GateCoincidenceDigi.hh"
 
@@ -394,6 +395,42 @@ void GateRootSingleBuffer::Fill(GateSingleDigi* aDigi)
   // HDS : septal penetration
   septalNb = aDigi->GetNSeptal();
 }
+
+// OK GND 2022
+void GateRootSingleBuffer::FillGND(GateDigi* aDigi)
+{
+	G4cout<<"GateRootSingleBuffer::FillGND"<<G4endl;
+  size_t d;
+
+  runID         =  aDigi->GetRunID();
+  eventID       =  aDigi->GetEventID();
+  sourceID      =  aDigi->GetSourceID();
+  sourcePosX    = (aDigi->GetSourcePosition()).x()/mm;
+  sourcePosY    = (aDigi->GetSourcePosition()).y()/mm;
+  sourcePosZ    = (aDigi->GetSourcePosition()).z()/mm;
+  time          =  aDigi->GetTime()/s;
+  energy        =  aDigi->GetEnergy()/MeV;
+  globalPosX    = (aDigi->GetGlobalPos()).x()/mm;
+  globalPosY    = (aDigi->GetGlobalPos()).y()/mm;
+  globalPosZ    = (aDigi->GetGlobalPos()).z()/mm;
+  for (d=0; d<ROOT_OUTPUTIDSIZE ; ++d)
+    outputID[d] =  aDigi->GetComponentID(d);
+  comptonPhantom=  aDigi->GetNPhantomCompton();
+  comptonCrystal=  aDigi->GetNCrystalCompton();
+  RayleighPhantom=  aDigi->GetNPhantomRayleigh();
+  RayleighCrystal=  aDigi->GetNCrystalRayleigh();
+  axialPos      = (aDigi->GetScannerPos()).z()/mm;
+  rotationAngle = aDigi->GetScannerRotAngle()/deg;
+  strcpy (comptonVolumeName,(aDigi->GetComptonVolumeName()).c_str());
+  strcpy (RayleighVolumeName,(aDigi->GetRayleighVolumeName()).c_str());
+
+  // HDS : septal penetration
+  septalNb = aDigi->GetNSeptal();
+}
+
+
+
+
 
 
 void GateSingleTree::Init(GateRootSingleBuffer& buffer)

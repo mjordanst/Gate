@@ -40,7 +40,7 @@ public:
     //! Destructor
     virtual ~GateCCCoincidenceSequenceRecon() ;
 
-    //! Constructs a coincidence sorter attached to a GateDigitizer
+    //! Constructs a coincidence sorter attached to a GateDigitizerOld
     GateCCCoincidenceSequenceRecon(GateCoincidencePulseProcessorChain* itsChain,const G4String& itsName);
 
 public:

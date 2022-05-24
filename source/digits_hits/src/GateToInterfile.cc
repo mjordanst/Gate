@@ -73,7 +73,7 @@
 #include "GateToProjectionSet.hh"
 #include "GateProjectionSet.hh"
 
-#include "GateDigitizer.hh"
+#include "GateDigitizerOld.hh"
 #include "GateThresholder.hh"
 #include "GateUpholder.hh"
 
@@ -339,7 +339,7 @@ void GateToInterfile::WriteGeneralInfo()
 
   // Modified by HDS : multiple energy windows support
   //------------------------------------------------------------------
-  GateDigitizer* theDigitizer = GateDigitizer::GetInstance();
+  GateDigitizerOld* theDigitizer = GateDigitizerOld::GetInstance();
 
   GatePulseProcessorChain* aPulseProcessorChain;
   G4double aThreshold = 0.;

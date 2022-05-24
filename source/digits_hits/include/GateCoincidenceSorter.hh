@@ -23,7 +23,7 @@ See LICENSE.md for further details
 
 class GateCoincidenceSorterMessenger;
 class GateVSystem;
-class GateDigitizer;
+class GateDigitizerOld;
 
 /*! \class  GateCoincidenceSorter
     \brief  Coincidence sorter for a  PET scanner
@@ -60,8 +60,8 @@ class GateCoincidenceSorter : public GateClockDependent
 {
 public:
 
-    //! Constructs a new coincidence sorter, attached to a GateDigitizer amd to a system
-    GateCoincidenceSorter(GateDigitizer* itsDigitizer,
+    //! Constructs a new coincidence sorter, attached to a GateDigitizerOld amd to a system
+    GateCoincidenceSorter(GateDigitizerOld* itsDigitizer,
                           const G4String& itsName,
                           G4double itsWindow,
                           const G4String& itsInputName="Singles", const bool &IsCCSorter=false);
@@ -166,7 +166,7 @@ protected:
     //! \name Parameters of the sorter
     //@{
 
-    GateDigitizer       *m_digitizer;
+    GateDigitizerOld       *m_digitizer;
     GateVSystem         *m_system;                      //!< System to which the sorter is attached
     G4String            m_outputName;
     G4String            m_inputName;

@@ -31,7 +31,7 @@ public:
   virtual ~GateCoincidenceBuffer() ;
 
 
-  //! Constructs a new dead time attached to a GateDigitizer
+  //! Constructs a new dead time attached to a GateDigitizerOld
   GateCoincidenceBuffer(GateCoincidencePulseProcessorChain* itsChain,
 			     const G4String& itsName);
 

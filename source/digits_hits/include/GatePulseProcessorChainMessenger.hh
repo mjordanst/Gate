@@ -57,7 +57,9 @@ class GatePulseProcessorChainMessenger: public GateListMessenger
     
     //! Returns the pulse-processor chain managed by this messenger 
     virtual GatePulseProcessorChain* GetProcessorChain()
-      { return (GatePulseProcessorChain*) GetListManager(); }
+      {
+    	G4cout<<"GatePulseProcessorChainMessenger::GetProcessorChain"<<G4endl;
+    	return (GatePulseProcessorChain*) GetListManager(); }
     
   private:
   

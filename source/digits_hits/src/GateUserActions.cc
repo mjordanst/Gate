@@ -22,10 +22,10 @@ See LICENSE.md for further details
 #include "G4SteppingManager.hh"
 #include "G4SliceTimer.hh"
 
-#include "GateDigitizer.hh"
+#include "GateDigitizerOld.hh"
 #include "GateCrystalSD.hh"
 
-
+#include "GateDigitizer.hh"
 
 //class GateRecorderBase;
 GateUserActions* GateUserActions::pUserActions=0;
@@ -35,6 +35,7 @@ GateUserActions::GateUserActions(GateRunManager* m):
 HitsCollectionID(-1)
 {
   GateMessage("Core", 4,"GateUserActions Constructor start.\n");
+
 
   pUserActions = this;
 
@@ -74,6 +75,12 @@ HitsCollectionID(-1)
   mTimer = new G4SliceTimer();
 
   GateMessage("Core", 4,"GateUserActions Constructor end.\n");
+
+  //OK GND 2022
+  /*digitizer = new GateDigitizer();
+  digitizer->Initialize();
+*/
+
 }
 //-----------------------------------------------------------------------------
 
@@ -83,6 +90,8 @@ GateUserActions::~GateUserActions()
 
   delete pUserActions;
   GateDebugMessageInc("Core", 4, "GateUserActions Destructor.\n");
+
+  delete digitizer;
 }
 //-----------------------------------------------------------------------------
 
@@ -90,6 +99,10 @@ GateUserActions::~GateUserActions()
 //-----------------------------------------------------------------------------
 void GateUserActions::BeginOfRunAction(const G4Run* run)
 {
+
+//	G4cout<<"GateUSERActions Begin of run"<<G4endl;
+	//G4cout<<"Begin of run"<<G4endl;
+
   mRunNumber++;
 
   mTimer->Clear();
@@ -128,26 +141,29 @@ void GateUserActions::EndOfRunAction(const G4Run* run)
 //-----------------------------------------------------------------------------
 void GateUserActions::BeginOfEventAction(const G4Event* evt)
 {
+	//G4cout<<"GateUSERActions Begin of event"<<G4endl;
   mCurrentEvent = evt;
   mEventNumber++;
   theListOfTrackIDInfo.clear();
   GateActorManager::GetInstance()->BeginOfEventAction(evt);
 
   //OK: GND 2022
-  G4SDManager * SDman = G4SDManager::GetSDMpointer();
+  /*G4SDManager * SDman = G4SDManager::GetSDMpointer();
 
   if ( HitsCollectionID ==-1)
   	  {
 	  HitsCollectionID = SDman->GetCollectionID(GateCrystalSD::GetCrystalCollectionName() ); //defined in constructor of SD
   	  }
 	//
-
+*/
 }
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
 void GateUserActions::EndOfEventAction(const G4Event* evt)
 {
+
+//	G4cout<<"GateUSERActions End of event"<<G4endl;
   GateActorManager::GetInstance()->EndOfEventAction(evt);
 //sizeof(v) + sizeof(T) * v.capacity();
 // G4cout<< Gateendl;
@@ -162,7 +178,7 @@ void GateUserActions::EndOfEventAction(const G4Event* evt)
  theListOfTrackIDInfo.clear();
 
  //OK: GND 2022
- GateDigitizer* digitizer=GateDigitizer::GetInstance();
+ //GateDigitizer* digitizer=GateDigitizer::GetInstance();
  //digitizer->RunDigitizer();
  //
 

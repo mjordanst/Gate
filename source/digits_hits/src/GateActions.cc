@@ -41,6 +41,7 @@
 #include "G4ProcessTable.hh"
 #include "G4LogicalVolumeStore.hh"
 #include "G4Trajectory.hh"
+#include "G4DigiManager.hh"
 #include "GateDetectorConstruction.hh"
 #ifdef G4_USE_G4BESTUNIT_FOR_VERBOSE
 #include "G4UnitsTable.hh"
@@ -50,6 +51,7 @@
 
 #include "GateSteppingActionMessenger.hh"
 #include "GateCrystalSD.hh"
+#include "GateDigitizer.hh"
 
 GateRunAction* GateRunAction::prunAction=0;
 GateEventAction* GateEventAction::peventAction=0;
@@ -57,7 +59,16 @@ GateEventAction* GateEventAction::peventAction=0;
 //-----------------------------------------------------------------------------
 GateRunAction::GateRunAction(GateUserActions * cbm)
   : pCallbackMan(cbm), flagBasicOutput(false)
-{ SetRunAction(this); runIDcounter = 0; }
+{
+	G4cout<<"GateRunAction constr"<<G4endl;
+	SetRunAction(this); runIDcounter = 0;
+
+	//OK GND 2022. moved from Gate.cc
+#ifdef G4ANALYSIS_USE_GENERAL
+	GateDigitizer* digitizer = GateDigitizer::GetInstance();
+	digitizer->Initialize();
+#endif
+}
 //-----------------------------------------------------------------------------
 
 
@@ -65,6 +76,7 @@ GateRunAction::GateRunAction(GateUserActions * cbm)
 void GateRunAction::BeginOfRunAction(const G4Run* aRun)
 {
   GateMessage("Core", 1, "Begin Of Run " << aRun->GetRunID() << Gateendl);
+  G4cout<<"GateACTIONS ------ GateRunAction::BeginOfRunAction " <<G4endl;
 
   //#ifdef GATE_BasicROOT_Output
   //if(GateApplicationMgr::GetInstance()->GetOutputMode()){
@@ -109,7 +121,7 @@ inline void GateRunAction::EndOfRunAction(const G4Run* aRun)
 
 //-----------------------------------------------------------------------------
 GateEventAction::GateEventAction(GateUserActions * cbm)
-  : pCallbackMan(cbm), flagBasicOutput(false)
+  : pCallbackMan(cbm), flagBasicOutput(false), pHitsCollectionID(-1)
 { SetEventAction(this); }
 //-----------------------------------------------------------------------------
 
@@ -118,6 +130,13 @@ GateEventAction::GateEventAction(GateUserActions * cbm)
 inline void GateEventAction::BeginOfEventAction(const G4Event* anEvent)
 {
   GateMessage("Core", 2, "Begin Of Event " << anEvent->GetEventID() << "\n");
+  G4cout<<"GateACTIONS ------ GateEventAction::BeginOfEventAction " << anEvent->GetEventID() <<G4endl;
+
+  //OK GND 2022
+  G4SDManager * SDman = G4SDManager::GetSDMpointer();
+  if ( pHitsCollectionID ==-1) {
+      pHitsCollectionID = SDman->GetCollectionID(GateCrystalSD::GetCrystalCollectionName());//defined in constructor of SD
+    }
 
   TrackingMode theMode =( (GateSteppingAction *)(GateRunManager::GetRunManager()->GetUserSteppingAction() ) )->GetMode();
   if ( theMode != TrackingMode::kTracker )
@@ -143,7 +162,7 @@ inline void GateEventAction::EndOfEventAction(const G4Event* anEvent)
 {
   GateMessage("Core", 2, "End Of Event " << anEvent->GetEventID() << "\n");
 
-
+  G4cout<<"GateACTIONS ------ GateEventAction::EndOfEventAction " << anEvent->GetEventID() <<G4endl;
 
 #ifdef G4ANALYSIS_USE_GENERAL
   // Here we fill the histograms of the OutputMgr manager
@@ -153,6 +172,8 @@ inline void GateEventAction::EndOfEventAction(const G4Event* anEvent)
     outputMgr->RecordEndOfEvent(anEvent);
   }
 #endif
+
+
 
   /* PY Descourt 08/09/2009 */
 

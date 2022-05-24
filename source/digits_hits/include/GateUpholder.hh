@@ -37,7 +37,7 @@ class GateUpholder : public GateVPulseProcessor
 {
   public:
 
-    //! Constructs a new upholder attached to a GateDigitizer
+    //! Constructs a new upholder attached to a GateDigitizerOld
     GateUpholder(GatePulseProcessorChain* itsChain,
 			       const G4String& itsName, G4double itsUphold=0) ;
     //! Destructor

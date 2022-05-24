@@ -36,7 +36,7 @@ class GateBlurring : public GateVPulseProcessor
     //! \name constructors and destructors
     //@{
 
-    //! Constructs a new blurring attached to a GateDigitizer
+    //! Constructs a new blurring attached to a GateDigitizerOld
     GateBlurring(GatePulseProcessorChain* itsChain,
                  const G4String& itsName) ;
 

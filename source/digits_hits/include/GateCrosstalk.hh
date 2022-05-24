@@ -50,7 +50,7 @@ class GateCrosstalk : public GateVPulseProcessor
     virtual ~GateCrosstalk() ;
 
   private:
-    //!< Private constructor which Constructs a new crosstalk module attached to a GateDigitizer:
+    //!< Private constructor which Constructs a new crosstalk module attached to a GateDigitizerOld:
     //! this function should only be called from GetInstance()
     GateCrosstalk(GatePulseProcessorChain* itsChain,
 				      const G4String& itsName,
@@ -79,7 +79,7 @@ class GateCrosstalk : public GateVPulseProcessor
     G4double GetXTPerCent() { return m_XtalkpCent; };
     //@}
 
-    //! Implementation of the pure virtual method declared by the base class GateDigitizerComponent
+    //! Implementation of the pure virtual method declared by the base class GateDigitizerOldComponent
     //! print-out the attributes specific of the crosstalk
     virtual void DescribeMyself(size_t indent);
 

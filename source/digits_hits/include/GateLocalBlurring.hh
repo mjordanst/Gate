@@ -38,7 +38,7 @@ class GateLocalBlurring : public GateVPulseProcessor
     //! \name constructors and destructors
     //@{
 
-    //! Constructs a new blurring attached to a GateDigitizer
+    //! Constructs a new blurring attached to a GateDigitizerOld
     GateLocalBlurring(GatePulseProcessorChain* itsChain,
 			       const G4String& itsName) ;
 
@@ -62,7 +62,7 @@ class GateLocalBlurring : public GateVPulseProcessor
     void SetRefEnergy(G4String name, G4double val)   {m_table[name].eref = val; };
     //@}
 
-    //! Implementation of the pure virtual method declared by the base class GateDigitizerComponent
+    //! Implementation of the pure virtual method declared by the base class GateDigitizerOldComponent
     //! print-out the attributes specific of the blurring
     virtual void DescribeMyself(size_t indent);
 

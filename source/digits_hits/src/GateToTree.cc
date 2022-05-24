@@ -11,7 +11,7 @@ See LICENSE.md for further details
 //
 
 #include "GateToTree.hh"
-#include "GateToTree.hh"
+//#include "GateToTree.hh"
 
 #include <cassert>
 
@@ -172,6 +172,7 @@ GateToTree::GateToTree(const G4String &name, GateOutputMgr *outputMgr, DigiMode 
 }
 
 void GateToTree::RecordBeginOfAcquisition() {
+	G4cout<<"GateToTree::RecordBeginOfAcquisition"<<G4endl;
     if (!this->IsEnabled())
         return;
 
@@ -628,6 +629,7 @@ void GateToTree::RecordBeginOfEvent(const G4Event *event) {
 }
 
 void GateToTree::RecordEndOfEvent(const G4Event *event) {
+	G4cout<<"GateToTree::RecordEndOfEvent"<<G4endl;
     auto CHC = this->GetOutputMgr()->GetHitCollection();
     if (!CHC) {
         std::cout <<
@@ -926,6 +928,8 @@ void GateToTree::addCollection(const std::string &str) {
 
     G4String possibleValues = "";
 
+    //!!!! OK GND 2022
+    //str = "SingleGND";
     for (auto &&s: m_listOfSinglesCollection) {
 
         possibleValues += "'" + s + "' (type:singles);";
@@ -965,7 +969,7 @@ void GateToTree::addCollection(const std::string &str) {
         }
     }
 
-    GateError("No collection named " << str << " possible valeues are " << possibleValues);
+    GateError("No collection named " << str << " possible values are " << possibleValues);
 }
 
 std::unordered_map<std::string, SaveDataParam> &GateToTree::getHitsParamsToWrite() {

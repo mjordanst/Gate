@@ -30,7 +30,7 @@ class GateNoise : public GateVPulseProcessor
     virtual ~GateNoise() ;
 
 
-    //! Implementation of the pure virtual method declared by the base class GateDigitizerComponent
+    //! Implementation of the pure virtual method declared by the base class GateDigitizerOldComponent
     //! print-out the attributes specific of the blurring
     virtual void DescribeMyself(size_t indent);
     void SetEnergyDistribution(GateVDistribution* energyDistrib) {m_energyDistrib=energyDistrib;}

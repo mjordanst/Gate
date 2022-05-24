@@ -35,7 +35,7 @@ class GateSpblurring : public GateVPulseProcessor
     //! \name constructors and destructors
     //@{
 
-    //! Constructs a new spblurring attached to a GateDigitizer
+    //! Constructs a new spblurring attached to a GateDigitizerOld
     GateSpblurring(GatePulseProcessorChain* itsChain,
 			       const G4String& itsName,
 		    G4double itsSpblurring=0) ;

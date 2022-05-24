@@ -14,7 +14,7 @@ See LICENSE.md for further details
 #include "GateOutputVolumeID.hh"
 #include "GateReadoutMessenger.hh"
 #include "GateTools.hh"
-#include "GateDigitizer.hh"
+#include "GateDigitizerOld.hh"
 #include "GateArrayComponent.hh"
 #include "GateVSystem.hh"
 

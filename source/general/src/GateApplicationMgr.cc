@@ -330,6 +330,8 @@ void GateApplicationMgr::StartDAQComplete(G4ThreeVector param)
 void GateApplicationMgr::StartDAQ()
 {
 
+	//G4cout<<"GateApplicationMgr::StartDAQ"<<G4endl;
+
   // With this method we check for all output module enabled but with no
   // filename given. In this case we disable the output module and send a warning.
   GateOutputMgr::GetInstance()->CheckFileNameForAllOutput();

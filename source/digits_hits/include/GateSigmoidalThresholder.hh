@@ -41,7 +41,7 @@ class GateSigmoidalThresholder : public GateVPulseProcessor
 {
   public:
 
-    //! Constructs a new sigmoide thresholder attached to a GateDigitizer
+    //! Constructs a new sigmoide thresholder attached to a GateDigitizerOld
   GateSigmoidalThresholder(GatePulseProcessorChain* itsChain,
 			   const G4String& itsName, G4double itsThreshold = 0.,
 			   G4double itsAlpha = 1., G4double itsAcceptance = 0.5) ;
@@ -61,7 +61,7 @@ class GateSigmoidalThresholder : public GateVPulseProcessor
     //! Sigmoide function
     G4double SigmoideFct(G4double nu) { return 1./(1+exp(-nu)); }
 
-    //! Implementation of the pure virtual method declared by the base class GateDigitizerComponent
+    //! Implementation of the pure virtual method declared by the base class GateDigitizerOldComponent
     //! print-out the attributes specific of the thresholder
     virtual void DescribeMyself(size_t indent);
 

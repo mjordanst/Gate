@@ -36,7 +36,7 @@ class GateTemporalResolution : public GateVPulseProcessor
 {
   public:
 
-    //! Constructs a new temporal resolution attached to a GateDigitizer
+    //! Constructs a new temporal resolution attached to a GateDigitizerOld
     GateTemporalResolution(GatePulseProcessorChain* itsChain,
 			       const G4String& itsName=theTypeName,
 			       G4double itsTimeResolution=0.) ;
@@ -49,7 +49,7 @@ class GateTemporalResolution : public GateVPulseProcessor
     //! Set the time resolution
     void SetTimeResolution(G4double val)   { m_timeResolution = val;  }
 
-    //! Implementation of the pure virtual method declared by the base class GateDigitizerComponent
+    //! Implementation of the pure virtual method declared by the base class GateDigitizerOldComponent
     //! print-out the attributes specific of the timeResolutioner
     virtual void DescribeMyself(size_t indent);
 

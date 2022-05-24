@@ -12,7 +12,7 @@ See LICENSE.md for further details
 
 #include "G4UnitsTable.hh"
 
-#include "GateDigitizer.hh"
+#include "GateDigitizerOld.hh"
 #include "GateVPulseProcessor.hh"
 #include "GateTools.hh"
 #include "GateHitConvertor.hh"
@@ -20,20 +20,20 @@ See LICENSE.md for further details
 
 
 
-GatePulseProcessorChain::GatePulseProcessorChain( GateDigitizer* itsDigitizer,
+GatePulseProcessorChain::GatePulseProcessorChain( GateDigitizerOld* itsDigitizer,
     			                          const G4String& itsOutputName)
   : GateModuleListManager(itsDigitizer,itsDigitizer->GetObjectName() + "/" + itsOutputName,"pulse-processor"),
     m_system( itsDigitizer->GetSystem() ),
     m_outputName(itsOutputName),
     m_inputName(GateHitConvertor::GetOutputAlias())
 {
-//  G4cout << " DEBUT Constructor GatePulseProcessorChain \n";
+ G4cout << " DEBUT Constructor GatePulseProcessorChain \n";
   m_messenger = new GatePulseProcessorChainMessenger(this);
 
-//  G4cout << " in GatePulseProcessorChain call GateSingleDigiMaker\n";
+G4cout << " in GatePulseProcessorChain call GateSingleDigiMaker\n";
   itsDigitizer->InsertDigiMakerModule( new GateSingleDigiMaker(itsDigitizer, itsOutputName,true) );
   
-//  G4cout << " FIN Constructor GatePulseProcessorChain \n";
+  G4cout << " FIN Constructor GatePulseProcessorChain \n";
 }
 
 
@@ -54,6 +54,7 @@ GatePulseProcessorChain::~GatePulseProcessorChain()
 
 void GatePulseProcessorChain::InsertProcessor(GateVPulseProcessor* newChildProcessor)
 {
+	G4cout<<"GatePulseProcessorChain::InsertProcessor "<<G4endl;
   theListOfNamedObject.push_back(newChildProcessor);
 }
 
@@ -80,7 +81,7 @@ void GatePulseProcessorChain::ListElements()
 
 GatePulseList* GatePulseProcessorChain::ProcessPulseList()
 {
-  GatePulseList* pulseList = GateDigitizer::GetInstance()->FindPulseList( m_inputName );
+  GatePulseList* pulseList = GateDigitizerOld::GetInstance()->FindPulseList( m_inputName );
 
   if (!pulseList)
     return 0;
@@ -93,11 +94,11 @@ GatePulseList* GatePulseProcessorChain::ProcessPulseList()
   for (size_t processorID = 0 ; processorID < GetProcessorNumber(); processorID++) 
     if (GetProcessor(processorID)->IsEnabled()) {
       pulseList = GetProcessor(processorID)->ProcessPulseList(pulseList);
-      if (pulseList) GateDigitizer::GetInstance()->StorePulseList(pulseList);
+      if (pulseList) GateDigitizerOld::GetInstance()->StorePulseList(pulseList);
       else break;
     }
 
-  if (pulseList)  GateDigitizer::GetInstance()->StorePulseListAlias(m_outputName,pulseList);
+  if (pulseList)  GateDigitizerOld::GetInstance()->StorePulseListAlias(m_outputName,pulseList);
   return pulseList;
 }
 

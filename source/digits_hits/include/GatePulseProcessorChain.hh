@@ -15,7 +15,7 @@ See LICENSE.md for further details
 
 #include "GateModuleListManager.hh"
 
-class GateDigitizer;
+class GateDigitizerOld;
 class GateVPulseProcessor;
 class GatePulseProcessorChainMessenger;
 class GatePulseList;
@@ -24,7 +24,7 @@ class GateVSystem;
 class GatePulseProcessorChain : public GateModuleListManager
 {
   public:
-    GatePulseProcessorChain(GateDigitizer* itsDigitizer,
+    GatePulseProcessorChain(GateDigitizerOld* itsDigitizer,
     			    const G4String& itsOutputName);
     virtual ~GatePulseProcessorChain();
 

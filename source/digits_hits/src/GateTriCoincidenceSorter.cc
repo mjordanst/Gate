@@ -17,7 +17,7 @@ GateTriCoincidenceSorter::GateTriCoincidenceSorter(GateCoincidencePulseProcessor
   m_sTree(0),
   m_waitingSinglesSize(50)
 {
-   m_digitizer = GateDigitizer::GetInstance();
+   m_digitizer = GateDigitizerOld::GetInstance();
    m_messenger = new GateTriCoincidenceSorterMessenger(this);
    m_sBuffer.Clear();
    m_sTreeName = SetSinglesTreeName(itsName);

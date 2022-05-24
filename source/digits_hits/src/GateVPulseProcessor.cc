@@ -12,15 +12,16 @@ See LICENSE.md for further details
 #include "GateTools.hh"
 #include "GatePulseProcessorChain.hh"
 #include "GateSingleDigiMaker.hh"
-#include "GateDigitizer.hh"
+#include "GateDigitizerOld.hh"
 
-// Constructs a new pulse-processor attached to a GateDigitizer
+// Constructs a new pulse-processor attached to a GateDigitizerOld
 GateVPulseProcessor::GateVPulseProcessor(GatePulseProcessorChain* itsChain,
       	      	      	   const G4String& itsName) 
     : GateClockDependent(itsName),
       m_chain(itsChain)
 {
-  GateDigitizer* digitizer = GateDigitizer::GetInstance();
+	G4cout<<"GateVPulseProcessor::GateVPulseProcessor constr"<<G4endl;
+  GateDigitizerOld* digitizer = GateDigitizerOld::GetInstance();
 
   digitizer->InsertDigiMakerModule( new GateSingleDigiMaker(digitizer, itsName,false) );
 }  

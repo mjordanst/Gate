@@ -32,7 +32,7 @@ public:
   virtual ~GateCoincidenceTimeDiffSelector() ;
 
 
-  //! Constructs a new dead time attached to a GateDigitizer
+  //! Constructs a new dead time attached to a GateDigitizerOld
   GateCoincidenceTimeDiffSelector(GateCoincidencePulseProcessorChain* itsChain,
                                   const G4String& itsName);
 

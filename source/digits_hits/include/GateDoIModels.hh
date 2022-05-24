@@ -20,7 +20,7 @@ class GateDoIModels : public GateVPulseProcessor
 {
   public:
 
-    //! Constructs a new EnergyThresholder attached to a GateDigitizer
+    //! Constructs a new EnergyThresholder attached to a GateDigitizerOld
     //! //I SEE HOW IT WORKS BUT I DO NOT UNDERSTAND : ASK
     /// it loads correcty messenger values
      GateDoIModels(GatePulseProcessorChain* itsChain,  const G4String& itsName);

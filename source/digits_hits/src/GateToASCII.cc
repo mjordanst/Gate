@@ -16,7 +16,7 @@
 #include "GatePhantomHit.hh"
 #include "GatePrimaryGeneratorAction.hh"
 #include "GateVVolume.hh"
-#include "GateDigitizer.hh"
+#include "GateDigitizerOld.hh"
 #include "GateSingleDigi.hh"
 #include "GateCoincidenceDigi.hh"
 #include "GateSourceMgr.hh"

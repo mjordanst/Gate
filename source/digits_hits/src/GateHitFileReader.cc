@@ -158,6 +158,7 @@ void GateHitFileReader::PrepareEndOfEvent()
 {
   // We loop until the hit-queue is empty
   // Each hit is inserted into the crystalSD hit-collection, then removed from the queue
+	 G4cout << " GateHitFileReader::PrepareEndOfEvent\n";
   while (m_hitQueue.size()) {
     GateOutputMgr::GetInstance()->GetHitCollection()->insert(m_hitQueue.front());
     m_hitQueue.pop();

@@ -24,7 +24,7 @@
 #include "GateEccentRotMove.hh"
 #include "GateSystemListManager.hh"
 #include "GateVVolume.hh"
-#include "GateDigitizer.hh"
+#include "GateDigitizerOld.hh"
 #include <cmath>
 #include <cstring>
 #include <iostream>
@@ -224,7 +224,7 @@ G4int GateARFSD::PrepareCreatorAttachment(GateVVolume* creator)
 void GateARFSD::SetSystem(GateVSystem* system)
   {
   mSystem = system;
-  GateDigitizer::GetInstance()->SetSystem(system);
+  GateDigitizerOld::GetInstance()->SetSystem(system);
   }
 
 void GateARFSD::computeTables()

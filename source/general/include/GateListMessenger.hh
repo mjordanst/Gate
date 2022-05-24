@@ -59,7 +59,7 @@ class GateListMessenger: public GateClockDependentMessenger
 
     //! Get a pointer to the list manager
     inline GateListManager* GetListManager() 
-      { return (GateListManager*) GetClockDependent(); }
+      {    	return (GateListManager*) GetClockDependent(); }
 
     //! Get the current value of the insertion name
     inline const G4String& GetNewInsertionBaseName() 

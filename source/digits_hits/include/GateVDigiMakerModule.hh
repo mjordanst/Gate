@@ -14,7 +14,7 @@ See LICENSE.md for further details
 
 #include "GateClockDependent.hh"
 
-class GateDigitizer;
+class GateDigitizerOld;
 
 /*! \class  GateVDigiMakerModule
     \brief  It processes a pulse-list, generating single digis.
@@ -27,7 +27,7 @@ class GateVDigiMakerModule : public GateClockDependent
 public:
 
   //! Constructor
-  GateVDigiMakerModule(GateDigitizer* itsDigitizer,
+  GateVDigiMakerModule(GateDigitizerOld* itsDigitizer,
   		     const G4String& itsInputName);
 
   //! Destructor
@@ -48,7 +48,7 @@ public:
     { return m_collectionName; }
 
  protected:
-  GateDigitizer*	 m_digitizer;
+  GateDigitizerOld*	 m_digitizer;
   G4String		 m_inputName;
   G4String		 m_collectionName;
 };

@@ -31,7 +31,7 @@ class GateDiscretizer : public GateVPulseProcessor
 {
   public:
 
-    //! Constructs a new Discretizer attached to a GateDigitizer
+    //! Constructs a new Discretizer attached to a GateDigitizerOld
     GateDiscretizer(GatePulseProcessorChain* itsChain,const G4String& itsName) ;
 
     //! Destructor

@@ -19,7 +19,7 @@
 #include "G4EventManager.hh"
 #include "GateHit.hh"
 #include "GateHitConvertor.hh"
-#include "GateDigitizer.hh"
+#include "GateDigitizerOld.hh"
 #include "GatePulseAdder.hh"
 #include "GateCCCoincidenceDigi.hh"
 #include "GatePrimTrackInformation.hh"
@@ -31,7 +31,7 @@
 
 
 class G4EmCalculator;
-class GateDigitizer;
+class GateDigitizerOld;
 
 //-----------------------------------------------------------------------------
 class GateComptonCameraActor : public GateVActor
@@ -109,7 +109,7 @@ public:
   void SetIsnCrystalConvEnabled(bool b){EnablenCrystalConv=b;}
 
   //! Get the digitizer
-  inline GateDigitizer*   GetDigitizer()
+  inline GateDigitizerOld*   GetDigitizer()
   { return m_digitizer; }
 
 protected:
@@ -247,7 +247,7 @@ protected:
 
   GateActorMessenger* pMessenger;
   G4EmCalculator * emcalc;
-  GateDigitizer* m_digitizer;
+  GateDigitizerOld* m_digitizer;
 
 };
 

@@ -18,7 +18,7 @@
 #include "G4PrimaryParticle.hh"
 
 #include "G4SDManager.hh"
-
+#include "G4DigiManager.hh"
 #include "G4TransportationManager.hh"
 
 #include "GateVSystem.hh"
@@ -27,14 +27,14 @@
 #include "GateEccentRotMove.hh"
 #include "GateSystemListManager.hh"
 #include "GateVVolume.hh"
-#include "GateDigitizer.hh"
+#include "GateDigitizerOld.hh"
 
 
 #include "GateObjectStore.hh"
 #include "GateEmittedGammaInformation.hh"
 
 // Name of the hit collection
-const G4String GateCrystalSD::theCrystalCollectionName = "CrystalSD"; //has to be hardcoded somewhere. Add modifs for multiple HCs
+const G4String GateCrystalSD::theCrystalCollectionName = "crystalCollection"; //CrystalSD"; //has to be hardcoded somewhere. Add modifs for multiple HCs
 
 
 //------------------------------------------------------------------------------
@@ -47,7 +47,6 @@ GateCrystalSD::GateCrystalSD(const G4String& name)
 	//OK GND 2022
 	collectionName.insert(name);
 	collectionID = -1;
-
 }
 //------------------------------------------------------------------------------
 
@@ -83,9 +82,10 @@ GateCrystalSD *GateCrystalSD::Clone() const {
 // Method overloading the virtual method Initialize() of G4VSensitiveDetector
 void GateCrystalSD::Initialize(G4HCofThisEvent*HCE)
 {
-
+	//G4cout<<"GateCrystalSD::Initialize"<<G4endl;
+	//G4SDManager *SDMan=G4SDManager::GetSDMpointer();
   //OK GND 2022
-  if (collectionID==-1)
+ if (collectionID==-1)
 		{
 	  	  crystalHitsCollection = new GateHitsCollection(theCrystalCollectionName,collectionName[0]);
 		}
@@ -96,19 +96,19 @@ void GateCrystalSD::Initialize(G4HCofThisEvent*HCE)
   	}
 
   HCE->AddHitsCollection(collectionID, crystalHitsCollection);
-
-  	  /*
-  static int HCID = -1; // Static variable storing the hit collection ID
+/*
+	static int HCID = -1; // Static variable storing the hit collection ID
   // Not thread safe but moving to local variable doesn't work
     // Creation of a new hit collection
-
+	 crystalHitsCollection = new GateHitsCollection
+	                   (SensitiveDetectorName,theCrystalCollectionName);
   // We store the hit collection ID into the static variable HCID
   if(HCID<0)
   { HCID = GetCollectionID(0); }
 
   // Add the hit collection to the G4HCofThisEvent
-  HCE->AddHitsCollection(HCID,crystalCollection);
-  */
+  HCE->AddHitsCollection(HCID,crystalHitsCollection);
+*/
 }
 //------------------------------------------------------------------------------
 
@@ -119,6 +119,7 @@ void GateCrystalSD::Initialize(G4HCofThisEvent*HCE)
 //G4bool GateCrystalSD::ProcessHits(G4Step*aStep,G4TouchableHistory*ROhist)
 G4bool GateCrystalSD::ProcessHits(G4Step*aStep, G4TouchableHistory*)
 {
+	//G4cout<<"GateCrystalSD::ProcessHits"<<G4endl;
 
   // Get the track information
   G4Track* aTrack       = aStep->GetTrack();
@@ -211,7 +212,8 @@ G4bool GateCrystalSD::ProcessHits(G4Step*aStep, G4TouchableHistory*)
   G4double aTime = newStepPoint->GetGlobalTime();
   // Create a new crystal hit
   GateHit* aHit = new GateHit();
-
+  //G4int id = G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();
+ // aHit->SetEventID(id);
   // Store the data already obtained into the hit
   aHit->SetPDGEncoding( PDGEncoding );
   aHit->SetEdep( edep );
@@ -241,9 +243,9 @@ G4bool GateCrystalSD::ProcessHits(G4Step*aStep, G4TouchableHistory*)
   GateOutputVolumeID outputVolumeID = system->ComputeOutputVolumeID(aHit->GetVolumeID());
   aHit->SetOutputVolumeID(outputVolumeID);
 
+
   // Insert the new hit into the hit collection
   crystalHitsCollection->insert( aHit );
-
   return true;
 }
 //------------------------------------------------------------------------------
@@ -255,11 +257,11 @@ void GateCrystalSD::EndOfEvent(G4HCofThisEvent* HCE)
 	static G4int HCID = -1;
 	  if(HCID<0)
 	    {
-	      HCID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
+	      HCID = G4SDManager::GetSDMpointer()->GetCollectionID(theCrystalCollectionName);//collectionName[0]);
 	    }
 	  HCE->AddHitsCollection(HCID,crystalHitsCollection); //to use later in EndEventAction
-
 }
+
 //-------------------------------------------------------------------------------
 
 
@@ -300,7 +302,7 @@ void GateCrystalSD::SetSystem(GateVSystem* aSystem)
 {
   m_system=aSystem;
 //Seb Modif 24/02/2009
-  GateDigitizer::GetInstance()->SetSystem(aSystem);
+  GateDigitizerOld::GetInstance()->SetSystem(aSystem);
 }
 //mhadi_obso]
 //------------------------------------------------------------------------------
@@ -310,7 +312,7 @@ void GateCrystalSD::SetSystem(GateVSystem* aSystem)
 void GateCrystalSD::AddSystem(GateVSystem* aSystem)
 {
    m_systemList->push_back(aSystem);
-   GateDigitizer::GetInstance()->AddSystem(aSystem);
+   GateDigitizerOld::GetInstance()->AddSystem(aSystem);
 }
 //------------------------------------------------------------------------------
 

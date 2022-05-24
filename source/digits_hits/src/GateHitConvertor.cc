@@ -12,7 +12,7 @@
 
 #include "GateHitConvertorMessenger.hh"
 #include "GateTools.hh"
-#include "GateDigitizer.hh"
+#include "GateDigitizerOld.hh"
 #include "GateConfiguration.h"
 
 const G4String GateHitConvertor::theOutputAlias = "Hits";
@@ -82,8 +82,8 @@ GatePulseList* GateHitConvertor::ProcessHits(const GateHitsCollection* hitCollec
       G4cout << Gateendl;
   }
 
-  GateDigitizer::GetInstance()->StorePulseList(pulseList);
-  GateDigitizer::GetInstance()->StorePulseListAlias(GetOutputAlias(),pulseList);
+  GateDigitizerOld::GetInstance()->StorePulseList(pulseList);
+  GateDigitizerOld::GetInstance()->StorePulseListAlias(GetOutputAlias(),pulseList);
 
   return pulseList;
 }
@@ -116,8 +116,8 @@ GatePulseList* GateHitConvertor::ProcessHits(const GateHitsCollection* hitCollec
         G4cout << Gateendl;
     }
 
-    GateDigitizer::GetInstance()->StorePulseList(pulseList);
-    GateDigitizer::GetInstance()->StorePulseListAlias(GetOutputAlias(),pulseList);
+    GateDigitizerOld::GetInstance()->StorePulseList(pulseList);
+    GateDigitizerOld::GetInstance()->StorePulseListAlias(GetOutputAlias(),pulseList);
 
     return pulseList;
 }
@@ -200,5 +200,5 @@ void GateHitConvertor::ProcessOneHit(const GateHit* hit,GatePulseList* pulseList
 
 void GateHitConvertor::DescribeMyself(size_t indent)
 {
-  G4cout << GateTools::Indent(indent) << "Convert hits into pulses for '" << GateDigitizer::GetInstance()->GetObjectName() << "'\n";
+  G4cout << GateTools::Indent(indent) << "Convert hits into pulses for '" << GateDigitizerOld::GetInstance()->GetObjectName() << "'\n";
 }

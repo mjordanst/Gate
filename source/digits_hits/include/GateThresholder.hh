@@ -37,7 +37,7 @@ class GateThresholder : public GateVPulseProcessor
 {
   public:
 
-    //! Constructs a new thresholder attached to a GateDigitizer
+    //! Constructs a new thresholder attached to a GateDigitizerOld
     GateThresholder(GatePulseProcessorChain* itsChain,
 			       const G4String& itsName, G4double itsThreshold=0) ;
     //! Destructor

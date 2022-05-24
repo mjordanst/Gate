@@ -36,7 +36,7 @@
 #include "GateOutputMgr.hh"
 #include "GatePrimaryGeneratorAction.hh"
 #include "GateUserActions.hh"
-#include "GateDigitizer.hh"
+#include "GateDigitizerOld.hh"
 #include "GateClock.hh"
 #include "GateUIcontrolMessenger.hh"
 #ifdef G4ANALYSIS_USE_ROOT
@@ -308,9 +308,12 @@ int main( int argc, char* argv[] )
 #ifdef G4ANALYSIS_USE_GENERAL
   GateOutputMgr::SetDigiMode( aDigiMode );
   GateOutputMgr* outputMgr = GateOutputMgr::GetInstance();
-  GateDigitizer* digitizer = GateDigitizer::GetInstance();
-  GatePulseProcessorChain* singleChain = new GatePulseProcessorChain( digitizer, "Singles" );
-  digitizer->StoreNewPulseProcessorChain( singleChain );
+  
+  //OK GND 2022. Moved to GateAction:RunAction constructor 
+  //GateDigitizerOld* digitizer = GateDigitizerOld::GetInstance(); 
+  //GatePulseProcessorChain* singleChain = new GatePulseProcessorChain( digitizer, "Singles" );
+  //digitizer->StoreNewPulseProcessorChain( singleChain );
+
 #endif
 
   if( aDigiMode == kofflineMode )
@@ -384,8 +387,8 @@ int main( int argc, char* argv[] )
     }
 
   // Using 'session' if not Qt
-  welcome();
-
+  //welcome();
+  G4cout<<"___________________________"<<G4endl;
   std::ostringstream s;
   s << G4VERSION_MAJOR << "." << G4VERSION_MINOR << "." << G4VERSION_PATCH;
   GateMessage( "Core", 0, "You are using Geant4 version " << s.str() << G4endl );
@@ -395,6 +398,7 @@ int main( int argc, char* argv[] )
     executeCommandQueue( commandQueue, UImanager );
     GateMessage( "Core", 0, "Starting macro " << macrofilename << G4endl);
     G4String command = "/control/execute ";
+    G4cout<< "Apply Command "<< command + macrofilename <<G4endl;
     UImanager->ApplyCommand( command + macrofilename );
     GateMessage( "Core", 0, "End of macro " << macrofilename << G4endl);
   }
@@ -409,7 +413,9 @@ int main( int argc, char* argv[] )
 #endif
     {
       if (session && !isMacroFile) { // Terminal
-        session->SessionStart();
+	G4cout<<"sessionStart"<<G4endl;
+
+	session->SessionStart();
         delete session;
       }
     }

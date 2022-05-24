@@ -15,7 +15,7 @@ class GateLocalTimeResolution : public GateVPulseProcessor
 {
   public:
 
-    //! Constructs a new TimeDelay attached to a GateDigitizer
+    //! Constructs a new TimeDelay attached to a GateDigitizerOld
     GateLocalTimeResolution(GatePulseProcessorChain* itsChain,
 			       const G4String& itsName) ;
 
@@ -35,7 +35,7 @@ class GateLocalTimeResolution : public GateVPulseProcessor
 
     //@}
 
-    //! Implementation of the pure virtual method declared by the base class GateDigitizerComponent
+    //! Implementation of the pure virtual method declared by the base class GateDigitizerOldComponent
     //! print-out the attributes specific of the TimeDelay
     virtual void DescribeMyself(size_t indent);
 

@@ -34,7 +34,7 @@ class GateOpticalAdder : public GateVPulseProcessor
 {
   public:
 
-    //! Constructs a new optical-adder attached to a GateDigitizer
+    //! Constructs a new optical-adder attached to a GateDigitizerOld
     GateOpticalAdder(GatePulseProcessorChain* itsChain,const G4String& itsName);
 
     //! Destructor

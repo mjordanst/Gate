@@ -20,7 +20,7 @@ See LICENSE.md for further details
 #include "GateCoincidenceSorterMessenger.hh"
 
 #include "GateTools.hh"
-#include "GateDigitizer.hh"
+#include "GateDigitizerOld.hh"
 #include "GateVSystem.hh"
 #include "GateCoincidenceDigiMaker.hh"
 
@@ -28,8 +28,8 @@ See LICENSE.md for further details
 
 //------------------------------------------------------------------------------------------------------
 G4int GateCoincidenceSorter::gm_coincSectNum=0;
-// Constructs a new coincidence sorter, attached to a GateDigitizer and to a system
-GateCoincidenceSorter::GateCoincidenceSorter(GateDigitizer* itsDigitizer,
+// Constructs a new coincidence sorter, attached to a GateDigitizerOld and to a system
+GateCoincidenceSorter::GateCoincidenceSorter(GateDigitizerOld* itsDigitizer,
                                              const G4String& itsOutputName,
                                              G4double itsWindow,
                                              const G4String& itsInputName, const bool& IsCCSorter)
@@ -52,6 +52,7 @@ GateCoincidenceSorter::GateCoincidenceSorter(GateDigitizer* itsDigitizer,
     m_triggerOnlyByAbsorber(0),
     m_eventIDCoinc(0)
 {
+	G4cout<<"GateCoincidenceSorter constr"<<G4endl;
 
   // Create the messenger
   m_messenger = new GateCoincidenceSorterMessenger(this);

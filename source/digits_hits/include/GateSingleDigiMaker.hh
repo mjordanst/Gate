@@ -14,7 +14,7 @@ See LICENSE.md for further details
 
 #include "GateVDigiMakerModule.hh"
 
-class GateDigitizer;
+class GateDigitizerOld;
 
 /*! \class  GateSingleDigiMaker
     \brief  It processes a pulse-list, generating single digis.
@@ -27,7 +27,7 @@ class GateSingleDigiMaker : public GateVDigiMakerModule
 public:
 
   //! Constructor
-  GateSingleDigiMaker(GateDigitizer* itsDigitizer,
+  GateSingleDigiMaker(GateDigitizerOld* itsDigitizer,
   		      const G4String& itsInputName,
 		      G4bool itsOutputFlag);
 

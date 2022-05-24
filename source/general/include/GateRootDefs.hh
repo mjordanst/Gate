@@ -29,6 +29,7 @@ See LICENSE.md for further details
 
 class GateHit;
 class GateSingleDigi;
+class GateDigi;
 class GateCoincidenceDigi;
 
 #define ROOT_VOLUMEIDSIZE 10
@@ -238,6 +239,8 @@ class GateRootSingleBuffer
 
     void Clear();     	      	      	      	  //!< Reset the fields of the structure
     void Fill(GateSingleDigi* aDigi);
+    //OK GND 2022
+    void FillGND(GateDigi* aDigi);
 
     //! \name Data fields
     //@{

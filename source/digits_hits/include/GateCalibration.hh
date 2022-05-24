@@ -35,7 +35,7 @@ class GateCalibration : public GateVPulseProcessor
 {
   public:
 
-    //! Constructs a new calibration attached to a GateDigitizer
+    //! Constructs a new calibration attached to a GateDigitizerOld
     GateCalibration(GatePulseProcessorChain* itsChain,
 			       const G4String& itsName) ;
     //! Destructor
@@ -45,7 +45,7 @@ class GateCalibration : public GateVPulseProcessor
 
   void SetCalibrationFactor(G4double itsCalib) { m_calib = itsCalib; };
 
-    //! Implementation of the pure virtual method declared by the base class GateDigitizerComponent
+    //! Implementation of the pure virtual method declared by the base class GateDigitizerOldComponent
     //! print-out the attributes specific of the calibration
     virtual void DescribeMyself(size_t indent);
 

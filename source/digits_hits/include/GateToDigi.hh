@@ -12,10 +12,14 @@ See LICENSE.md for further details
 
  #include "GateVOutputModule.hh"
 
- class GateOutputModuleMessenger;
+class GateOutputModuleMessenger;
+//OK GND 2022
+//class GateDigitizerOld;
 class GateDigitizer;
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+// Class of GateVOutputModule
+//This class is used mainly/only to start digitizer after GateAnalysis
+// when variables independent of SD are filled, ex. eventID, runID etc.
 
 class GateToDigi :  public GateVOutputModule
 {
@@ -36,18 +40,24 @@ public:
   //! saves the geometry voxel information
   void RecordVoxels(GateVGeometryVoxelStore *) {};
 
-
+  //OK GND 2022
   //! Get the digitizer
+  //inline GateDigitizerOld*   GetDigitizer()
+   //   { return m_digitizer; }
+
   inline GateDigitizer*   GetDigitizer()
-      { return m_digitizer; }
+       { return m_digitizer; }
+
 
 private:
 
   GateOutputModuleMessenger* m_digiMessenger;
       	      	      	      	      	      	      	  //!< crystal-hits into pulses that can be processed
 							  //!< by the pulse-processor hits
-
+  //OK GND 2022
+  //GateDigitizerOld* m_digitizer;
   GateDigitizer* m_digitizer;
+
   G4String       m_noFileName;
 };
 

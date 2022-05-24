@@ -68,6 +68,7 @@ See LICENSE.md for further details
 GatePulseProcessorChainMessenger::GatePulseProcessorChainMessenger(GatePulseProcessorChain* itsProcessorChain)
 :GateListMessenger(itsProcessorChain)
 { 
+	G4cout<<"GatePulseProcessorChainMessenger constr"<<G4endl;
   pInsertCmd->SetCandidates(DumpMap());
 
   G4String cmdName;
@@ -91,6 +92,8 @@ GatePulseProcessorChainMessenger::~GatePulseProcessorChainMessenger()
 
 void GatePulseProcessorChainMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 { 
+	G4cout<<"GatePulseProcessorChainMessenger SetNewValue "<< newValue <<G4endl;
+
   if (command == SetInputNameCmd) 
     { GetProcessorChain()->SetInputName(newValue); }
   else
@@ -117,7 +120,7 @@ void GatePulseProcessorChainMessenger::DoInsertion(const G4String& childTypeName
   AvoidNameConflicts();
 
   GateVPulseProcessor* newProcessor=0;
-
+  //G4cout<<"Input name "<<GetProcessorChain()->GetInputName()<<G4endl; ;
   G4String newInsertionName = GetProcessorChain()->MakeElementName(GetNewInsertionBaseName());
 
   if (childTypeName=="readout")
@@ -164,8 +167,13 @@ void GatePulseProcessorChainMessenger::DoInsertion(const G4String& childTypeName
   else if (childTypeName=="sp3Dlocalblurring")
     newProcessor = new GateCC3DlocalSpblurring(GetProcessorChain(),newInsertionName);
   else if (childTypeName=="adder")
+  {
+	  G4cout<<"childTypeName adder "<< newInsertionName<<G4endl;
+	  G4cout<<"***************"<<G4endl;
     newProcessor = new GatePulseAdder(GetProcessorChain(),newInsertionName);
-  else if (childTypeName=="adderLocal")
+    G4cout<<"***************"<<G4endl;
+  }
+    else if (childTypeName=="adderLocal")
     newProcessor = new GatePulseAdderLocal(GetProcessorChain(),newInsertionName);
   else if (childTypeName=="adderCompton")
     newProcessor = new GatePulseAdderCompton(GetProcessorChain(),newInsertionName);
@@ -207,6 +215,7 @@ else if (childTypeName=="localMultipleRejection")
     G4cout << "Pulse-processor type name '" << childTypeName << "' was not recognised --> insertion request must be ignored!\n";
     return;
   }
+  G4cout<<"_________________"<<G4endl;
   
   GetProcessorChain()->InsertProcessor(newProcessor);
   SetNewInsertionBaseName("");

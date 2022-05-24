@@ -31,7 +31,7 @@ class GateBuffer : public GateVPulseProcessor
     virtual ~GateBuffer() ;
 
 
-    //! Implementation of the pure virtual method declared by the base class GateDigitizerComponent
+    //! Implementation of the pure virtual method declared by the base class GateDigitizerOldComponent
     //! print-out the attributes specific of the blurring
     void SetBufferSize(buffer_t val)   { m_bufferSize = val;}
     void SetReadFrequency(G4double val)   { m_readFrequency = val;}

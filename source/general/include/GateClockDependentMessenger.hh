@@ -43,7 +43,7 @@ class GateClockDependentMessenger: public GateNamedObjectMessenger
     void SetARFCommands();/* PY Descourt 08/09/2009 */  
     //! Get the clock-dependent volume
     inline GateClockDependent* GetClockDependent() 
-      { return (GateClockDependent*) GetNamedObject(); }
+      {    	return (GateClockDependent*) GetNamedObject(); }
 
   private:
     G4UIcmdWithABool* 	      pEnableCmd;    //!< The UI command "enable"

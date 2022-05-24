@@ -20,7 +20,7 @@ class GateClustering : public GateVPulseProcessor
 {
 public:
 
-    //! Constructs a new pulse-adder attached to a GateDigitizer
+    //! Constructs a new pulse-adder attached to a GateDigitizerOld
     GateClustering(GatePulseProcessorChain* itsChain,const G4String& itsName);
 
     //! Destructor

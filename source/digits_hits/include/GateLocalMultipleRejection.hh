@@ -19,7 +19,7 @@ class GateLocalMultipleRejection : public GateVPulseProcessor
 {
   public:
 
-    //! Constructs a new MultipleRejection attached to a GateDigitizer
+    //! Constructs a new MultipleRejection attached to a GateDigitizerOld
     GateLocalMultipleRejection(GatePulseProcessorChain* itsChain,
 			       const G4String& itsName) ;
 
@@ -51,7 +51,7 @@ class GateLocalMultipleRejection : public GateVPulseProcessor
     }
     //@}
 
-    //! Implementation of the pure virtual method declared by the base class GateDigitizerComponent
+    //! Implementation of the pure virtual method declared by the base class GateDigitizerOldComponent
     //! print-out the attributes specific of the MultipleRejection
     virtual void DescribeMyself(size_t indent);
 

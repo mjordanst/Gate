@@ -12,16 +12,16 @@ See LICENSE.md for further details
 #include "GateTools.hh"
 #include "GateCoincidencePulseProcessorChain.hh"
 #include "GateCoincidenceDigiMaker.hh"
-#include "GateDigitizer.hh"
+#include "GateDigitizerOld.hh"
 //------------------------------------------------------------------------------------------------------
-// Constructs a new pulse-processor attached to a GateDigitizer
+// Constructs a new pulse-processor attached to a GateDigitizerOld
 GateVCoincidencePulseProcessor::GateVCoincidencePulseProcessor(GateCoincidencePulseProcessorChain* itsChain,
       	      	      	   const G4String& itsName) 
     : GateClockDependent(itsName),
 /*      m_isTriCoincProc(0), //mhadi_add*/
       m_chain(itsChain)
 {
-  GateDigitizer* digitizer = GateDigitizer::GetInstance();
+  GateDigitizerOld* digitizer = GateDigitizerOld::GetInstance();
 
   G4cout << " in GateVCoincidencePulseProcessor call new GateCoincidenceDigiMaker\n";
   digitizer->InsertDigiMakerModule( new GateCoincidenceDigiMaker(digitizer, itsName,false) );

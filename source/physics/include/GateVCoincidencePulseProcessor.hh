@@ -35,7 +35,7 @@ class GateVCoincidencePulseProcessor : public GateClockDependent
     //! \name constructors and destructors
     //@{
     
-    //! Constructs a new pulse-processor attached to a GateDigitizer
+    //! Constructs a new pulse-processor attached to a GateDigitizerOld
     GateVCoincidencePulseProcessor(GateCoincidencePulseProcessorChain* itsChain,
       	      	      	const G4String& itsName);
 

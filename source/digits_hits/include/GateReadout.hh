@@ -42,7 +42,7 @@ class GateReadout : public GateVPulseProcessor
 {
   public:
 
-    //! Constructs a new readout attached to a GateDigitizer
+    //! Constructs a new readout attached to a GateDigitizerOld
     GateReadout(GatePulseProcessorChain* itsChain,const G4String& itsName) ;
 
     //! Destructor

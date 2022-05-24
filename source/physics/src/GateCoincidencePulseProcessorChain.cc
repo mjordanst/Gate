@@ -13,7 +13,7 @@ See LICENSE.md for further details
 #include "Randomize.hh"
 #include "G4UnitsTable.hh"
 
-#include "GateDigitizer.hh"
+#include "GateDigitizerOld.hh"
 #include "GateVCoincidencePulseProcessor.hh"
 #include "GateTools.hh"
 #include "GateHitConvertor.hh"
@@ -21,7 +21,7 @@ See LICENSE.md for further details
 
 
 //------------------------------------------------------------------------------------------------------
-GateCoincidencePulseProcessorChain::GateCoincidencePulseProcessorChain( GateDigitizer* itsDigitizer,
+GateCoincidencePulseProcessorChain::GateCoincidencePulseProcessorChain( GateDigitizerOld* itsDigitizer,
     			                          const G4String& itsOutputName)
   : GateModuleListManager(itsDigitizer,itsDigitizer->GetObjectName() + "/" + itsOutputName,"pulse-processor"),
     m_system(0 /*itsDigitizer->GetSystem() */),//mhadi_modif
@@ -86,7 +86,7 @@ const std::vector<GateCoincidencePulse*> GateCoincidencePulseProcessorChain::Mak
    std::vector<GateCoincidencePulse*> ans;
    for (std::vector<G4String>::const_iterator itName = m_inputNames.begin() ; itName != m_inputNames.end() ; ++itName){
      std::vector<GateCoincidencePulse*> pulseList 
-        = GateDigitizer::GetInstance()->FindCoincidencePulse( *itName );
+        = GateDigitizerOld::GetInstance()->FindCoincidencePulse( *itName );
      for (std::vector<GateCoincidencePulse*>::const_iterator it = pulseList.begin() ; it != pulseList.end() ; ++it){
 	GateCoincidencePulse* pulse = *it;
 	if (pulse->empty()) continue;
@@ -144,12 +144,12 @@ void GateCoincidencePulseProcessorChain::ProcessCoincidencePulses()
 	 if (pulse){
 	   //G4cout<<"processorName="<<processor->GetObjectName()<<G4endl;
       	   pulse->SetName(processor->GetObjectName());
-      	   GateDigitizer::GetInstance()->StoreCoincidencePulse(pulse);
+      	   GateDigitizerOld::GetInstance()->StoreCoincidencePulse(pulse);
 	 } else break;
        }
      }
       //G4cout<<"CoincChain m_outputName="<<m_outputName<<G4endl;
-     if (pulse) GateDigitizer::GetInstance()->StoreCoincidencePulseAlias(m_outputName,pulse);
+     if (pulse) GateDigitizerOld::GetInstance()->StoreCoincidencePulseAlias(m_outputName,pulse);
    }
 
   return;
@@ -160,7 +160,7 @@ void GateCoincidencePulseProcessorChain::ProcessCoincidencePulses()
 //------------------------------------------------------------------------------------------------------
 GateVSystem* GateCoincidencePulseProcessorChain::FindSystem(G4String& inputName)
 {
-   GateDigitizer* digitizer = GateDigitizer::GetInstance();
+   GateDigitizerOld* digitizer = GateDigitizerOld::GetInstance();
    std::vector<GateCoincidenceSorter*> CoincidenceSorterList = digitizer->GetCoinSorterList();
 
    /*G4int index = -1;

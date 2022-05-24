@@ -15,7 +15,7 @@ See LICENSE.md for further details
 #include <CLHEP/Random/RandFlat.h>
 #include "GateModuleListManager.hh"
 
-class GateDigitizer;
+class GateDigitizerOld;
 class GateCoincidencePulse;
 class GateVCoincidencePulseProcessor;
 class GateCoincidencePulseProcessorChainMessenger;
@@ -27,7 +27,7 @@ class GateVSystem;
 class GateCoincidencePulseProcessorChain : public GateModuleListManager
 {
   public:
-    GateCoincidencePulseProcessorChain(GateDigitizer* itsDigitizer,
+    GateCoincidencePulseProcessorChain(GateDigitizerOld* itsDigitizer,
     			    const G4String& itsOutputName);
     virtual ~GateCoincidencePulseProcessorChain();
 

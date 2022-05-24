@@ -60,7 +60,6 @@ public :
 private:
   GateRunAction() {}
   GateUserActions* pCallbackMan;
-
   G4int runIDcounter;
   G4bool flagBasicOutput;
   static GateRunAction* prunAction;
@@ -91,6 +90,9 @@ public :
 private:
   GateEventAction() {}
   GateUserActions* pCallbackMan;
+
+  //OK GND 2022
+  G4int pHitsCollectionID;
 
   G4bool flagBasicOutput;
   static GateEventAction* peventAction;

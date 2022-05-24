@@ -13,16 +13,18 @@ See LICENSE.md for further details
 
 #include "GateSingleDigi.hh"
 #include "GateTools.hh"
-#include "GateDigitizer.hh"
+#include "GateDigitizerOld.hh"
 #include "GateOutputMgr.hh"
 
 // Constructor
-GateSingleDigiMaker::GateSingleDigiMaker( GateDigitizer* itsDigitizer,
+GateSingleDigiMaker::GateSingleDigiMaker( GateDigitizerOld* itsDigitizer,
       	      	         	          const G4String& itsInputName,
 					  G4bool itsOutputFlag)
   :GateVDigiMakerModule(itsDigitizer,itsInputName)
 {
-//  G4cout << " in GateSingleDigiMaker call RegisterNewSingleDigiCollection"  << Gateendl;
+	G4cout<<"GateSingleDigiMaker constr"<<Gateendl;
+  G4cout << " in GateSingleDigiMaker call RegisterNewSingleDigiCollection"  << Gateendl;
+  G4cout<< 	itsInputName<<" "<< GetCollectionName() <<Gateendl;
   GateOutputMgr::GetInstance()->RegisterNewSingleDigiCollection( GetCollectionName(),itsOutputFlag );
 }
 
@@ -39,10 +41,11 @@ GateSingleDigiMaker::~GateSingleDigiMaker()
 // Convert a pulse list into a single Digi collection
 void GateSingleDigiMaker::Digitize()
 {
+	G4cout<<"GateSingleDigiMaker::Digitize()"<<G4endl;
   if (nVerboseLevel>1)
     G4cout  << "[GateSingleDigiMaker::Digitize]: retrieving pulse-list '" << m_inputName << "'\n";
 
-  GatePulseList* pulseList = GateDigitizer::GetInstance()->FindPulseList(m_inputName);
+  GatePulseList* pulseList = GateDigitizerOld::GetInstance()->FindPulseList(m_inputName);
 
   if (!pulseList) {
     if (nVerboseLevel>1)
@@ -62,6 +65,9 @@ void GateSingleDigiMaker::Digitize()
 
   // Create the digi collection
   GateSingleDigiCollection* singleDigiCollection = new GateSingleDigiCollection(m_digitizer->GetObjectName(),m_collectionName);
+
+  G4cout<<"GateSingleDigiMaker::Digitize "<<m_digitizer->GetObjectName()<<" "<< m_collectionName<<Gateendl;
+
 
   // Transform each pulse into a single digi
   for (i=0;i<n_pulses;i++) {

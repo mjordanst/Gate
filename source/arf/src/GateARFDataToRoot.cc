@@ -38,7 +38,7 @@
 #include "G4Gamma.hh"
 #include "GateApplicationMgr.hh"
 
-#include "GateDigitizer.hh"
+#include "GateDigitizerOld.hh"
 #include "GateSingleDigi.hh"
 #include "GateOutputMgr.hh"
 #include "TROOT.h"

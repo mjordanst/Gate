@@ -40,6 +40,7 @@ See LICENSE.md for further details
 class GateRunAction;
 class GateEventAction;
 class G4SliceTimer;
+class GateDigitizer;
 
 class GateUserActions
 {
@@ -132,6 +133,7 @@ protected:
 
   //OK: GND 2022
   G4int HitsCollectionID;
+  GateDigitizer *digitizer;
 
 
 };

@@ -32,7 +32,7 @@
 #include "GateToASCII.hh"
 #include "GateToBinary.hh"
 #include "GateToSummary.hh"
-#include "GateDigitizer.hh"
+#include "GateDigitizerOld.hh"
 #include "GateCrystalSD.hh"
 #include "GatePhantomSD.hh"
 #include "GateHitFileReader.hh"
@@ -79,7 +79,6 @@ GateOutputMgr::GateOutputMgr(const G4String name)
 {
   GateMessage("Output",4,"GateOutputMgr() -- begin\n");
 
-
   m_messenger = new GateOutputMgrMessenger(this);
 
 #ifdef GATE_USE_OPTICAL
@@ -96,8 +95,11 @@ GateOutputMgr::GateOutputMgr(const G4String name)
     AddOutputModule((GateVOutputModule*)gateAnalysis);
   }
 
-  GateToDigi* gateToDigi = new GateToDigi("digi", this,m_digiMode);
-  AddOutputModule((GateVOutputModule*)gateToDigi);
+  //OK GND 2022 not needed for GND called in GateAnalysis
+  //TODO ?? keep the GateToDigi class or not ??
+ G4cout<<"OuputMng:contruct before GateToDigi"	<<Gateendl;
+ GateToDigi* gateToDigi = new GateToDigi("digi", this,m_digiMode);
+ AddOutputModule((GateVOutputModule*)gateToDigi);
 
 #ifdef G4ANALYSIS_USE_FILE
   GateToASCII* gateToASCII = new GateToASCII("ascii", this, m_digiMode);
@@ -146,7 +148,7 @@ GateOutputMgr::~GateOutputMgr()
 //----------------------------------------------------------------------------------
 void GateOutputMgr::AddOutputModule(GateVOutputModule* module)
 {
-  if (nVerboseLevel > 2)
+ // if (nVerboseLevel > 2)
     G4cout << "GateOutputMgr::AddOutputModule\n";
 
   m_outputModules.push_back(module);
@@ -158,7 +160,7 @@ void GateOutputMgr::AddOutputModule(GateVOutputModule* module)
 void GateOutputMgr::RecordBeginOfEvent(const G4Event* event)
 {
   GateMessage("Output", 5, "GateOutputMgr::RecordBeginOfEvent\n";);
-
+  G4cout<<"GateOutputMgr::RecordBeginOfEvent"<<G4endl;
 
   for (size_t iMod=0; iMod<m_outputModules.size(); iMod++) {
     if ( m_outputModules[iMod]->IsEnabled() )
@@ -172,6 +174,7 @@ void GateOutputMgr::RecordBeginOfEvent(const G4Event* event)
 void GateOutputMgr::RecordEndOfEvent(const G4Event* event)
 {
   GateMessage("Output", 5, "GateOutputMgr::RecordEndOfEvent\n";);
+  G4cout<<"GateOutputMgr::RecordEndOfEvent"<<G4endl;
 
 #ifdef G4ANALYSIS_USE_ROOT
   if (m_digiMode==kofflineMode)
@@ -181,6 +184,7 @@ void GateOutputMgr::RecordEndOfEvent(const G4Event* event)
   for (size_t iMod=0; iMod<m_outputModules.size(); iMod++) {
     if ( m_outputModules[iMod]->IsEnabled() )
       {
+    	G4cout<<"*** Output module "<<   m_outputModules[iMod]->GetName()<<G4endl;
         m_outputModules[iMod]->RecordEndOfEvent(event);
       }
   }
@@ -191,6 +195,7 @@ void GateOutputMgr::RecordEndOfEvent(const G4Event* event)
 //----------------------------------------------------------------------------------
 void GateOutputMgr::RecordBeginOfRun(const G4Run* run)
 {
+ G4cout<<"GateOutputMgr::RecordBeginOfRun"<<G4endl;
   GateMessage("Output", 5, "GateOutputMgr::RecordBeginOfRun\n";);
 
   // If the verbosity for the random engine is set, we call the status method
@@ -232,7 +237,7 @@ void GateOutputMgr::RecordBeginOfAcquisition()
 {
   GateMessage("Output", 5, " GateOutputMgr::RecordBeginOfAcquisition \n";);
 
-  if (nVerboseLevel > 2)
+ // if (nVerboseLevel > 2)
     G4cout << "GateOutputMgr::RecordBeginOfAcquisition\n";
 
 #ifdef G4ANALYSIS_USE_ROOT
@@ -331,14 +336,13 @@ void GateOutputMgr::Describe(size_t /*indent*/)
 GateHitsCollection* GateOutputMgr::GetHitCollection()
 {
   GateMessage("Output", 5 , " GateOutputMgr::GetHitCollection \n";);
-
+  G4cout<<"GateOutputMgr::GetHitCollection"<<G4endl;
   static G4int crystalCollID=-1;     	  //!< Collection ID for the crystal hits
 
   G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
   if (crystalCollID==-1)
   	  crystalCollID = DigiMan->GetHitsCollectionID(GateCrystalSD::GetCrystalCollectionName());
   GateHitsCollection* CHC = (GateHitsCollection*) (DigiMan->GetHitsCollection(crystalCollID));
-
   return CHC;
 
 
@@ -389,7 +393,7 @@ GateCoincidenceDigiCollection* GateOutputMgr::GetCoincidenceDigiCollection(const
 void GateOutputMgr::RegisterNewSingleDigiCollection(const G4String& aCollectionName,G4bool outputFlag)
 {
   GateMessage("Output", 5, " GateOutputMgr::RegisterNewSingleDigiCollection\n";);
-
+  G4cout<<" GateOutputMgr::RegisterNewSingleDigiCollection "<<aCollectionName<<Gateendl;
   for (size_t iMod=0; iMod<m_outputModules.size(); iMod++)
     m_outputModules[iMod]->RegisterNewSingleDigiCollection(aCollectionName,outputFlag);
 }

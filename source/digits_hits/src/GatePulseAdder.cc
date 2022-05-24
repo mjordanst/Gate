@@ -20,6 +20,7 @@ GatePulseAdder::GatePulseAdder(GatePulseProcessorChain* itsChain,
   : GateVPulseProcessor(itsChain,itsName),
      m_positionPolicy(kenergyWeightedCentroid)
 {
+	G4cout<<"GatePulseAdder constr"<<G4endl;
   m_messenger = new GatePulseAdderMessenger(this);
 }
 

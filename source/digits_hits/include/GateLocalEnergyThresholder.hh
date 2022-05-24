@@ -24,7 +24,7 @@ class GateLocalEnergyThresholder : public GateVPulseProcessor
 {
   public:
 
-    //! Constructs a new EnergyThresholder attached to a GateDigitizer
+    //! Constructs a new EnergyThresholder attached to a GateDigitizerOld
     GateLocalEnergyThresholder(GatePulseProcessorChain* itsChain,
                    const G4String& itsName) ;
     //! Destructor

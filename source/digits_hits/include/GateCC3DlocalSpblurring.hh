@@ -23,7 +23,7 @@ class GateCC3DlocalSpblurring : public GateVPulseProcessor
 {
 public:
 
-    //! Constructs a new blurring attached to a GateDigitizer
+    //! Constructs a new blurring attached to a GateDigitizerOld
     GateCC3DlocalSpblurring(GatePulseProcessorChain* itsChain,
                             const G4String& itsName) ;
 
@@ -45,7 +45,7 @@ public:
 
     //@}
 
-    //! Implementation of the pure virtual method declared by the base class GateDigitizerComponent
+    //! Implementation of the pure virtual method declared by the base class GateDigitizerOldComponent
     //! print-out the attributes specific of the blurring
     virtual void DescribeMyself(size_t indent);
 

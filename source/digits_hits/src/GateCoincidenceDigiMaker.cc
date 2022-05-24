@@ -12,17 +12,18 @@ See LICENSE.md for further details
 #include "G4DigiManager.hh"
 
 #include "GateCoincidenceDigi.hh"
-#include "GateDigitizer.hh"
+#include "GateDigitizerOld.hh"
 #include "GateTools.hh"
-#include "GateDigitizer.hh"
+#include "GateDigitizerOld.hh"
 #include "GateOutputMgr.hh"
 
 // Constructor
-GateCoincidenceDigiMaker::GateCoincidenceDigiMaker( GateDigitizer* itsDigitizer,
+GateCoincidenceDigiMaker::GateCoincidenceDigiMaker( GateDigitizerOld* itsDigitizer,
       	      	         	        	    const G4String& itsInputName,
 						    G4bool itsOutputFlag)
   :GateVDigiMakerModule(itsDigitizer,itsInputName)
 {
+	G4cout<<"GateCoincidenceDigiMaker constr"<<G4endl;
   GateOutputMgr::GetInstance()->RegisterNewCoincidenceDigiCollection( GetCollectionName(),itsOutputFlag );
 }
 
@@ -39,7 +40,7 @@ GateCoincidenceDigiMaker::~GateCoincidenceDigiMaker()
 // Convert a pulse list into a Coincidence Digi collection
 void GateCoincidenceDigiMaker::Digitize()
 {
-  std::vector<GateCoincidencePulse*> coincidencePulse = GateDigitizer::GetInstance()->FindCoincidencePulse(m_inputName);
+  std::vector<GateCoincidencePulse*> coincidencePulse = GateDigitizerOld::GetInstance()->FindCoincidencePulse(m_inputName);
   if (coincidencePulse.empty()) {
     if (nVerboseLevel)
       G4cout  << "[GateCoincidenceDigiMaker::Digitize]: coincidence pulse null --> no digi created\n";

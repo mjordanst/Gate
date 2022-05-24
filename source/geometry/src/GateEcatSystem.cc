@@ -15,7 +15,7 @@
 #include "GateCoincidenceSorter.hh"
 #include "GateToSinogram.hh"
 #include "GateSinoToEcat7.hh"
-#include "GateDigitizer.hh"
+#include "GateDigitizerOld.hh"
 #include "GateOutputMgr.hh"
 
 #include "G4UnitsTable.hh"
@@ -25,6 +25,7 @@ GateEcatSystem::GateEcatSystem(const G4String& itsName)
   : GateVSystem( itsName , true ),
     m_gateToSinogram(0)
 {
+	G4cout<<"GateEcatSystem::GateEcatSystem"<<G4endl;
   // Set up a messenger
   m_messenger = new GateClockDependentMessenger(this);
   m_messenger->SetDirectoryGuidance(G4String("Controls the system '") + GetObjectName() + "'" );
@@ -35,7 +36,8 @@ GateEcatSystem::GateEcatSystem(const G4String& itsName)
 
   // Integrate a coincidence sorter into the digitizer
   G4double coincidenceWindow = 10.* ns;
-  GateDigitizer* digitizer = GateDigitizer::GetInstance();
+  //OK GND 2022 TODO
+  GateDigitizerOld* digitizer = GateDigitizerOld::GetInstance();
   GateCoincidenceSorter* coincidenceSorter = new GateCoincidenceSorter(digitizer,"Coincidences",coincidenceWindow);
   digitizer->StoreNewCoincidenceSorter(coincidenceSorter);
 

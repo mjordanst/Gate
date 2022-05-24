@@ -43,6 +43,7 @@
 #include "GateApplicationMgr.hh"
 #include "GatePrimaryGeneratorAction.hh"
 #include "GateHitConvertor.hh"
+#include "GateDigi.hh"
 #include "GateSingleDigi.hh"
 #include "GateCoincidenceDigi.hh"
 #include "GateSourceMgr.hh"
@@ -50,6 +51,7 @@
 #include "GateVVolume.hh"
 #include "GateToRootMessenger.hh"
 #include "GateVGeometryVoxelStore.hh"
+#include "GateCrystalSD.hh"
 
 #include "TROOT.h"
 #include "TApplication.h"
@@ -103,6 +105,7 @@ GateToRoot::GateToRoot(const G4String &name, GateOutputMgr *outputMgr, DigiMode 
       if (digiMode==kofflineMode)
       m_fileName="digigate";
     */
+	G4cout<<"GateToRoot:constr"<<Gateendl;
     m_isEnabled = false; // Keep this flag false: all output are disabled by default
     nVerboseLevel = 0;
 
@@ -274,7 +277,7 @@ void GateToRoot::Book() {
 // Method called at the beginning of each acquisition by the application manager: opens the ROOT file and prepare the trees
 void GateToRoot::RecordBeginOfAcquisition() {
 
-    if (nVerboseLevel > 2)
+   // if (nVerboseLevel > 2)
         G4cout << "GateToRoot::RecordBeginOfAcquisition\n";
 
     GateSteppingAction *myAction = ((GateSteppingAction *) (GateRunManager::GetRunManager()->GetUserSteppingAction()));
@@ -609,7 +612,7 @@ void GateToRoot::RecordBeginOfEvent(const G4Event *evt) {
 
     //  GateMessage("Output", 5 , " GateToRoot::RecordBeginOfEvent -- begin\n";);
 
-    if (nVerboseLevel > 2)
+    //if (nVerboseLevel > 2)
         G4cout << "GateToRoot::RecordBeginOfEvent\n";
 
     m_hitBuffer.Clear();
@@ -685,7 +688,7 @@ void GateToRoot::RecordBeginOfEvent(const G4Event *evt) {
 
 //--------------------------------------------------------------------------
 void GateToRoot::RecordEndOfEvent(const G4Event *event) {
-
+G4cout<<"GateToRoot::RecordEndOfEvent"<<G4endl;
     // GateMessage("Output", 5 , " GateToRoot::RecordEndOfEvent -- begin\n";);
 
 
@@ -703,7 +706,7 @@ void GateToRoot::RecordEndOfEvent(const G4Event *event) {
         // Hits loop
 
         G4int NbHits = CHC->entries();
-
+        //G4cout<<"NbHits "<< NbHits<<G4endl;
         for (G4int iHit = 0; iHit < NbHits; iHit++) {
 
             GateHit *aHit = (*CHC)[iHit];
@@ -923,13 +926,39 @@ void GateToRoot::RecordOpticalData(const G4Event *event) {
 
 //--------------------------------------------------------------------------
 void GateToRoot::RecordDigitizer(const G4Event *) {
-    if (nVerboseLevel > 2)
+   // if (nVerboseLevel > 2)
         G4cout << "GateToRoot::RecordDigitizer\n";
 
-    // Digitizer information
+       /* //
+          G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
+          	  	static G4int HCID1=-1;
 
-    for (size_t i = 0; i < m_outputChannelList.size(); ++i)
+          	  	  if (HCID1==-1)
+          	  	  	  HCID1 = DigiMan->GetHitsCollectionID(GateCrystalSD::GetCrystalCollectionName());
+
+          	  	  G4cout<<HCID1<<G4endl;
+          	  	GateHitsCollection* CHC1 = 0;
+          	  	CHC1 = (GateHitsCollection*) (DigiMan->GetHitsCollection(HCID1));
+      //
+          if (CHC)
+                  {
+                    auto NbHits = CHC1->entries();
+          for (G4int iHit=0;iHit<NbHits;iHit++)
+                      {
+          G4cout<<"Hit in Analysis: "<< (*CHC)[iHit]->GetEventID()<< " "<< (*CHC)[iHit]->GetEdep()<<G4endl;
+                      }
+                  }
+
+ */
+    // Digitizer information
+       // G4cout<<"size "<<m_outputChannelList.size()<<Gateendl;
+    //for (size_t i = 0; i < m_outputChannelList.size(); ++i)
+    // OK GND 2022 TODO loop to 1; only for Singles --> add coincidences
+    for (size_t i = 0; i < 1; ++i)
+    {
         m_outputChannelList[i]->RecordDigitizer();
+       //G4cout<<m_outputChannelList[i]->m_collectionName<<Gateendl;
+    }
 
 }
 //--------------------------------------------------------------------------
@@ -1109,11 +1138,13 @@ void GateToRoot::RecordVoxels(GateVGeometryVoxelStore *voxelStore) {
 
 //--------------------------------------------------------------------------
 void GateToRoot::RegisterNewSingleDigiCollection(const G4String &aCollectionName, G4bool outputFlag) {
-    SingleOutputChannel *singleOutputChannel =
+
+	 G4cout << " GateToRoot::RegisterNewSingleDigiCollection " << Gateendl;
+	SingleOutputChannel *singleOutputChannel =
             new SingleOutputChannel(aCollectionName, outputFlag);
     m_outputChannelList.push_back(singleOutputChannel);
 
-    //G4cout << " GateToRoot::RegisterNewSingleDigiCollection outputFlag = " <<outputFlag<< Gateendl;
+
     m_rootMessenger->CreateNewOutputChannelCommand(singleOutputChannel);
 }
 //--------------------------------------------------------------------------
@@ -1132,32 +1163,81 @@ void GateToRoot::RegisterNewCoincidenceDigiCollection(const G4String &aCollectio
 //--------------------------------------------------------------------------
 void GateToRoot::SingleOutputChannel::RecordDigitizer() {
     G4DigiManager *fDM = G4DigiManager::GetDMpointer();
+    fDM->List();
+    //OK GND 2022
+    /*fDM->List();
+    G4int lastDCID=fDM->GetDCtable()->entries() -1 ;
+    //G4cout << "digi collecion " <<lastDCID << G4endl;
+
+   // GateDigiCollection *SDC = (GateDigiCollection*)fDM->GetDigiCollection( lastDCID );
+
+   	   //G4cout<<"SDC =  "<<SDC->GetName()<<Gateendl;
+
+    for (int i = 0; i< fDM->GetDCtable()->entries(); i++)
+    	 {
+    		//x G4cout<<fDM->GetDCtable()->GetDMname(i)<<" "<< fDM->GetDCtable()->GetDCname(i)<<G4endl;
+    	 }
+
+   // m_collectionName="GateAdder/SinglesGND";//fDM->GetDCtable()->GetDCname(lastDCID);
+
+    G4String digiCollectionName;
+
+    digiCollectionName=fDM->GetDCtable()->GetDMname(lastDCID)+"/"+fDM->GetDCtable()->GetDCname(lastDCID);
+    G4cout<<digiCollectionName<<Gateendl;
+   //digiCollectionName = "Singles";
+    if (m_collectionID < 0)
+            m_collectionID = fDM->GetDigiCollectionID(digiCollectionName);//m_collectionName);
+
+    G4cout<<"m_collectionID= "<<m_collectionID<<Gateendl;
+    m_collectionName=digiCollectionName;
+    G4cout<<"GateToRoot::SingleOutputChannel::RecordDigitizer "<< m_collectionName<<" "<<m_collectionID<<" "<<Gateendl;
+
+
+        const GateDigiCollection *SDC = (GateDigiCollection *) (fDM->GetDigiCollection(m_collectionID));
+        //G4cout<<"SDC =  "<<SDC->GetName()<<Gateendl;
+
+         */
+    //OK GND 2022
+    G4int lastDCID=fDM->GetDCtable()->entries() -1 ;
+    G4String digiCollectionName;
+
+    digiCollectionName=fDM->GetDCtable()->GetDMname(lastDCID)+"/"+fDM->GetDCtable()->GetDCname(lastDCID);
+
+
+    G4cout<<"collection name "<< digiCollectionName<<" " <<fDM->GetDigiCollectionID(digiCollectionName)<<G4endl;
 
     if (m_collectionID < 0)
-        m_collectionID = fDM->GetDigiCollectionID(m_collectionName);
-    const GateSingleDigiCollection *SDC =
-            (GateSingleDigiCollection *) (fDM->GetDigiCollection(m_collectionID));
+    	m_collectionID = fDM->GetDigiCollectionID(digiCollectionName);//m_collectionName);
+    	//m_collectionID = 1; //OK GND 2022 TODO
+    //const GateSingleDigiCollection *SDC =
+   //         (GateSingleDigiCollection *) (fDM->GetDigiCollection(m_collectionID));
+    const GateDigiCollection *SDC =
+                (GateDigiCollection *) (fDM->GetDigiCollection(m_collectionID));
 
+    G4cout<<"GateToRoot::SingleOutputChannel::RecordDigitizer "<< m_collectionName<<" "<<m_collectionID<<" "<<Gateendl;
     if (!SDC) {
         //GateMessage("OutputMgr", 5, " There is no SDC collection\n";);
-        if (nVerboseLevel > 0)
+       // if (nVerboseLevel > 0)
             G4cout << "[GateToRoot::SingleOutputChannel::RecordDigitizer]:"
                    << " digi collection '" << m_collectionName << "' not found\n";
     } else {
         // Digi loop
         //GateMessage("OutputMgr", 5, " There is SDC collection. \n";);
-        if (nVerboseLevel > 0)
+        //if (nVerboseLevel > 0)
             G4cout << "[GateToRoot::SingleOutputChannel::RecordDigitizer]: Total Digits: "
                    << SDC->entries() << Gateendl;
 
         //  GateMessage("OutputMgr", 5, " Single collection m_outputFlag = " << m_outputFlag << Gateendl;);
-
+            G4cout<<"m_outputFlag "<<m_outputFlag<<G4endl;
         if (m_outputFlag) {
             G4int n_digi = SDC->entries();
+            G4cout<<"n digi "<< n_digi<<G4endl;
             //GateMessage("OutputMgr", 5, " Single collection m_outputFlag = " << m_outputFlag << Gateendl;);
             for (G4int iDigi = 0; iDigi < n_digi; iDigi++) {
-                m_buffer.Fill((*SDC)[iDigi]);
-                m_tree->Fill();
+            	//TODO Seg fault if try to access (*SDC)[iDigi]
+            	G4cout<<"!!! "<<(*SDC)[iDigi]->GetEventID()<<G4endl;
+                m_buffer.FillGND((*SDC)[iDigi]);
+            	m_tree->Fill();
             }
         }
     }

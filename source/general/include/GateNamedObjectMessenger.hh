@@ -46,7 +46,7 @@ class GateNamedObjectMessenger: public GateMessenger
 
     //! Get the object
     inline GateNamedObject* GetNamedObject() const 
-      { return pNamedVolume; }
+      {	return pNamedVolume; }
 
   protected:
     GateNamedObject*  	      pNamedVolume;  	//!< The named object for this messenger

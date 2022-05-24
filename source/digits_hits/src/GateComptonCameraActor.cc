@@ -19,7 +19,7 @@
 #include "GateComptonCameraActor.hh"
 #include "GateComptonCameraActorMessenger.hh"
 #include "GateMiscFunctions.hh"
-#include "GateDigitizer.hh"
+#include "GateDigitizerOld.hh"
 #include "GateSingleDigi.hh"
 
 
@@ -83,7 +83,7 @@ GateComptonCameraActor::GateComptonCameraActor(G4String name, G4int depth):
     EnablenCrystalRayl=1;
 
     emcalc = new G4EmCalculator;
-    m_digitizer = GateDigitizer::GetInstance();
+    m_digitizer = GateDigitizerOld::GetInstance();
 
     //I enable digitizer/layers chain. digitizer/Singles chain is already created in Gate.cc  within  if G4Analysis_use_general.
     //digitizer() function can be applied independently to both chains

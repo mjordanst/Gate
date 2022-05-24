@@ -13,19 +13,21 @@ See LICENSE.md for further details
 
 #include "GateSingleDigi.hh"
 #include "GateTools.hh"
-#include "GateDigitizer.hh"
+#include "GateDigitizerOld.hh"
 
 // Constructor
-GateVDigiMakerModule::GateVDigiMakerModule( GateDigitizer* itsDigitizer,
+GateVDigiMakerModule::GateVDigiMakerModule( GateDigitizerOld* itsDigitizer,
       	      	         	            const G4String& itsInputName)
   :GateClockDependent(itsDigitizer->GetObjectName() + "/" + itsInputName + "/digiMaker",false),
    m_digitizer(itsDigitizer),
    m_inputName(itsInputName)
 {
+	G4cout<<"GateVDigiMakerModule constr "<< itsInputName <<Gateendl;
+
   G4String collectionName = itsInputName;
 
   if ( collectionName.substr(0,10) == "digitizer/" )
-    collectionName = collectionName.substr(10);
+   collectionName = collectionName.substr(10);
 
 
   G4String::size_type pos;
@@ -37,6 +39,9 @@ GateVDigiMakerModule::GateVDigiMakerModule( GateDigitizer* itsDigitizer,
         collectionName.at(pos) = toupper( collectionName.at(pos) ) ;
     }
   } while ( pos != G4String::npos);
+  //!!!! OK GND 2022x
+  //collectionName="SinglesGND";
+
 
   m_collectionName = collectionName;
 }

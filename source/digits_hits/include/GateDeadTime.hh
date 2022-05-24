@@ -45,7 +45,7 @@ public:
   //! Check the validity of the volume name where the dead time will be applied
   void CheckVolumeName(G4String val);
 
-  //! Constructs a new dead time attached to a GateDigitizer
+  //! Constructs a new dead time attached to a GateDigitizerOld
   GateDeadTime(GatePulseProcessorChain* itsChain, const G4String& itsName);
 
 public:

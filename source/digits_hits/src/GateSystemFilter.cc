@@ -7,7 +7,7 @@ See LICENSE.md for further details
 ----------------------*/
 
 #include "GateSystemFilter.hh"
-#include "GateDigitizer.hh"
+#include "GateDigitizerOld.hh"
 #include "GateVSystem.hh"
 #include "GateSystemFilterMessenger.hh"
 
@@ -57,7 +57,7 @@ GatePulseList* GateSystemFilter::ProcessPulseList(const GatePulseList* inputPuls
 //=============================================================================
 void GateSystemFilter::SetSystemToItsChain()
 {
-   GateDigitizer* digitizer = GateDigitizer::GetInstance();
+   GateDigitizerOld* digitizer = GateDigitizerOld::GetInstance();
    std::vector<GateCoincidenceSorter*> CoincidenceSorterList = digitizer->GetCoinSorterList();
    GateSystemList* systemList = digitizer->GetSystemList();
 

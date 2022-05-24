@@ -10,7 +10,7 @@
 #include <iostream>
 #include <vector>
 #include "GatePulse.hh"
-#include "GateDigitizer.hh"
+#include "GateDigitizerOld.hh"
 #include "GateVCoincidencePulseProcessor.hh"
 #include "GateRootDefs.hh"
 
@@ -58,7 +58,7 @@ protected:
 
 
 private:
-   GateDigitizer* m_digitizer;
+   GateDigitizerOld* m_digitizer;
    G4String m_sPulseListName;
    GateTriCoincidenceSorterMessenger *m_messenger;    //!< Messenger
 /*   bool                         m_isTriCoincProc;*/

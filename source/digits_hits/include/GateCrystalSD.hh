@@ -47,7 +47,7 @@ typedef GateSystemList::const_iterator GateSystemConstIterator;
       hit collection.
 */
 //    Last modification in 12/2011 by Abdul-Fattah.Mohamad-Hadi@subatech.in2p3.fr, for the multi-system approach.
-//    Last modification in 05/2022 by Olga.Kochebina@cea.fr for NewGateDigitizer
+//    Last modification in 05/2022 by Olga.Kochebina@cea.fr for NewGateDigitizerOld
 
 class GateCrystalSD : public G4VSensitiveDetector
 {

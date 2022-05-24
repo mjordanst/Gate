@@ -29,7 +29,7 @@ See LICENSE.md for further details
 #include "globals.hh"
 #include "GateToLMF.hh"
 #include "GateToLMFMessenger.hh"
-#include "GateDigitizer.hh"
+#include "GateDigitizerOld.hh"
 #include "GateSingleDigi.hh"
 #include "GateCoincidenceDigi.hh"
 #include "GateVSystem.hh"

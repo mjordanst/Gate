@@ -14,7 +14,7 @@ See LICENSE.md for further details
 
 #include "GateVDigiMakerModule.hh"
 
-class GateDigitizer;
+class GateDigitizerOld;
 
 /*! \class  GateCoincidenceDigiMaker
     \brief  It processes a pulse-list, generating Coincidence digis.
@@ -27,7 +27,7 @@ class GateCoincidenceDigiMaker : public GateVDigiMakerModule
 public:
 
   //! Constructor
-  GateCoincidenceDigiMaker(GateDigitizer* itsDigitizer,
+  GateCoincidenceDigiMaker(GateDigitizerOld* itsDigitizer,
                            const G4String& itsInputName,
                            G4bool itsOutputFlag);
 
