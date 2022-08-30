@@ -8,15 +8,10 @@
 
 #include "GateDigi.hh"
 #include "G4UnitsTable.hh"
-#include "GatePulse.hh"
+
 #include <iomanip>
 
-
-
 G4Allocator<GateDigi> GateDigiAllocator;
-
-
-
 
 GateDigi::GateDigi():
 	  m_runID(-1),
@@ -54,35 +49,50 @@ void GateDigi::Print()
 
 std::ostream& operator<<(std::ostream& flux, const GateDigi& digi)
 {
-  flux    << "GateDigi(\n"
-	  //<< digi.m_pulse
-      	  << ")\n";
+      flux    << "\t----GateDigi----"     	      	      	      	      	      	      	      	      	      	               << Gateendl
+              << "\t\t" << "Run           " << digi.m_runID                      	         	      	      	      	       << Gateendl
+              << "\t\t" << "Event         " << digi.m_eventID   	      	      	      	              	      	      	       << Gateendl
+              << "\t\t" << "Src           " << digi.m_sourceID << " [ " << G4BestUnit(digi.m_sourcePosition,"Length")     << "]\n"
+              << "\t\t" << "Time          " << G4BestUnit(digi.m_time,"Time")      	      	      	      	      	       << Gateendl
+              << "\t\t" << "Energy        " << G4BestUnit(digi.m_energy,"Energy")          	      	      	      	       << Gateendl
+              << "\t\t" << "localPos      [ " << G4BestUnit(digi.m_localPos,"Length")        	      	      	      	<< "]\n"
+              << "\t\t" << "globalPos     [ " << G4BestUnit(digi.m_globalPos,"Length")   	      	      	      	      	<< "]\n"
+              << "\t\t" << "           -> ( R="   << G4BestUnit(digi.m_globalPos.perp(),"Length")     << ", "
+              << "phi="   << digi.m_globalPos.phi()/degree       	      	   << " deg,"
+              << "z="     << G4BestUnit(digi.m_globalPos.z(),"Length")     	     	      	<< ")\n"
+              << "\t\t" << "VolumeID      " << digi.m_volumeID      	      	      	      	      	      	               << Gateendl
+              << "\t\t" << "OutputID      " << digi.m_outputVolumeID     	      	      	      	      	      	      	       << Gateendl
+              << "\t\t" << "#Compton      " << digi.m_nPhantomCompton      	      	      	      	      	      	       << Gateendl
+              << "\t\t" << "#Rayleigh     " << digi.m_nPhantomRayleigh      	      	      	      	      	      	       << Gateendl
+              << "\t\t" << "scannerPos    [ " << G4BestUnit(digi.m_scannerPos,"Length")        	      	      	      	<< "]\n" << Gateendl
+              << "\t\t" << "scannerRotAngle " << digi.m_scannerRotAngle/degree           	      	      	      	     << " deg\n" << Gateendl
+              << "\t-----------------\n";
 
   return flux;
 }
 
 std::ofstream& operator<<(std::ofstream& flux, GateDigi* digi)
 {
- /* if ( GateDigi::GetSingleASCIIMask(0) ) flux << " " << std::setw(7) << digi->GetRunID();
-  if ( GateDigi::GetSingleASCIIMask(1) ) flux << " " << std::setw(7) << digi->GetEventID();
-  if ( GateDigi::GetSingleASCIIMask(2) ) flux << " " << std::setw(5) << digi->GetSourceID();
-  if ( GateDigi::GetSingleASCIIMask(3) ) flux << " " << std::resetiosflags(std::ios::floatfield) << std::setiosflags(std::ios::scientific) << std::setw(10) << std::setprecision(3) << digi->GetSourcePosition().x()/mm;
-  if ( GateDigi::GetSingleASCIIMask(4) ) flux << " " << std::resetiosflags(std::ios::floatfield) << std::setiosflags(std::ios::scientific) << std::setw(10) << std::setprecision(3) << digi->GetSourcePosition().y()/mm;
-  if ( GateDigi::GetSingleASCIIMask(5) ) flux << " " << std::resetiosflags(std::ios::floatfield) << std::setiosflags(std::ios::scientific) << std::setw(10) << std::setprecision(3) << digi->GetSourcePosition().z()/mm;
-  if ( GateDigi::GetSingleASCIIMask(6) ) flux << " " << std::setw(5) << digi->GetOutputVolumeID();
-  if ( GateDigi::GetSingleASCIIMask(7) ) flux << " " << std::resetiosflags(std::ios::floatfield) << std::setiosflags(std::ios::scientific) << std::setw(30) << std::setprecision(23) << digi->GetTime()/s;
-  if ( GateDigi::GetSingleASCIIMask(8) ) flux << " " << std::resetiosflags(std::ios::floatfield) << std::setiosflags(std::ios::scientific) << std::setw(10) << std::setprecision(3)  << digi->GetEnergy()/MeV;
-  if ( GateDigi::GetSingleASCIIMask(9) ) flux << " " << std::resetiosflags(std::ios::floatfield) << std::setiosflags(std::ios::scientific) << std::setw(10) << std::setprecision(3)  << digi->GetGlobalPos().x()/mm;
-  if ( GateDigi::GetSingleASCIIMask(10) ) flux << " " << std::resetiosflags(std::ios::floatfield) << std::setiosflags(std::ios::scientific) << std::setw(10) << std::setprecision(3)  << digi->GetGlobalPos().y()/mm;
-  if ( GateDigi::GetSingleASCIIMask(11) ) flux << " " << std::resetiosflags(std::ios::floatfield) << std::setiosflags(std::ios::scientific) << std::setw(10) << std::setprecision(3)  << digi->GetGlobalPos().z()/mm;
-  if ( GateDigi::GetSingleASCIIMask(12) ) flux << " " << std::setw(4) << digi->GetNPhantomCompton();
-  if ( GateDigi::GetSingleASCIIMask(13) ) flux << " " << std::setw(4) << digi->GetNCrystalCompton();
-  if ( GateDigi::GetSingleASCIIMask(14) ) flux << " " << std::setw(4) << digi->GetNPhantomRayleigh();
-  if ( GateDigi::GetSingleASCIIMask(15) ) flux << " " << std::setw(4) << digi->GetNCrystalRayleigh();
-  if ( GateDigi::GetSingleASCIIMask(16) ) flux << " " << digi->GetComptonVolumeName();
-  if ( GateDigi::GetSingleASCIIMask(17) ) flux << " " << digi->GetRayleighVolumeName();
-  flux << Gateendl;
-*/
+  flux << " " << std::setw(7) << digi->GetRunID()
+    << " " << std::setw(7) << digi->GetEventID()
+    << " " << std::setw(5) << digi->GetSourceID()
+    << " " << std::resetiosflags(std::ios::floatfield) << std::setiosflags(std::ios::scientific) << std::setw(10) << std::setprecision(3) << digi->GetSourcePosition().x()/mm
+    << " " << std::resetiosflags(std::ios::floatfield) << std::setiosflags(std::ios::scientific) << std::setw(10) << std::setprecision(3) << digi->GetSourcePosition().y()/mm
+    << " " << std::resetiosflags(std::ios::floatfield) << std::setiosflags(std::ios::scientific) << std::setw(10) << std::setprecision(3) << digi->GetSourcePosition().z()/mm
+    << " " << std::setw(5) << digi->GetOutputVolumeID()
+    << " " << std::resetiosflags(std::ios::floatfield) << std::setiosflags(std::ios::scientific) << std::setw(30) << std::setprecision(23) << digi->GetTime()/s
+    << " " << std::resetiosflags(std::ios::floatfield) << std::setiosflags(std::ios::scientific) << std::setw(10) << std::setprecision(3)  << digi->GetEnergy()/MeV
+    << " " << std::resetiosflags(std::ios::floatfield) << std::setiosflags(std::ios::scientific) << std::setw(10) << std::setprecision(3)  << digi->GetGlobalPos().x()/mm
+    << " " << std::resetiosflags(std::ios::floatfield) << std::setiosflags(std::ios::scientific) << std::setw(10) << std::setprecision(3)  << digi->GetGlobalPos().y()/mm
+    << " " << std::resetiosflags(std::ios::floatfield) << std::setiosflags(std::ios::scientific) << std::setw(10) << std::setprecision(3)  << digi->GetGlobalPos().z()/mm
+    << " " << std::setw(4) << digi->GetNPhantomCompton()
+    << " " << std::setw(4) << digi->GetNCrystalCompton()
+    << " " << std::setw(4) << digi->GetNPhantomRayleigh()
+    << " " << std::setw(4) << digi->GetNCrystalRayleigh()
+    << " " << digi->GetComptonVolumeName()
+    << " " << digi->GetRayleighVolumeName()
+    << Gateendl;
+
   return flux;
 }
 

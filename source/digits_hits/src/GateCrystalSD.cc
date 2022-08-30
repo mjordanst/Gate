@@ -28,7 +28,8 @@
 #include "GateSystemListManager.hh"
 #include "GateVVolume.hh"
 #include "GateDigitizerOld.hh"
-
+//OK GND 2022
+#include "GateDigitizer.hh"
 
 #include "GateObjectStore.hh"
 #include "GateEmittedGammaInformation.hh"
@@ -302,7 +303,8 @@ void GateCrystalSD::SetSystem(GateVSystem* aSystem)
 {
   m_system=aSystem;
 //Seb Modif 24/02/2009
-  GateDigitizerOld::GetInstance()->SetSystem(aSystem);
+  //TODO GND
+  //GateDigitizerOld::GetInstance()->SetSystem(aSystem);
 }
 //mhadi_obso]
 //------------------------------------------------------------------------------
@@ -312,7 +314,11 @@ void GateCrystalSD::SetSystem(GateVSystem* aSystem)
 void GateCrystalSD::AddSystem(GateVSystem* aSystem)
 {
    m_systemList->push_back(aSystem);
-   GateDigitizerOld::GetInstance()->AddSystem(aSystem);
+   //TODO GND
+   // GateDigitizerOld::GetInstance()->AddSystem(aSystem);
+
+   //OK GND 2022
+   //GateDigitizer::GetInstance()->AddSystem(aSystem);
 }
 //------------------------------------------------------------------------------
 

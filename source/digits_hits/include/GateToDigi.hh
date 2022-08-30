@@ -15,7 +15,7 @@ See LICENSE.md for further details
 class GateOutputModuleMessenger;
 //OK GND 2022
 //class GateDigitizerOld;
-class GateDigitizer;
+class GateDigitizerMng;
 
 // Class of GateVOutputModule
 //This class is used mainly/only to start digitizer after GateAnalysis
@@ -45,8 +45,8 @@ public:
   //inline GateDigitizerOld*   GetDigitizer()
    //   { return m_digitizer; }
 
-  inline GateDigitizer*   GetDigitizer()
-       { return m_digitizer; }
+  inline GateDigitizerMng*   GetDigitizerMng()
+       { return m_digitizerMng; }
 
 
 private:
@@ -56,7 +56,7 @@ private:
 							  //!< by the pulse-processor hits
   //OK GND 2022
   //GateDigitizerOld* m_digitizer;
-  GateDigitizer* m_digitizer;
+  GateDigitizerMng* m_digitizerMng;
 
   G4String       m_noFileName;
 };

@@ -48,9 +48,6 @@ void GatePulseAdder::ProcessOnePulse(const GatePulse* inputPulse,GatePulseList& 
            if(m_positionPolicy==kTakeEnergyWin){
                 (*iter)->MergePositionEnergyWin(inputPulse);
 
-
-
-
            }
            else{
                (*iter)->CentroidMerge( inputPulse );

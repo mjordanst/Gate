@@ -22,7 +22,7 @@ See LICENSE.md for further details
 #include "GateDetectorConstruction.hh"
 //#include "GateDigitizerOld.hh"
 #include "GateOutputMgr.hh"
-#include "GateDigitizer.hh"
+#include "GateDigitizerMng.hh"
 
 
 //---------------------------------------------------------------------------
@@ -30,20 +30,14 @@ GateToDigi::GateToDigi(const G4String& name, GateOutputMgr* outputMgr,
       	      	       DigiMode digiMode)
   : GateVOutputModule(name,outputMgr,digiMode)
 {
-	 G4cout<<"GateToDigi: constr"<<Gateendl;
+	// G4cout<<"GateToDigi: constr"<<Gateendl;
 
   m_isEnabled = true; // This module lead the digitizer, so let it enabled !!!
   nVerboseLevel = 0;
   m_digiMessenger = new GateOutputModuleMessenger(this);
 
-  //m_digitizer =    GateDigitizerOld::GetInstance();
+  //m_digitizerMng =    GateDigitizerMng::GetInstance();
 
-/*  //OK GND 2022. moved from Gate.cc
-#ifdef G4ANALYSIS_USE_GENERAL
-	GateDigitizer* digitizer = GateDigitizer::GetInstance();
-	digitizer->Initialize();
-#endif
-*/
 }
 //---------------------------------------------------------------------------
 
@@ -51,7 +45,7 @@ GateToDigi::GateToDigi(const G4String& name, GateOutputMgr* outputMgr,
 GateToDigi::~GateToDigi()
 {
   delete m_digiMessenger;
-  //delete m_digitizer;
+  //delete m_digitizerMng;
 
   if (nVerboseLevel > 0) G4cout << "GateToDigi deleting...\n";
 }
@@ -68,12 +62,12 @@ const G4String& GateToDigi::GiveNameOfFile()
 //---------------------------------------------------------------------------
 void GateToDigi::RecordBeginOfAcquisition()
 {
-  //if (nVerboseLevel > 2)
+	if (nVerboseLevel > 2)
     G4cout << "GateToDigi::RecordBeginOfAcquisition\n";
-    G4cout << "GateToDigi::RecordBeginOfAcquisition: Here we AddNewModule digitizer\n";
+    //G4cout << "GateToDigi::RecordBeginOfAcquisition: Here we AddNewModule digitizer\n";
     //OK GND 2022
-    //if (G4DigiManager::GetDMpointer()->FindDigitizerModule(m_digitizer->GetObjectName())==0)
-    //	 G4DigiManager::GetDMpointer()->AddNewModule(m_digitizer);
+   // if (G4DigiManager::GetDMpointer()->FindDigitizerModule(m_digitizer->GetObjectName())==0)
+   // 	G4DigiManager::GetDMpointer()->AddNewModule(m_digitizer);
 
 
 
@@ -107,7 +101,7 @@ void GateToDigi::RecordEndOfRun(const G4Run* )
 //---------------------------------------------------------------------------
 void GateToDigi::RecordBeginOfEvent(const G4Event* )
 {
-  //if (nVerboseLevel > 2)
+  if (nVerboseLevel > 2)
     G4cout << "GateToDigi::RecordBeginOfEvent\n";
 }
 //---------------------------------------------------------------------------
@@ -115,9 +109,10 @@ void GateToDigi::RecordBeginOfEvent(const G4Event* )
 //---------------------------------------------------------------------------
 void GateToDigi::RecordEndOfEvent(const G4Event* )
 {
-  //if (nVerboseLevel > 2)
+  if (nVerboseLevel > 2)
     G4cout << "GateToDigi::RecordEndOfEvent\n";
   //m_digitizer->Digitize();
+
 
 
 

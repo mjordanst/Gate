@@ -35,7 +35,7 @@
 G4int GateVSystem::m_insertionOrder=-1;
 //-----------------------------------------------------------------------------
 /* Constructor
-
+x
    itsName:      the name chosen for this system
    isWithGantry:	tells whether there is a gantry (PET) or not (SPECT)
 */    

@@ -45,7 +45,6 @@ class GateHit : public G4VHit
       //const GateHit& operator=(const GateHit &right);
       //int operator==(const GateHit &right) const;
 
-
       inline void *operator new(size_t);
       inline void operator delete(void *aHit);
 

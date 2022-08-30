@@ -1,0 +1,94 @@
+/*----------------------
+  Copyright (C): OpenGATE Collaboration
+
+  This software is distributed under the terms
+  of the GNU Lesser General  Public Licence (LGPL)
+  See LICENSE.md for further details
+  ----------------------*/
+
+/*!
+  \class  GateDigitizer
+  Last modification in 12/2011 by Abdul-Fattah.Mohamad-Hadi@subatech.in2p3.fr, for the multi-system approach.
+*/
+
+#ifndef GateDigitizer_h
+#define GateDigitizer_h 1
+
+//#include "GateDigi.hh"
+#include "globals.hh"
+#include "GateClockDependent.hh"
+
+#include "GateCrystalSD.hh"
+
+class GateDigitizerMessenger;
+class GateVSystem;
+
+class GateDigitizer: public GateModuleListManager//GateClockDependent
+{
+//public:
+	//static GateDigitizer* GetInstance();
+
+public:
+	GateDigitizer(GateDigitizerMng* digiMng, const G4String& outputCollName);
+
+public:
+  ~GateDigitizer();
+
+  void Initialize();
+
+  void RunDigitizer();
+
+  void SetNewModuleName(G4String name){m_moduleName=name;}
+
+  //void SetCollectionName(G4string name){m_collectionName=name;}
+  //G4string GetCollectionName(){return m_collectionName;}
+
+  inline const G4String&  GetElementTypeName()
+  { return m_elementTypeName;}
+
+
+  const G4String& GetInputName() const
+      { return m_inputCollName; }
+
+  void SetInputName(const G4String& anInputName)
+      {  m_inputCollName = anInputName; }
+
+  const G4String& GetOutputName() const
+     { return m_outputCollName; }
+
+
+
+
+  inline GateSystemList* GetSystemList() const { return m_systemList; }
+  // Add a system to the DigitizerOld systems list
+  virtual void AddSystem(GateVSystem* aSystem);
+  // To find a system from the DigitizerOld systems list
+  //GateVSystem* FindSystem(GatePulseProcessorChain* processorChain);
+  GateVSystem* FindSystem(G4String& systemName);
+
+
+public:
+  //List of collections, ex. Singles, UserSingles, SinglesAdder
+   // std::vector<G4String> m_collectionNameList;
+    //std::vector<G4String> m_inputCollectionNameList;
+
+private:
+
+  G4String m_moduleName;
+
+
+
+  GateDigitizerMessenger *fMessenger;
+
+  static GateDigitizer*  theDigitizer;
+
+protected:
+  G4String 					m_elementTypeName;	 //!< Type-name for all Digitizer modules
+  GateSystemList*                               m_systemList;            //! List of systems to which the Digitizer is attached
+
+  G4String				   m_outputCollName;
+  G4String                 m_inputCollName;
+
+
+};
+#endif

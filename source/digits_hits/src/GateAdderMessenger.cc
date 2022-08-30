@@ -7,9 +7,10 @@ See LICENSE.md for further details
 ----------------------*/
 
 // OK GND 2022
+
 #include "GateAdderMessenger.hh"
 #include "GateAdder.hh"
-
+#include "GateDigitizerMng.hh"
 
 #include "G4SystemOfUnits.hh"
 #include "G4UIcmdWithAString.hh"
@@ -17,46 +18,40 @@ See LICENSE.md for further details
 
 
 
-GateAdderMessenger::GateAdderMessenger (GateAdder* adder): m_Adder(adder)
+GateAdderMessenger::GateAdderMessenger (GateAdder* adder)
+:GateClockDependentMessenger(adder) , m_Adder(adder)
 {
-
-	//G4cout<<"GateAdderMessenger::constructor"<<G4endl;
-	Dir = new G4UIdirectory("/digitizer/adder/");
-	Dir->SetGuidance("Digitizer directory");
-
-	/*SetModuleNameCmd = new G4UIcmdWithAString("/digitizer/insert",this);
-	SetModuleNameCmd->SetGuidance("Module to insert");
-	SetModuleNameCmd->SetParameterName("choice",false);
-	SetModuleNameCmd->AvailableForStates(G4State_PreInit);
-	G4cout<<"GateAdderMessenger::GateAdderMessenger"<<G4endl;
-	*/
+	G4String guidance;
 	G4String cmdName;
 
-	cmdName = Dir->GetCommandPath () + "politics";
-	SetPoliticsCmd = new G4UIcmdWithAString(cmdName,this);
+	G4String inputCollName=adder->GetCollectionName(0);
 
+    G4String DirectoryName = "/gate/digitizerMng/digitizer/"+inputCollName+"/adder/";
 
+    cmdName = DirectoryName+"positionPolicy";
+    positionPolicyCmd = new G4UIcmdWithAString(cmdName,this);
+    positionPolicyCmd->SetGuidance("How to generate position");
+    positionPolicyCmd->SetCandidates("energyWeightedCentroid takeEnergyWinner");
 
 }
 
 
 GateAdderMessenger::~GateAdderMessenger()
 {
-	delete Dir;
-	delete SetPoliticsCmd;
+	delete  positionPolicyCmd;
 }
 
 
-void GateAdderMessenger::SetNewValue(G4UIcommand * command,G4String newValue)
+void GateAdderMessenger::SetNewValue(G4UIcommand * aCommand,G4String aString)
 {
-	G4cout<<"GateAdderMessenger::SetNewValue"<<G4endl;
-
-
-	if( command == SetPoliticsCmd )
+	if (aCommand ==positionPolicyCmd)
+	      {
+			m_Adder->SetPositionPolicy(aString);
+	      }
+	    else
 	    {
-		m_Adder->SetPolitics(newValue);
+	    	GateClockDependentMessenger::SetNewValue(aCommand,aString);
 	    }
-
 }
 
 

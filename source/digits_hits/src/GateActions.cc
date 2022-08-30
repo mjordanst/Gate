@@ -51,7 +51,9 @@
 
 #include "GateSteppingActionMessenger.hh"
 #include "GateCrystalSD.hh"
-#include "GateDigitizer.hh"
+//#include "GateDigitizer.hh"
+
+#include "GateDigitizerMng.hh"
 
 GateRunAction* GateRunAction::prunAction=0;
 GateEventAction* GateEventAction::peventAction=0;
@@ -64,9 +66,9 @@ GateRunAction::GateRunAction(GateUserActions * cbm)
 	SetRunAction(this); runIDcounter = 0;
 
 	//OK GND 2022. moved from Gate.cc
+	//Very first initialization of GateDigitizerMng
 #ifdef G4ANALYSIS_USE_GENERAL
-	GateDigitizer* digitizer = GateDigitizer::GetInstance();
-	digitizer->Initialize();
+	GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
 #endif
 }
 //-----------------------------------------------------------------------------
@@ -143,6 +145,7 @@ inline void GateEventAction::BeginOfEventAction(const G4Event* anEvent)
     {
 
 
+
 #ifdef G4ANALYSIS_USE_GENERAL
       // Here we fill the histograms of the OutputMgr manager
       if(GateApplicationMgr::GetInstance()->GetOutputMode()){
@@ -163,6 +166,10 @@ inline void GateEventAction::EndOfEventAction(const G4Event* anEvent)
   GateMessage("Core", 2, "End Of Event " << anEvent->GetEventID() << "\n");
 
   G4cout<<"GateACTIONS ------ GateEventAction::EndOfEventAction " << anEvent->GetEventID() <<G4endl;
+  //OK GND 2022 TODO
+  //I would like to RunDigitizers here but some aHit attronites are filled in OutputMng/GateAnalysis->RecordEndOfEvent
+  //GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
+  // 	  digitizerMng->RunDigitizers();
 
 #ifdef G4ANALYSIS_USE_GENERAL
   // Here we fill the histograms of the OutputMgr manager
@@ -172,6 +179,8 @@ inline void GateEventAction::EndOfEventAction(const G4Event* anEvent)
     outputMgr->RecordEndOfEvent(anEvent);
   }
 #endif
+
+
 
 
 
@@ -211,6 +220,8 @@ inline void GateEventAction::EndOfEventAction(const G4Event* anEvent)
 
 
   if(anEvent->GetNumberOfPrimaryVertex() > 0) pCallbackMan->EndOfEventAction(anEvent);
+
+
 }
 //-----------------------------------------------------------------------------
 

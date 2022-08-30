@@ -54,6 +54,10 @@ class GateMessenger: public G4UImessenger
     //! Returns the directory full-path ( = "/Gate/" + base-name)
     inline const G4String& GetDirectoryName() const
       { return mDirName; }
+    //! Returns the directory full-path ( = "/Gate/" + base-name)
+    inline void SetDirectoryName(const G4String& name)
+    { mDirName = name; }
+
     //! Returns the directory
     inline G4UIdirectory* GetDirectory() const
       { return pDir; }

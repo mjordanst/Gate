@@ -25,7 +25,6 @@ GateEcatSystem::GateEcatSystem(const G4String& itsName)
   : GateVSystem( itsName , true ),
     m_gateToSinogram(0)
 {
-	G4cout<<"GateEcatSystem::GateEcatSystem"<<G4endl;
   // Set up a messenger
   m_messenger = new GateClockDependentMessenger(this);
   m_messenger->SetDirectoryGuidance(G4String("Controls the system '") + GetObjectName() + "'" );
@@ -37,7 +36,8 @@ GateEcatSystem::GateEcatSystem(const G4String& itsName)
   // Integrate a coincidence sorter into the digitizer
   G4double coincidenceWindow = 10.* ns;
   //OK GND 2022 TODO
-  GateDigitizerOld* digitizer = GateDigitizerOld::GetInstance();
+  /*GateDigitizerOld* digitizer = GateDigitizerOld::GetInstance();
+  //GateDigitizer* digitizer = GateDigitizer::GetInstance();
   GateCoincidenceSorter* coincidenceSorter = new GateCoincidenceSorter(digitizer,"Coincidences",coincidenceWindow);
   digitizer->StoreNewCoincidenceSorter(coincidenceSorter);
 
@@ -49,7 +49,7 @@ GateEcatSystem::GateEcatSystem(const G4String& itsName)
   m_gateSinoToEcat7 = new GateSinoToEcat7("ecat7", outputMgr,this,GateOutputMgr::GetDigiMode());
   outputMgr->AddOutputModule((GateVOutputModule*)m_gateSinoToEcat7);
 #endif
-
+*/
   SetOutputIDName((char *)"gantryID",0);
   SetOutputIDName((char *)"blockID",1);
   SetOutputIDName((char *)"crystalID",2);

@@ -191,7 +191,7 @@ void GateToRootMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 //--------------------------------------------------------------------------
 void GateToRootMessenger::CreateNewOutputChannelCommand(GateToRoot::VOutputChannel* anOutputChannel)
 {
-G4cout<<"GateToRootMessenger::CreateNewOutputChannelCommand"<< anOutputChannel->m_collectionName<<G4endl;
+G4cout<<"GateToRootMessenger::CreateNewOutputChannelCommand "<< anOutputChannel->m_collectionName<<G4endl;
   GateMessage("OutputMgr", 5, " GateToRootMessenger::CreateNewOutputChannelCommand -- begin \n";);
 
   G4String cmdName;

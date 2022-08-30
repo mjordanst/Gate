@@ -37,9 +37,9 @@ GateDigitizerOld* GateDigitizerOld::GetInstance()
 
 //-----------------------------------------------------------------
 GateDigitizerOld::GateDigitizerOld()
-  : GateClockDependent("digitizer"),
-    G4VDigitizerModule("digitizer"),
-    m_elementTypeName("digitizer module"),
+  : GateClockDependent("digitizerOld"),
+    G4VDigitizerModule("digitizerOld"),
+    m_elementTypeName("digitizerOld module"),
     m_system(0),
     m_systemList(0)
 {

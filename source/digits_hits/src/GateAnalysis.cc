@@ -35,7 +35,7 @@
 #include "GateVVolume.hh"
 #include "GateActions.hh"
 #include "GateToRoot.hh"
-#include "GateDigitizer.hh"
+#include "GateDigitizerMng.hh"
 //--------------------------------------------------------------------------------------------------
 GateAnalysis::GateAnalysis(const G4String& name, GateOutputMgr* outputMgr,DigiMode digiMode)
   : GateVOutputModule(name,outputMgr,digiMode)
@@ -71,7 +71,7 @@ const G4String& GateAnalysis::GiveNameOfFile()
 //--------------------------------------------------------------------------------------------------
 void GateAnalysis::RecordBeginOfAcquisition()
 {
- // if (nVerboseLevel > 2)
+  if (nVerboseLevel > 2)
     G4cout << "GateAnalysis::RecordBeginOfAcquisition\n";
 }
 //--------------------------------------------------------------------------------------------------
@@ -90,7 +90,7 @@ void GateAnalysis::RecordEndOfAcquisition()
 //--------------------------------------------------------------------------------------------------
 void GateAnalysis::RecordBeginOfRun(const G4Run * )
 {
- // if (nVerboseLevel > 2)
+  if (nVerboseLevel > 2)
     G4cout << "GateAnalysis::RecordBeginOfRun\n";
 }
 //--------------------------------------------------------------------------------------------------
@@ -108,7 +108,7 @@ void GateAnalysis::RecordEndOfRun(const G4Run * )
 //--------------------------------------------------------------------------------------------------
 void GateAnalysis::RecordBeginOfEvent(const G4Event* )
 {
-  //if (nVerboseLevel > 2)
+  if (nVerboseLevel > 2)
     G4cout << "GateAnalysis::RecordBeginOfEvent\n";
 }
 //--------------------------------------------------------------------------------------------------
@@ -465,8 +465,9 @@ void GateAnalysis::RecordEndOfEvent(const G4Event* event)
     } // end if (!trajectoryContainer)
 
   //OK GND 2022
-  GateDigitizer* digitizer=GateDigitizer::GetInstance();
-  digitizer->RunDigitizer();
+  //RunDigitizers is called here otherwise we don't have all attributes filled for aHit
+  GateDigitizerMng* digitizerMng=GateDigitizerMng::GetInstance();
+  digitizerMng->RunDigitizers();
 
 
 } // end function

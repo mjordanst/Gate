@@ -173,8 +173,9 @@ GateDetectorMessenger::GateDetectorMessenger(GateDetectorConstruction* GateDet)
 
 
 
-
+  //G4cout<<"start to init DistribiListManager"<<G4endl;
   GateDistributionListManager::Init();
+  //G4cout<<"end to init DistribiListManager"<<G4endl;
 }
 //-----------------------------------------------------------------------------
 

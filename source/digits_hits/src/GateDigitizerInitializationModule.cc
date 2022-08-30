@@ -8,6 +8,9 @@
 
 /*!
   \class  GateDigitizerInitializationModule
+  This class is a specific digitizer class that are called before running all users
+  digitizers and digitizer modules.
+  It creates Digi from Hits of this event and filles/copies all attributes for this Digi
 */
 
 
@@ -16,7 +19,6 @@
 #include "GateCrystalSD.hh"
 
 #include "GateHit.hh"
-
 
 #include "G4SystemOfUnits.hh"
 #include "G4EventManager.hh"
@@ -29,9 +31,14 @@
 GateDigitizerInitializationModule::GateDigitizerInitializationModule(G4String name)
   :G4VDigitizerModule(name)
 {
+	G4cout<<" GateDigitizerInitializationModule constr "<<G4endl;
+	//G4String insertionBaseName=GatePreDigitizer::GetInstance()->GetNewInsertionBaseName();
 
-  G4String colName = "Singles";
-  collectionName.push_back(colName);
+	//The name is Singles is hardcoded in this class, as it is just a transformation from Hits -> Digi and HitsColleciton to DigiColleciton.
+	//This class is called only ones in the beginning of the simulation.
+	//The output of this class is used by other DigiModules to create different DigiCollections
+	G4String colName = "SinglesInit"; //
+	collectionName.push_back(colName);
 }
 
 
@@ -44,7 +51,8 @@ void GateDigitizerInitializationModule::Digitize()
 {
 
 	G4cout<<"DigitizerInitialization::Digitize()"<<G4endl;
-	DigitsCollection = new GateDigiCollection ("GateDigitizerInitializationModule","Singles"); // to create the Digi Collection
+	//G4String insertionBaseName=GatePreDigitizer::GetInstance()->GetNewInsertionBaseName();
+	OutputDigiCollection = new GateDigiCollection ("GateDigitizerInitializationModule","SinglesInit"); // to create the Digi Collection
 
 
 	G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
@@ -66,13 +74,13 @@ void GateDigitizerInitializationModule::Digitize()
       //G4cout<< (*THC)[j]->GetEdep()  <<G4endl;
 	 for (G4int i=0;i<n_hit;i++)
 	{
-    	  //G4cout<<i <<" "<< (*THC)[i]->GetEventID()  <<G4endl;
-    	  if((*THC)[i]->GetEdep() !=0 )
+    	 if((*THC)[i]->GetEdep() !=0 )
     	  {
-    		  //G4cout<<"in Digitizer "<< (*THC)[i]->GetEventID()  <<G4endl;
+    		//    		 G4cout<< (*THC)[i]->GetEdep()  <<G4endl;
     		  GateDigi* Digi = new GateDigi();
     		  Digi->SetRunID( (*THC)[i]->GetRunID() );
     		  Digi->SetEventID( (*THC)[i]->GetEventID() );
+    		  Digi->SetTrackID( (*THC)[i]->GetTrackID() );
     		  Digi->SetSourceID( (*THC)[i]->GetSourceID() );
     		  Digi->SetSourcePosition( (*THC)[i]->GetSourcePosition() );
     		  Digi->SetTime( (*THC)[i]->GetTime() );
@@ -119,13 +127,13 @@ void GateDigitizerInitializationModule::Digitize()
     		      Digi->SetSourceID( -1 );
     		    }
 
-    		 /*   if (nVerboseLevel>1)
+    		/* //  if (nVerboseLevel>1)
     		        	G4cout << "[GateDigitizerInitializationModule::Digitize]: \n"
     		  	       << "\tprocessed " << *(*THC)[i] << Gateendl
     		  	       << "\tcreated new Digi:\n"
     		  	       << *Digi << Gateendl;
 */
-    		  DigitsCollection->insert(Digi);
+    		  OutputDigiCollection->insert(Digi);
 
     	  }
 
@@ -133,8 +141,9 @@ void GateDigitizerInitializationModule::Digitize()
 
 		}
    }
-
-  StoreDigiCollection(DigitsCollection);
+	//G4cout<<"n digi = "<<	OutputDigiCollection->GetSize () <<G4endl;
+  StoreDigiCollection(OutputDigiCollection);
+  G4cout<<"outputDigiColleciton = "<<	OutputDigiCollection->GetName () <<G4endl;
 
 }
 

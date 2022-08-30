@@ -6,6 +6,8 @@
   See LICENSE.md for further details
   ----------------------*/
 
+//GND:ClassToRemove
+
 /*!
   \class  GateDigitizerOld
   Last modification in 12/2011 by Abdul-Fattah.Mohamad-Hadi@subatech.in2p3.fr, for the multi-system approach.

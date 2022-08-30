@@ -95,9 +95,8 @@ GateOutputMgr::GateOutputMgr(const G4String name)
     AddOutputModule((GateVOutputModule*)gateAnalysis);
   }
 
-  //OK GND 2022 not needed for GND called in GateAnalysis
-  //TODO ?? keep the GateToDigi class or not ??
- G4cout<<"OuputMng:contruct before GateToDigi"	<<Gateendl;
+  //OK GND 2022
+// G4cout<<"OuputMng:contruct before GateToDigi"	<<Gateendl;
  GateToDigi* gateToDigi = new GateToDigi("digi", this,m_digiMode);
  AddOutputModule((GateVOutputModule*)gateToDigi);
 
@@ -148,7 +147,7 @@ GateOutputMgr::~GateOutputMgr()
 //----------------------------------------------------------------------------------
 void GateOutputMgr::AddOutputModule(GateVOutputModule* module)
 {
- // if (nVerboseLevel > 2)
+  if (nVerboseLevel > 2)
     G4cout << "GateOutputMgr::AddOutputModule\n";
 
   m_outputModules.push_back(module);
@@ -160,7 +159,7 @@ void GateOutputMgr::AddOutputModule(GateVOutputModule* module)
 void GateOutputMgr::RecordBeginOfEvent(const G4Event* event)
 {
   GateMessage("Output", 5, "GateOutputMgr::RecordBeginOfEvent\n";);
-  G4cout<<"GateOutputMgr::RecordBeginOfEvent"<<G4endl;
+  //G4cout<<"GateOutputMgr::RecordBeginOfEvent"<<G4endl;
 
   for (size_t iMod=0; iMod<m_outputModules.size(); iMod++) {
     if ( m_outputModules[iMod]->IsEnabled() )
@@ -184,7 +183,7 @@ void GateOutputMgr::RecordEndOfEvent(const G4Event* event)
   for (size_t iMod=0; iMod<m_outputModules.size(); iMod++) {
     if ( m_outputModules[iMod]->IsEnabled() )
       {
-    	G4cout<<"*** Output module "<<   m_outputModules[iMod]->GetName()<<G4endl;
+    	//G4cout<<"*** Output module "<<   m_outputModules[iMod]->GetName()<<G4endl;
         m_outputModules[iMod]->RecordEndOfEvent(event);
       }
   }
@@ -195,7 +194,7 @@ void GateOutputMgr::RecordEndOfEvent(const G4Event* event)
 //----------------------------------------------------------------------------------
 void GateOutputMgr::RecordBeginOfRun(const G4Run* run)
 {
- G4cout<<"GateOutputMgr::RecordBeginOfRun"<<G4endl;
+ //G4cout<<"GateOutputMgr::RecordBeginOfRun"<<G4endl;
   GateMessage("Output", 5, "GateOutputMgr::RecordBeginOfRun\n";);
 
   // If the verbosity for the random engine is set, we call the status method
@@ -237,7 +236,7 @@ void GateOutputMgr::RecordBeginOfAcquisition()
 {
   GateMessage("Output", 5, " GateOutputMgr::RecordBeginOfAcquisition \n";);
 
- // if (nVerboseLevel > 2)
+  if (nVerboseLevel > 2)
     G4cout << "GateOutputMgr::RecordBeginOfAcquisition\n";
 
 #ifdef G4ANALYSIS_USE_ROOT
@@ -336,7 +335,6 @@ void GateOutputMgr::Describe(size_t /*indent*/)
 GateHitsCollection* GateOutputMgr::GetHitCollection()
 {
   GateMessage("Output", 5 , " GateOutputMgr::GetHitCollection \n";);
-  G4cout<<"GateOutputMgr::GetHitCollection"<<G4endl;
   static G4int crystalCollID=-1;     	  //!< Collection ID for the crystal hits
 
   G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();

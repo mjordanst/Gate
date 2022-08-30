@@ -20,6 +20,7 @@ See LICENSE.md for further details
 GateMessageManager::GateMessageManager()
   : mMaxMessageLength(8), mAllLevel(0)
 {
+
   std::string key;
 
   // LG : Change the messages here by meaningfull messages for Gate

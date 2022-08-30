@@ -68,6 +68,10 @@
 #include "GateTrajectoryNavigator.hh"
 // v. cuplov - optical photons
 
+//OK GND2022
+#include "GateDigitizerMng.hh"
+//OK GND2022
+
 ComptonRayleighData::ComptonRayleighData() { ; }
 
 ComptonRayleighData::ComptonRayleighData(ComptonRayleighData &aCRData) {
@@ -105,7 +109,7 @@ GateToRoot::GateToRoot(const G4String &name, GateOutputMgr *outputMgr, DigiMode 
       if (digiMode==kofflineMode)
       m_fileName="digigate";
     */
-	G4cout<<"GateToRoot:constr"<<Gateendl;
+	//G4cout<<"GateToRoot:constr"<<Gateendl;
     m_isEnabled = false; // Keep this flag false: all output are disabled by default
     nVerboseLevel = 0;
 
@@ -612,7 +616,7 @@ void GateToRoot::RecordBeginOfEvent(const G4Event *evt) {
 
     //  GateMessage("Output", 5 , " GateToRoot::RecordBeginOfEvent -- begin\n";);
 
-    //if (nVerboseLevel > 2)
+    if (nVerboseLevel > 2)
         G4cout << "GateToRoot::RecordBeginOfEvent\n";
 
     m_hitBuffer.Clear();
@@ -953,8 +957,10 @@ void GateToRoot::RecordDigitizer(const G4Event *) {
     // Digitizer information
        // G4cout<<"size "<<m_outputChannelList.size()<<Gateendl;
     //for (size_t i = 0; i < m_outputChannelList.size(); ++i)
-    // OK GND 2022 TODO loop to 1; only for Singles --> add coincidences
-    for (size_t i = 0; i < 1; ++i)
+    // OK GND 2022 TODO loop only for Singles --> add coincidences
+
+    GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
+	for (size_t i = 0; i < digitizerMng->m_SingleDigitizersList.size(); ++i)
     {
         m_outputChannelList[i]->RecordDigitizer();
        //G4cout<<m_outputChannelList[i]->m_collectionName<<Gateendl;
@@ -1139,7 +1145,7 @@ void GateToRoot::RecordVoxels(GateVGeometryVoxelStore *voxelStore) {
 //--------------------------------------------------------------------------
 void GateToRoot::RegisterNewSingleDigiCollection(const G4String &aCollectionName, G4bool outputFlag) {
 
-	 G4cout << " GateToRoot::RegisterNewSingleDigiCollection " << Gateendl;
+	 G4cout << " GateToRoot::RegisterNewSingleDigiCollection "<<aCollectionName << Gateendl;
 	SingleOutputChannel *singleOutputChannel =
             new SingleOutputChannel(aCollectionName, outputFlag);
     m_outputChannelList.push_back(singleOutputChannel);
@@ -1163,54 +1169,16 @@ void GateToRoot::RegisterNewCoincidenceDigiCollection(const G4String &aCollectio
 //--------------------------------------------------------------------------
 void GateToRoot::SingleOutputChannel::RecordDigitizer() {
     G4DigiManager *fDM = G4DigiManager::GetDMpointer();
-    fDM->List();
+
     //OK GND 2022
-    /*fDM->List();
-    G4int lastDCID=fDM->GetDCtable()->entries() -1 ;
-    //G4cout << "digi collecion " <<lastDCID << G4endl;
+    GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
+	GateDigitizer* inputDigitizer = digitizerMng->FindDigitizer(m_collectionName);
 
-   // GateDigiCollection *SDC = (GateDigiCollection*)fDM->GetDigiCollection( lastDCID );
-
-   	   //G4cout<<"SDC =  "<<SDC->GetName()<<Gateendl;
-
-    for (int i = 0; i< fDM->GetDCtable()->entries(); i++)
-    	 {
-    		//x G4cout<<fDM->GetDCtable()->GetDMname(i)<<" "<< fDM->GetDCtable()->GetDCname(i)<<G4endl;
-    	 }
-
-   // m_collectionName="GateAdder/SinglesGND";//fDM->GetDCtable()->GetDCname(lastDCID);
-
-    G4String digiCollectionName;
-
-    digiCollectionName=fDM->GetDCtable()->GetDMname(lastDCID)+"/"+fDM->GetDCtable()->GetDCname(lastDCID);
-    G4cout<<digiCollectionName<<Gateendl;
-   //digiCollectionName = "Singles";
-    if (m_collectionID < 0)
-            m_collectionID = fDM->GetDigiCollectionID(digiCollectionName);//m_collectionName);
-
-    G4cout<<"m_collectionID= "<<m_collectionID<<Gateendl;
-    m_collectionName=digiCollectionName;
-    G4cout<<"GateToRoot::SingleOutputChannel::RecordDigitizer "<< m_collectionName<<" "<<m_collectionID<<" "<<Gateendl;
-
-
-        const GateDigiCollection *SDC = (GateDigiCollection *) (fDM->GetDigiCollection(m_collectionID));
-        //G4cout<<"SDC =  "<<SDC->GetName()<<Gateendl;
-
-         */
-    //OK GND 2022
-    G4int lastDCID=fDM->GetDCtable()->entries() -1 ;
-    G4String digiCollectionName;
-
-    digiCollectionName=fDM->GetDCtable()->GetDMname(lastDCID)+"/"+fDM->GetDCtable()->GetDCname(lastDCID);
-
-
-    G4cout<<"collection name "<< digiCollectionName<<" " <<fDM->GetDigiCollectionID(digiCollectionName)<<G4endl;
+	G4int lastDCID=inputDigitizer->m_outputDigiCollectionID;
 
     if (m_collectionID < 0)
-    	m_collectionID = fDM->GetDigiCollectionID(digiCollectionName);//m_collectionName);
-    	//m_collectionID = 1; //OK GND 2022 TODO
-    //const GateSingleDigiCollection *SDC =
-   //         (GateSingleDigiCollection *) (fDM->GetDigiCollection(m_collectionID));
+    	m_collectionID = lastDCID;
+
     const GateDigiCollection *SDC =
                 (GateDigiCollection *) (fDM->GetDigiCollection(m_collectionID));
 
@@ -1231,11 +1199,11 @@ void GateToRoot::SingleOutputChannel::RecordDigitizer() {
             G4cout<<"m_outputFlag "<<m_outputFlag<<G4endl;
         if (m_outputFlag) {
             G4int n_digi = SDC->entries();
-            G4cout<<"n digi "<< n_digi<<G4endl;
+            //G4cout<<"n digi "<< n_digi<<G4endl;
             //GateMessage("OutputMgr", 5, " Single collection m_outputFlag = " << m_outputFlag << Gateendl;);
             for (G4int iDigi = 0; iDigi < n_digi; iDigi++) {
             	//TODO Seg fault if try to access (*SDC)[iDigi]
-            	G4cout<<"!!! "<<(*SDC)[iDigi]->GetEventID()<<G4endl;
+            	//G4cout<<"!!! "<<(*SDC)[iDigi]->GetEventID()<<G4endl;
                 m_buffer.FillGND((*SDC)[iDigi]);
             	m_tree->Fill();
             }

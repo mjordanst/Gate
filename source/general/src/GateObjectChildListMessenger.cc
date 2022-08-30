@@ -26,9 +26,7 @@
 GateObjectChildListMessenger::GateObjectChildListMessenger(GateObjectChildList* itsChildList)
   :GateListMessenger(itsChildList)
 { 
-
   pInsertCmd->SetCandidates(DumpMap());
-
   /*
     pInsertCmd->AvailableForStates(G4State_PreInit);
   */

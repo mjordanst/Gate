@@ -7,6 +7,14 @@ See LICENSE.md for further details
 ----------------------*/
 
 // OK GND 2022
+/*! \class  GatePulseAdderMessenger
+    \brief  Messenger for the GatePulseAdder
+
+    - GatePulseAdderMessenger - by Daniel.Strul@iphe.unil.ch
+
+    \sa GatePulseAdder, GatePulseProcessorMessenger
+*/
+
 
 #ifndef GateAdderMessenger_h
 #define GateAdderMessenger_h 1
@@ -14,10 +22,11 @@ See LICENSE.md for further details
 #include "G4UImessenger.hh"
 #include "globals.hh"
 
+#include "GateClockDependentMessenger.hh"
 class GateAdder;
 class G4UIcmdWithAString;
 
-class GateAdderMessenger : public G4UImessenger
+class GateAdderMessenger : public GateClockDependentMessenger
 {
 public:
   
@@ -29,8 +38,8 @@ public:
   
 private:
   GateAdder* m_Adder;
-  G4UIdirectory           *Dir;
-  G4UIcmdWithAString*         SetPoliticsCmd;
+  //G4UIdirectory           *Dir;
+  G4UIcmdWithAString          *positionPolicyCmd;
 
 
 };

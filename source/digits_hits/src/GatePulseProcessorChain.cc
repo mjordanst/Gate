@@ -27,7 +27,8 @@ GatePulseProcessorChain::GatePulseProcessorChain( GateDigitizerOld* itsDigitizer
     m_outputName(itsOutputName),
     m_inputName(GateHitConvertor::GetOutputAlias())
 {
- G4cout << " DEBUT Constructor GatePulseProcessorChain \n";
+	G4cout << " DEBUT Constructor GatePulseProcessorChain \n";
+	G4cout<<m_outputName<<G4endl;
   m_messenger = new GatePulseProcessorChainMessenger(this);
 
 G4cout << " in GatePulseProcessorChain call GateSingleDigiMaker\n";

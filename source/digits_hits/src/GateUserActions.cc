@@ -22,7 +22,7 @@ See LICENSE.md for further details
 #include "G4SteppingManager.hh"
 #include "G4SliceTimer.hh"
 
-#include "GateDigitizerOld.hh"
+//#include "GateDigitizerOld.hh"
 #include "GateCrystalSD.hh"
 
 #include "GateDigitizer.hh"

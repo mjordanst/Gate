@@ -65,7 +65,6 @@ GateDetectorConstruction::GateDetectorConstruction()
 	 nvarOfIntegratorStepper(8) // The Equation of motion for Electric (or combined Electric/Magnetic)
                                 // field requires 8 integration variables
 {
-
   GateMessage("Geometry", 1, "GateDetectorConstruction instantiating...\n");
   GateMessage("Geometry", 5, " GateDetectorConstruction constructor -- begin ");
   GateMessage("Geometry", 5, " nGeometryStatus = " << nGeometryStatus << Gateendl;);
@@ -74,9 +73,7 @@ GateDetectorConstruction::GateDetectorConstruction()
 
   pcreatorStore = GateObjectStore::GetInstance();
   psystemStore=GateSystemListManager::GetInstance();
-
   pdetectorMessenger = new GateDetectorMessenger(this);
-
   m_magFieldValue = G4ThreeVector(0.,0.,0. * tesla);
   e_electFieldValue = G4ThreeVector(0.,0.,0. * keV);
 

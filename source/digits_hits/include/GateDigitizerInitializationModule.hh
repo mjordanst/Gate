@@ -35,8 +35,8 @@ public:
 
 private:
 
-  GateDigiCollection*  DigitsCollection;
-
+  GateDigiCollection*  OutputDigiCollection;
+  G4String m_colName;
 
 };
 

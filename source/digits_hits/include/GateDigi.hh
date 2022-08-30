@@ -232,6 +232,7 @@ public:
 
 
 typedef G4TDigiCollection<GateDigi> GateDigiCollection;
+//typedef typename GateDigiCollection::const_iterator const_iterator;
 
 extern G4Allocator<GateDigi> GateDigiAllocator;
 

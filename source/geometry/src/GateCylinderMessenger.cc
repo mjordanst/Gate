@@ -25,7 +25,7 @@ GateCylinderMessenger::GateCylinderMessenger(GateCylinder *itsCreator)
 { 
 
   G4String dir = GetDirectoryName() + "geometry/";
-  
+
   G4String cmdName = dir +"setRmin";
   pCylinderRminCmd = new G4UIcmdWithADoubleAndUnit(cmdName.c_str(),this);
   pCylinderRminCmd->SetGuidance("Set internal radius of the cylinder (0 for full cylinder).");

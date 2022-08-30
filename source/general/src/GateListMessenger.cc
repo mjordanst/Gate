@@ -35,7 +35,7 @@ GateListMessenger::GateListMessenger(GateListManager* itsListManager)
 
   G4String guidance = G4String("Manages a list of ") + elementTypeName + "s.";
   GetDirectory()->SetGuidance(guidance.c_str());
-
+  //G4cout<<"GateListMessenger::GateListMessenger "<< GetDirectoryName()<<G4endl;
   G4String cmdName;
   
   if (GetListManager()->AcceptNewElements()) {

@@ -273,20 +273,17 @@ int main( int argc, char* argv[] )
 
   // Analyzing parameterized macro
   std::queue< G4String > commandQueue = decodeParameters( listOfParameters );
-
   // Install the signal handler to handle interrupt calls
   GateSignalHandler::Install();
 
   // Construct the default run manager
   GateRunManager* runManager = new GateRunManager;
-
   // Set the DetectorConstruction
   GateDetectorConstruction* gateDC = new GateDetectorConstruction();
   runManager->SetUserInitialization( gateDC );
-
   // Set the PhysicsList
   runManager->SetUserInitialization( GatePhysicsList::GetInstance() );
-
+ 
   // Set the users actions to handle callback for actors - before the initialisation
   new GateUserActions( runManager);
 
@@ -297,7 +294,7 @@ int main( int argc, char* argv[] )
   visManager->Initialize();
   theGateMessageManager->EnableG4Messages( true );
 #endif
-
+ 
   // Initialize G4 kernel
   runManager->InitializeAll();
 
@@ -388,7 +385,6 @@ int main( int argc, char* argv[] )
 
   // Using 'session' if not Qt
   //welcome();
-  G4cout<<"___________________________"<<G4endl;
   std::ostringstream s;
   s << G4VERSION_MAJOR << "." << G4VERSION_MINOR << "." << G4VERSION_PATCH;
   GateMessage( "Core", 0, "You are using Geant4 version " << s.str() << G4endl );
