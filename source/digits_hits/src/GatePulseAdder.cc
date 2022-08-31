@@ -43,24 +43,24 @@ void GatePulseAdder::ProcessOnePulse(const GatePulse* inputPulse,GatePulseList& 
   {
     GatePulseIterator iter;
     for (iter=outputPulseList.begin(); iter!= outputPulseList.end() ; ++iter)
+    {
       if ( (*iter)->GetVolumeID()   == inputPulse->GetVolumeID() )
       {
-           if(m_positionPolicy==kTakeEnergyWin){
-                (*iter)->MergePositionEnergyWin(inputPulse);
-
+    	  if(m_positionPolicy==kTakeEnergyWin){
+    		  (*iter)->MergePositionEnergyWin(inputPulse);
            }
-           else{
-               (*iter)->CentroidMerge( inputPulse );
-           }
+    	  else{
+    		  (*iter)->CentroidMerge( inputPulse );
+           	  }
 
-
-	if (nVerboseLevel>1)
-	  G4cout << "Merged previous pulse for volume " << inputPulse->GetVolumeID()
-		 << " with new pulse of energy " << G4BestUnit(inputPulse->GetEnergy(),"Energy") <<".\n"
-		 << "Resulting pulse is: \n"
-		 << **iter << Gateendl << Gateendl ;
-	break;
-      }
+    	  if (nVerboseLevel>1)
+    		  G4cout << "Merged previous pulse for volume " << inputPulse->GetVolumeID()
+			  << " with new pulse of energy " << G4BestUnit(inputPulse->GetEnergy(),"Energy") <<".\n"
+			  << "Resulting pulse is: \n"
+			  << **iter << Gateendl << Gateendl ;
+    	  break;
+       }
+    } //loop over iter
 
     if ( iter == outputPulseList.end() )
     {

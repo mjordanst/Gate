@@ -29,6 +29,14 @@ class GateDigi : public G4VDigi
 public:
 
   GateDigi();
+
+  //! Constructor that takes a pointer!
+  inline GateDigi(const GateDigi* right)
+     {
+         *this = *right;
+     }
+
+
   virtual inline ~GateDigi() {}
 
   inline void* operator new(size_t);
@@ -43,7 +51,6 @@ public:
   friend std::ostream& operator<<(std::ostream&, const GateDigi& );
 
   friend std::ofstream& operator<<(std::ofstream&, GateDigi* );
-
 
 
 public:
@@ -111,12 +118,6 @@ public:
       inline void  SetOutputVolumeID(const GateOutputVolumeID& outputVolumeID)        	{ m_outputVolumeID = outputVolumeID; }
       inline const GateOutputVolumeID& GetOutputVolumeID()  const             	      	{ return m_outputVolumeID; }
       inline G4int GetComponentID(size_t depth) const    { return (m_outputVolumeID.size()>depth) ? m_outputVolumeID[depth] : -1; }
-
-      //! S. Stute: Modify one value inside the VolumeID and outputVolumeID vectors
-      void ChangeVolumeIDAndOutputVolumeIDValue(size_t depth, G4int value);
-      // Reset the local position to be 0
-      inline void ResetLocalPos() {m_localPos[0]=0.;m_localPos[1]=0.;m_localPos[2]=0.;}
-      void ResetGlobalPos(GateVSystem* system);
 
 
   #ifdef GATE_USE_OPTICAL

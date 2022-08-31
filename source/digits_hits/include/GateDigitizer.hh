@@ -57,12 +57,15 @@ class GateDigitizer : public GateModuleListManager
        {  m_inputName = anInputName; }
      const G4String& GetOutputName() const
        { return m_outputName; }
-
+*/
      virtual inline GateVSystem* GetSystem() const
        { return m_system;}
+
+     //TODO: find where SetSystem is called for PulseProcessorChain and
+     //call also for the digitizer
+
      virtual inline void SetSystem(GateVSystem* aSystem)
        { m_system = aSystem; }
-*/
 
     const G4String& GetInputName() const
     { return m_inputName; }

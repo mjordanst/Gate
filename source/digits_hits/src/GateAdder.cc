@@ -27,17 +27,17 @@
 GateAdder::GateAdder(G4String name, GateDigitizer *digitizer)
   :GateVDigitizerModule(name,digitizer),
    m_positionPolicy(kEnergyCentroid)
- {
+{
 	G4String colName = digitizer->m_digitizerName;
 	collectionName.push_back(colName);
-	fMessenger = new GateAdderMessenger(this);
+	m_Messenger = new GateAdderMessenger(this);
 	m_digitizer=digitizer;
 }
 
 
 GateAdder::~GateAdder()
 {
-  delete fMessenger;
+  delete m_Messenger;
 }
 
 
@@ -53,7 +53,7 @@ void GateAdder::Digitize()
 
 	G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
 
-	G4String outputCollNameTMP="GateAdder/"+outputCollName;
+	//G4String outputCollNameTMP="GateAdder/"+outputCollName;
 
 
 	GateDigiCollection* IDC = 0;
@@ -61,8 +61,7 @@ void GateAdder::Digitize()
 
 	GateDigi* inputDigi = new GateDigi();
 
-
-	std::vector< GateDigi* >* v_OutputDigiCollection = OutputDigiCollection->GetVector ();
+	std::vector< GateDigi* >* OutputDigiCollectionVector = OutputDigiCollection->GetVector ();
 	std::vector<GateDigi*>::iterator iter;
 
 
@@ -75,53 +74,53 @@ void GateAdder::Digitize()
 	  {
 		  inputDigi=(*IDC)[i];
 		  //This part is from ProcessOnePulse
-		     for (iter=v_OutputDigiCollection->begin(); iter!= v_OutputDigiCollection->end() ; ++iter)
+		     for (iter=OutputDigiCollectionVector->begin(); iter!= OutputDigiCollectionVector->end() ; ++iter)
 		     {
 		    	 if ( (*iter)->GetVolumeID()   == inputDigi->GetVolumeID() )
 		    	 {
 		    		 if(m_positionPolicy==kEnergyWinner){
-		                 MergePositionEnergyWin(inputDigi);
+		    			 m_outputDigi = MergePositionEnergyWin(inputDigi,*iter);
 		    		 }
 		    		 else{
-		    			 CentroidMerge( inputDigi );
+		    			 m_outputDigi = CentroidMerge( inputDigi,*iter );
 		    		 }
 
 
-		      if (nVerboseLevel>1)
-		      {
-		    	 G4cout << "Merged previous pulse for volume " << inputDigi->GetVolumeID()
-		 		 << " with new pulse of energy " << G4BestUnit(inputDigi->GetEnergy(),"Energy") <<".\n"
-		 		 << "Resulting pulse is: \n"
-		 		 << **iter << Gateendl << Gateendl ;
-		      }
-		 	  break;
-		       }
-		     }
-		     if ( iter == v_OutputDigiCollection->end() )
+		    		 if (nVerboseLevel>1)
+		    		 	 {
+		    			 	 G4cout << "Merged previous digi for volume " << inputDigi->GetVolumeID()
+		 						 << " with new digi of energy " << G4BestUnit(inputDigi->GetEnergy(),"Energy") <<".\n"
+								 << "Resulting digi is: \n"
+								 << **iter << Gateendl << Gateendl ;
+		    		 	 }
+		    		 break;
+		    	 }
+
+		     }//loop over iter
+
+		     if ( iter == OutputDigiCollectionVector->end() )
 		     {
-		       m_outputDigi = new GateDigi(*inputDigi);
-		       m_outputDigi->SetEnergyIniTrack(-1);
-		       m_outputDigi->SetEnergyFin(-1);
-		       if (nVerboseLevel>1)
-		 	  G4cout << "Created new pulse for volume " << inputDigi->GetVolumeID() << ".\n"
-		 		 << "Resulting pulse is: \n"
-		 		 << *m_outputDigi << Gateendl << Gateendl ;
-		       OutputDigiCollection->insert(m_outputDigi);
-
+		    	 m_outputDigi = new GateDigi(*inputDigi);
+		    	 m_outputDigi->SetEnergyIniTrack(-1);
+		    	 m_outputDigi->SetEnergyFin(-1);
+		    	 if (nVerboseLevel>1)
+		    		 G4cout << "Created new digi for volume " << inputDigi->GetVolumeID() << ".\n"
+					 << "Resulting digi is: \n"
+					 << *m_outputDigi << Gateendl << Gateendl ;
+		    	 OutputDigiCollection->insert(m_outputDigi);
 		     }
 
-   //This part is from ProcessPulseList
-   if (nVerboseLevel==1) {
-	 G4cout << "[GateAdder::ProcessPulseList]: returning output pulse-list with " << v_OutputDigiCollection->size() << " entries\n";
-	  for (iter=v_OutputDigiCollection->begin(); iter!= v_OutputDigiCollection->end() ; ++iter)
-	 G4cout << **iter << Gateendl;
-	  G4cout << Gateendl;
-	}
-
-   }
-  }
+		//This part is from ProcessPulseList
+		     if (nVerboseLevel==1) {
+		    	 G4cout << "[GateAdder::Digitizer]: returning output digi collection with " << OutputDigiCollectionVector->size() << " entries\n";
+		    	 for (iter=OutputDigiCollectionVector->begin(); iter!= OutputDigiCollectionVector->end() ; ++iter)
+		    		 G4cout << **iter << Gateendl;
+		    	 G4cout << Gateendl;
+		     }
+	  }
+     }
   
-  StoreDigiCollection(OutputDigiCollection);
+  	StoreDigiCollection(OutputDigiCollection);
 
 }
 
@@ -148,64 +147,63 @@ void GateAdder::SetPositionPolicy(const G4String &policy)
 ////////////// Methods of DM //////////////
 ///////////////////////////////////////////
 
-void GateAdder::MergePositionEnergyWin(GateDigi *right)
+GateDigi* GateAdder::MergePositionEnergyWin(GateDigi *right, GateDigi *output)
 {
-	//to copy all variables that are not changed
-	m_outputDigi=right;
+
 
     // AE : Added in a real pulse no sense
-    m_outputDigi->m_Postprocess="NULL";         // PostStep process
-    m_outputDigi->m_energyIniTrack=0;         // Initial energy of the track
-    m_outputDigi->m_energyFin=0;         // final energy of the particle
-    m_outputDigi->m_processCreator="NULL";
-    m_outputDigi->m_trackID=0;
+    output->m_Postprocess="NULL";         // PostStep process
+    output->m_energyIniTrack=0;         // Initial energy of the track
+    output->m_energyFin=0;         // final energy of the particle
+    output->m_processCreator="NULL";
+    output->m_trackID=0;
     //-----------------
 
     // time: store the minimum time
-    m_outputDigi->m_time = std::min ( m_outputDigi->m_time , right->m_time ) ;
-    if (m_outputDigi->m_sourceEnergy != right->m_sourceEnergy) m_outputDigi->m_sourceEnergy=-1;
-    if (m_outputDigi->m_sourcePDG != right->m_sourcePDG) m_outputDigi->m_sourcePDG=0;
-    if ( right->m_nCrystalConv > m_outputDigi->m_nCrystalConv ){
-    	m_outputDigi->m_nCrystalConv 	= right->m_nCrystalConv;
+    output->m_time = std::min ( output->m_time , right->m_time ) ;
+    if (output->m_sourceEnergy != right->m_sourceEnergy) output->m_sourceEnergy=-1;
+    if (output->m_sourcePDG != right->m_sourcePDG) output->m_sourcePDG=0;
+    if ( right->m_nCrystalConv > output->m_nCrystalConv ){
+    	output->m_nCrystalConv 	= right->m_nCrystalConv;
     }
-    if ( right->m_nCrystalCompton > m_outputDigi->m_nCrystalCompton ){
-    	m_outputDigi->m_nCrystalCompton 	= right->m_nCrystalCompton;
+    if ( right->m_nCrystalCompton > output->m_nCrystalCompton ){
+    	output->m_nCrystalCompton 	= right->m_nCrystalCompton;
     }
-    if ( right->m_nCrystalRayleigh > m_outputDigi->m_nCrystalRayleigh ){
-    	m_outputDigi->m_nCrystalRayleigh 	= right->m_nCrystalRayleigh;
-    }
-
-
-
-    if( right->m_energy>m_outputDigi->m_max_energy){
-    	m_outputDigi->m_max_energy=right->m_energy;
-        // Local and global positions: store the controids
-    	m_outputDigi->m_localPos  =   right->m_localPos;
-    	m_outputDigi->m_globalPos =   right->m_globalPos;
-
+    if ( right->m_nCrystalRayleigh > output->m_nCrystalRayleigh ){
+    	output->m_nCrystalRayleigh 	= right->m_nCrystalRayleigh;
     }
 
-    m_outputDigi->m_energy = m_outputDigi->m_energy + right->m_energy;
 
+
+    if( right->m_energy>output->m_max_energy){
+    	output->m_max_energy=right->m_energy;
+        // Local and global positions: store the positions
+    	output->m_localPos  =   right->m_localPos;
+    	output->m_globalPos =   right->m_globalPos;
+
+    }
+    G4cout<<output->m_energy <<" + "<< right->m_energy<<G4endl;
+    output->m_energy = output->m_energy + right->m_energy;
+    G4cout<<output->m_energy <<G4endl;
 
     // # of compton process: store the max nb
-    if ( right->m_nPhantomCompton > m_outputDigi->m_nPhantomCompton )
+    if ( right->m_nPhantomCompton > output->m_nPhantomCompton )
     {
-    	m_outputDigi->m_nPhantomCompton 	= right->m_nPhantomCompton;
-    	m_outputDigi->m_comptonVolumeName = right->m_comptonVolumeName;
+    	output->m_nPhantomCompton 	= right->m_nPhantomCompton;
+    	output->m_comptonVolumeName = right->m_comptonVolumeName;
     }
 
     // # of Rayleigh process: store the max nb
-    if ( right->m_nPhantomRayleigh > m_outputDigi->m_nPhantomRayleigh )
+    if ( right->m_nPhantomRayleigh > output->m_nPhantomRayleigh )
     {
-    	m_outputDigi->m_nPhantomRayleigh 	= right->m_nPhantomRayleigh;
-    	m_outputDigi->m_RayleighVolumeName = right->m_RayleighVolumeName;
+    	output->m_nPhantomRayleigh 	= right->m_nPhantomRayleigh;
+    	output->m_RayleighVolumeName = right->m_RayleighVolumeName;
     }
 
     // HDS : # of septal hits: store the max nb
-    if ( right->m_nSeptal > m_outputDigi->m_nSeptal )
+    if ( right->m_nSeptal > output->m_nSeptal )
     {
-    	m_outputDigi->m_nSeptal 	= right->m_nSeptal;
+    	output->m_nSeptal 	= right->m_nSeptal;
     }
 
     // VolumeID: should be identical for both pulses, we do nothing
@@ -213,78 +211,78 @@ void GateAdder::MergePositionEnergyWin(GateDigi *right)
     // m_scannerRotAngle: identical for both pulses, nothing to do
     // m_outputVolumeID: should be identical for both pulses, we do nothing
 
+    return output;
 }
 
-void GateAdder::CentroidMerge(GateDigi* right)
+GateDigi* GateAdder::CentroidMerge(GateDigi* right, GateDigi* output )
 {
-	m_outputDigi=right;
 
     // AE : Added in a real pulse no sense
-    m_outputDigi->m_Postprocess="NULL";         // PostStep process
-    m_outputDigi->m_energyIniTrack=-1;         // Initial energy of the track
-    m_outputDigi->m_energyFin=-1;         // final energy of the particle
-    m_outputDigi->m_processCreator="NULL";
-    m_outputDigi->m_trackID=0;
+    output->m_Postprocess="NULL";         // PostStep process
+    output->m_energyIniTrack=-1;         // Initial energy of the track
+    output->m_energyFin=-1;         // final energy of the particle
+    output->m_processCreator="NULL";
+    output->m_trackID=0;
     //-----------------
 
     // time: store the minimum time
-    m_outputDigi->m_time = std::min ( m_outputDigi->m_time , right->m_time ) ;
+    output->m_time = std::min ( output->m_time , right->m_time ) ;
 
     // energy: we compute the sum, but do not store it yet
     // (storing it now would mess up the centroid computations)
-    G4double totalEnergy = m_outputDigi->m_energy + right->m_energy;
+    G4double totalEnergy = output->m_energy + right->m_energy;
 
-    if (m_outputDigi->m_sourceEnergy != right->m_sourceEnergy) m_outputDigi->m_sourceEnergy=-1;
-    if (m_outputDigi->m_sourcePDG != right->m_sourcePDG) m_outputDigi->m_sourcePDG=0;
-    if ( right->m_nCrystalConv > m_outputDigi->m_nCrystalConv ){
-        m_outputDigi->m_nCrystalConv 	= right->m_nCrystalConv;
+    if (output->m_sourceEnergy != right->m_sourceEnergy) output->m_sourceEnergy=-1;
+    if (output->m_sourcePDG != right->m_sourcePDG) output->m_sourcePDG=0;
+    if ( right->m_nCrystalConv > output->m_nCrystalConv ){
+        output->m_nCrystalConv 	= right->m_nCrystalConv;
     }
-    if ( right->m_nCrystalCompton > m_outputDigi->m_nCrystalCompton ){
-        m_outputDigi->m_nCrystalCompton 	= right->m_nCrystalCompton;
+    if ( right->m_nCrystalCompton > output->m_nCrystalCompton ){
+        output->m_nCrystalCompton 	= right->m_nCrystalCompton;
     }
-    if ( right->m_nCrystalRayleigh > m_outputDigi->m_nCrystalRayleigh ){
-        m_outputDigi->m_nCrystalRayleigh 	= right->m_nCrystalRayleigh;
+    if ( right->m_nCrystalRayleigh > output->m_nCrystalRayleigh ){
+        output->m_nCrystalRayleigh 	= right->m_nCrystalRayleigh;
     }
 
     // Local and global positions: store the controids
     if(totalEnergy>0){
-        m_outputDigi->m_localPos  =  ( m_outputDigi->m_localPos  * m_outputDigi->m_energy  + right->m_localPos  * right->m_energy ) / totalEnergy ;
-        m_outputDigi->m_globalPos =  ( m_outputDigi->m_globalPos * m_outputDigi->m_energy  + right->m_globalPos * right->m_energy ) / totalEnergy ;
+        output->m_localPos  =  ( output->m_localPos  * output->m_energy  + right->m_localPos  * right->m_energy ) / totalEnergy ;
+        output->m_globalPos =  ( output->m_globalPos * output->m_energy  + right->m_globalPos * right->m_energy ) / totalEnergy ;
     }
     else{
-        m_outputDigi->m_localPos  =  ( m_outputDigi->m_localPos  + right->m_localPos)/2;
-        m_outputDigi->m_globalPos =  ( m_outputDigi->m_globalPos + right->m_globalPos)/2 ;
+        output->m_localPos  =  ( output->m_localPos  + right->m_localPos)/2;
+        output->m_globalPos =  ( output->m_globalPos + right->m_globalPos)/2 ;
     }
 
     // Now that the centroids are stored, we can store the energy
-    m_outputDigi->m_energy   = totalEnergy;
+    output->m_energy   = totalEnergy;
 
 
     // # of compton process: store the max nb
-    if ( right->m_nPhantomCompton > m_outputDigi->m_nPhantomCompton )
+    if ( right->m_nPhantomCompton > output->m_nPhantomCompton )
     {
-        m_outputDigi->m_nPhantomCompton 	= right->m_nPhantomCompton;
-        m_outputDigi->m_comptonVolumeName = right->m_comptonVolumeName;
+        output->m_nPhantomCompton 	= right->m_nPhantomCompton;
+        output->m_comptonVolumeName = right->m_comptonVolumeName;
     }
 
     // # of Rayleigh process: store the max nb
-    if ( right->m_nPhantomRayleigh > m_outputDigi->m_nPhantomRayleigh )
+    if ( right->m_nPhantomRayleigh > output->m_nPhantomRayleigh )
     {
-        m_outputDigi->m_nPhantomRayleigh 	= right->m_nPhantomRayleigh;
-        m_outputDigi->m_RayleighVolumeName = right->m_RayleighVolumeName;
+        output->m_nPhantomRayleigh 	= right->m_nPhantomRayleigh;
+        output->m_RayleighVolumeName = right->m_RayleighVolumeName;
     }
 
     // HDS : # of septal hits: store the max nb
-    if ( right->m_nSeptal > m_outputDigi->m_nSeptal )
+    if ( right->m_nSeptal > output->m_nSeptal )
     {
-        m_outputDigi->m_nSeptal 	= right->m_nSeptal;
+        output->m_nSeptal 	= right->m_nSeptal;
     }
 
     // VolumeID: should be identical for both pulses, we do nothing
     // m_scannerPos: identical for both pulses, nothing to do
     // m_scannerRotAngle: identical for both pulses, nothing to do
     // m_outputVolumeID: should be identical for both pulses, we do nothing
-
+    return output;
 }
 
 void GateAdder::DescribeMyself(size_t )

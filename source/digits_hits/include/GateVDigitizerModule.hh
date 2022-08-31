@@ -38,6 +38,10 @@ public:
   //! Pure virtual method DecribeMyself()
   virtual void DescribeMyself(size_t indent=0) =0 ;
 
+  inline GateDigitizer* GetDigitizer()
+    { return m_digitizer; }
+
+
 private:
  /* GateDigi* m_outputDigi;
 

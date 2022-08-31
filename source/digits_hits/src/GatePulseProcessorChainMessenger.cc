@@ -22,7 +22,7 @@ See LICENSE.md for further details
 #include "GateVPulseProcessor.hh"
 #include "GatePulseProcessorChain.hh"
 
-#include "GateReadout.hh"
+#include "GateReadoutOld.hh"
 #include "GatePileup.hh"
 #include "GateThresholder.hh"
 #include "GateUpholder.hh"
@@ -105,7 +105,7 @@ void GatePulseProcessorChainMessenger::SetNewValue(G4UIcommand* command,G4String
 
 const G4String& GatePulseProcessorChainMessenger::DumpMap()
 {
-   static G4String theList = "readout pileup thresholder energyThresholder localEnergyThresholder DoImodel upholder blurring localBlurring localTimeDelay localEfficiency energyEfficiency noise discretizer buffer transferEfficiency crosstalk lightYield quantumEfficiency intrinsicResolutionBlurring sigmoidalThresholder calibration spblurring sp3Dlocalblurring adder adderLocal adderCompton adderComptPhotIdeal adderComptPhotIdealLocal localClustering  clustering deadtime crystalblurring timeResolution localTimeResolution opticaladder systemFilter gridDiscretization  localMultipleRejection";
+   static G4String theList = "ReadoutOld pileup thresholder energyThresholder localEnergyThresholder DoImodel upholder blurring localBlurring localTimeDelay localEfficiency energyEfficiency noise discretizer buffer transferEfficiency crosstalk lightYield quantumEfficiency intrinsicResolutionBlurring sigmoidalThresholder calibration spblurring sp3Dlocalblurring adder adderLocal adderCompton adderComptPhotIdeal adderComptPhotIdealLocal localClustering  clustering deadtime crystalblurring timeResolution localTimeResolution opticaladder systemFilter gridDiscretization  localMultipleRejection";
   return theList;
 }
 
@@ -123,8 +123,8 @@ void GatePulseProcessorChainMessenger::DoInsertion(const G4String& childTypeName
   //G4cout<<"Input name "<<GetProcessorChain()->GetInputName()<<G4endl; ;
   G4String newInsertionName = GetProcessorChain()->MakeElementName(GetNewInsertionBaseName());
 
-  if (childTypeName=="readout")
-    newProcessor = new GateReadout(GetProcessorChain(),newInsertionName);
+  if (childTypeName=="ReadoutOld")
+    newProcessor = new GateReadoutOld(GetProcessorChain(),newInsertionName);
   else if (childTypeName=="pileup")
     newProcessor = new GatePileup(GetProcessorChain(),newInsertionName);
   else if (childTypeName=="discretizer")

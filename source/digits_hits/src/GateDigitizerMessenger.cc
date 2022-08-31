@@ -23,10 +23,10 @@ See LICENSE.md for further details
 #include "GateDigitizer.hh"
 #include "GateDigitizerMng.hh"
 #include "GateAdder.hh"
-
-
-
 #include "GateReadout.hh"
+
+
+
 #include "GatePileup.hh"
 #include "GateThresholder.hh"
 #include "GateUpholder.hh"
@@ -126,10 +126,17 @@ void GateDigitizerMessenger::DoInsertion(const G4String& childTypeName)
   GateVDigitizerModule* newDM=0;
   //G4cout<<"Input name "<<GetDigitizer()->GetInputName()<<G4endl; ;
   G4String newInsertionName = GetDigitizer()->MakeElementName(GetNewInsertionBaseName());
-/*
+
+  G4String collName=GetDigitizer()->m_digitizerName;
+
   if (childTypeName=="readout")
-    newDM = new GateReadout(GetDigitizer(),newInsertionName);
-  else if (childTypeName=="pileup")
+  {
+	  newDM = new GateReadout( "GateReadout", GetDigitizer() );
+	  GetDigitizer()->AddNewModule(newDM);
+	  G4DigiManager::GetDMpointer()->AddNewModule(newDM);
+  }
+   // newDM = new GateReadout(GetDigitizer(),newInsertionName);
+/*  else if (childTypeName=="pileup")
     newDM = new GatePileup(GetDigitizer(),newInsertionName);
   else if (childTypeName=="discretizer")
     newDM = new GateDiscretizer(GetDigitizer(),newInsertionName);
@@ -170,13 +177,11 @@ void GateDigitizerMessenger::DoInsertion(const G4String& childTypeName)
     newDM = new GateSpblurring(GetDigitizer(),newInsertionName,0.1);
   else if (childTypeName=="sp3Dlocalblurring")
     newDM = new GateCC3DlocalSpblurring(GetDigitizer(),newInsertionName);
-  else
-	  */if (childTypeName=="adder")
+  */else if (childTypeName=="adder")
   {
-	  G4String collName=GetDigitizer()->m_digitizerName;
-	  GateAdder* adder= new GateAdder( "GateAdder", GetDigitizer() );
-	  GetDigitizer()->AddNewModule(adder);
-	  G4DigiManager::GetDMpointer()->AddNewModule(adder);
+	  newDM = new GateAdder( "GateAdder", GetDigitizer() );
+	  GetDigitizer()->AddNewModule(newDM);
+	  G4DigiManager::GetDMpointer()->AddNewModule(newDM);
   }
   /*  else if (childTypeName=="adderLocal")
     newDM = new GatePulseAdderLocal(GetDigitizer(),newInsertionName);

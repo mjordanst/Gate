@@ -44,8 +44,8 @@ public:
 
   void SetPositionPolicy(const G4String& policy);
   
-  void MergePositionEnergyWin(GateDigi *);
-  void CentroidMerge(GateDigi *);
+  GateDigi* MergePositionEnergyWin(GateDigi*, GateDigi*);
+  GateDigi* CentroidMerge(GateDigi*, GateDigi*);
 
   void DescribeMyself(size_t );
 
@@ -53,7 +53,7 @@ protected:
   adder_policy_t   m_positionPolicy;
 
 private:
-  GateAdderMessenger *fMessenger;
+  GateAdderMessenger *m_Messenger;
 
   GateDigi* m_outputDigi;
   GateDigiCollection*  OutputDigiCollection;

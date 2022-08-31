@@ -20,9 +20,10 @@
 	If you adapting some already exiting class from Old Gate Digitizer here is some of the tips
 	- Digitize () is a fusion of GateVPulseProcessor::ProcessPulseList and GateXXX::ProcessOnePulse
 	- pulse --> Digi
-	- outputPulseList --> v_OutputDigiCollection
+	- outputPulseList --> OutputDigiCollectionVector
 	- inputPulse-->inputDigi
 	- outputPulse --> m_outputDigi
+	- how to adapt iterators check GateAdder class
 
 
   !!!! DO NOT FORGET TO WRITE A SHORT EXPLANATION ON WHAT DOES YOUR DM !!!!
@@ -81,7 +82,7 @@ void GateDummyDigitizerModule::Digitize()
 
 	GateDigi* inputDigi = new GateDigi();
 
-	std::vector< GateDigi* >* v_OutputDigiCollection = OutputDigiCollection->GetVector ();
+	std::vector< GateDigi* >* OutputDigiCollectionVector = OutputDigiCollection->GetVector ();
 	std::vector<GateDigi*>::iterator iter;
 
 
@@ -97,7 +98,7 @@ void GateDummyDigitizerModule::Digitize()
 		  ///*** This part is from ProcessPulseList
 
 		  //////** This part is from ProcessOnePulse
-		     for (iter=v_OutputDigiCollection->begin(); iter!= v_OutputDigiCollection->end() ; ++iter)
+		     for (iter=OutputDigiCollectionVector->begin(); iter!= OutputDigiCollectionVector->end() ; ++iter)
 		     {
 		    	 if ( (*iter)->GetVolumeID()   == inputDigi->GetVolumeID() )
 		    	 {
@@ -119,7 +120,7 @@ void GateDummyDigitizerModule::Digitize()
 		       }
 		     }
 
-		     if ( iter == v_OutputDigiCollection->end() )
+		     if ( iter == OutputDigiCollectionVector->end() )
 		     {
 		       m_outputDigi = new GateDigi(*inputDigi);
 		       m_outputDigi->SetEnergyIniTrack(-1);
@@ -128,15 +129,16 @@ void GateDummyDigitizerModule::Digitize()
 		 	  G4cout << "Created new pulse for volume " << inputDigi->GetVolumeID() << ".\n"
 		 		 << "Resulting pulse is: \n"
 		 		 << *m_outputDigi << Gateendl << Gateendl ;
-		       OutputDigiCollection->insert(m_outputDigi);
+		      /// !!!!!! The following line should be kept !!!! -> inserts the outputdigi to collection
+
 
 		     }
 		 //////** End of the part from ProcessOnePulse
 
 
 		if (nVerboseLevel==1) {
-			G4cout << "[GateDummyDigitizerModule::ProcessPulseList]: returning output pulse-list with " << v_OutputDigiCollection->size() << " entries\n";
-			for (iter=v_OutputDigiCollection->begin(); iter!= v_OutputDigiCollection->end() ; ++iter)
+			G4cout << "[GateDummyDigitizerModule::ProcessPulseList]: returning output pulse-list with " << OutputDigiCollectionVector->size() << " entries\n";
+			for (iter=OutputDigiCollectionVector->begin(); iter!= OutputDigiCollectionVector->end() ; ++iter)
 				G4cout << **iter << Gateendl;
 			G4cout << Gateendl;
 		}

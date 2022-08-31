@@ -171,8 +171,8 @@ void GateDigitizerMng::RunDigitizers()
 	G4cout<<"GateDigitizerMng::RunDigitizers"<<G4endl;
 	G4DigiManager *fDM = G4DigiManager::GetDMpointer();
 
-	//G4cout<<"DCtable entries " <<fDM->GetDCtable ()->entries()<<G4endl;
-	//fDM->List();
+	G4cout<<"DCtable entries " <<fDM->GetDCtable ()->entries()<<G4endl;
+	fDM->List();
 	fDM->Digitize("GateDigitizerInitializationModule");
 
 	//loop over all digitizers/collections
@@ -186,7 +186,7 @@ void GateDigitizerMng::RunDigitizers()
 		//loop over all DMs of the current digitizer
 		for (long unsigned int j = 0; j<m_SingleDigitizersList[i]->m_DMlist.size(); j++)
 		{
-			//    G4cout<<"DM " <<m_SingleDigitizersList[i]->m_DMlist[j]->GetName()<<" "<<	m_SingleDigitizersList[i]->m_DMlist[j]->GetNumberOfCollections ()<<" "<<m_SingleDigitizersList[i]->m_DMlist[j]->GetCollectionName (0)<<G4endl;
+			G4cout<<"DM " <<m_SingleDigitizersList[i]->m_DMlist[j]->GetName()<<" "<<	m_SingleDigitizersList[i]->m_DMlist[j]->GetNumberOfCollections ()<<" "<<m_SingleDigitizersList[i]->m_DMlist[j]->GetCollectionName (0)<<G4endl;
 			m_SingleDigitizersList[i]->m_DMlist[j]->Digitize();
 			collID++;
 		}

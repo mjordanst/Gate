@@ -1179,6 +1179,7 @@ void GateToRoot::SingleOutputChannel::RecordDigitizer() {
     if (m_collectionID < 0)
     	m_collectionID = lastDCID;
 
+    //G4cout<<"m_collectionID "<<m_collectionID<<G4endl;
     const GateDigiCollection *SDC =
                 (GateDigiCollection *) (fDM->GetDigiCollection(m_collectionID));
 

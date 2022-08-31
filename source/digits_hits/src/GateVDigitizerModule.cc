@@ -32,7 +32,8 @@
 GateVDigitizerModule::GateVDigitizerModule(G4String name, GateDigitizer *digitizer)
   :G4VDigitizerModule(name),
    GateClockDependent(name),
-   m_digitizer(digitizer)
+   m_digitizer(digitizer)//,
+  // m_digitizerModuleName(name)
  {
 	G4cout<<"GateVDigitizerModule::GateVDigitizerModule"<<G4endl;
   //G4String colName =  m_digitizer->m_digitizerName;
@@ -59,10 +60,10 @@ void GateVDigitizerModule::Describe(size_t indent)
 //////////////////
 G4int GateVDigitizerModule::InputCollectionID()
 {
+	//G4cout<<"GateVDigitizerModule::InputCollectionID"<<G4endl;
 	G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
 
-	G4String outputCollNameTMP = m_digitizer->m_digitizerName;
-
+	G4String outputCollNameTMP = GetName() +"/"+(m_digitizer->m_digitizerName);
 
 	G4int DCID = -1;
 
@@ -100,6 +101,7 @@ G4int GateVDigitizerModule::InputCollectionID()
 	{
       G4Exception( "GateVDigitizerModule::InputCollectionID", "InputCollectionID", FatalException, "Something wrong with collection ID. Please, contact olga[dot]kochebina[at]cea.fr. Abort.\n");
 	}
+
 
  return DCID;
 }
