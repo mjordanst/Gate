@@ -371,6 +371,7 @@ void GateVVolume::ConstructOwnPhysicalVolume(G4bool flagUpdateOnly) {
 //----------------------------------------------------------------------------------------
 // Tell the creator that the logical volume should be attached to the crystal-SD
 void GateVVolume::AttachCrystalSD() {
+	G4cout<<"GateVVolume::AttachCrystalSD() "<<G4endl;
     /*
       if (!CheckOutputExistence()){
       // Add OutputMgr output actor to theListOfActors

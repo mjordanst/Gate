@@ -157,9 +157,7 @@ public:
                   m_outputFlag(outputFlag),
                   m_collectionName(aCollectionName),
                   m_collectionID(-1) {
-        	G4cout<<"GateToRoot::VOutputChannel constr"<<G4endl;
-
-
+        	//G4cout<<"GateToRoot::VOutputChannel constr"<<G4endl;
         }
 
         virtual inline ~VOutputChannel() {}
@@ -188,8 +186,6 @@ public:
         inline SingleOutputChannel(const G4String &aCollectionName, G4bool outputFlag)
                 : VOutputChannel(aCollectionName, outputFlag),
                   m_tree(0) {
-        		G4cout<<"SingleOutputChannel constr"<<G4endl;
-
                   m_buffer.Clear(); }
 
         virtual inline ~SingleOutputChannel() {}

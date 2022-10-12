@@ -39,12 +39,12 @@ class GateDummyDigitizerModule : public GateVDigitizerModule
 {
 public:
   
-  GateDummyDigitizerModule(G4String DMname, GateDigitizer *digitizer);
+  GateDummyDigitizerModule(GateDigitizer *digitizer);
   ~GateDummyDigitizerModule();
   
   void Digitize() override;
 
-  //*******implement your methods here
+  // *******implement your methods here
   void SetDummyParameter(const G4String& );
   
   void DummyMethod1(GateDigi *);
@@ -53,15 +53,15 @@ public:
   void DescribeMyself(size_t );
 
 protected:
-  //*******implement your parameters here
+  // *******implement your parameters here
   G4String   m_parameter;
 
 private:
   GateDigi* m_outputDigi;
 
-  GateDummyDigitizerModuleMessenger *fMessenger;
+  GateDummyDigitizerModuleMessenger *m_Messenger;
 
-  GateDigiCollection*  OutputDigiCollection;
+  GateDigiCollection*  m_OutputDigiCollection;
 
   GateDigitizer *m_digitizer;
 

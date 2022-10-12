@@ -5,6 +5,7 @@
   of the GNU Lesser General  Public Licence (LGPL)
   See LICENSE.md for further details
   ----------------------*/
+//GND:ClassToRemove
 
 /*!
   \class  GateDigitizerOld
@@ -131,7 +132,7 @@ void GateDigitizerOld::DescribeChains(size_t indent)
 void GateDigitizerOld::DescribeSorters(size_t indent)
 {
   G4cout << GateTools::Indent(indent) << "Nb of coinc. units: " << m_coincidenceSorterList.size() << "\n";
-  for (std::vector<GateCoincidenceSorter*>::iterator itr=m_coincidenceSorterList.begin(); itr!=m_coincidenceSorterList.end(); itr++)
+  for (std::vector<GateCoincidenceSorterOld*>::iterator itr=m_coincidenceSorterList.begin(); itr!=m_coincidenceSorterList.end(); itr++)
     G4cout << GateTools::Indent(indent+1) << (*itr)->GetObjectName() << Gateendl;
 }
 //-----------------------------------------------------------------
@@ -357,7 +358,7 @@ void GateDigitizerOld::StoreNewCoincidenceProcessorChain(GateCoincidencePulsePro
 
 //-----------------------------------------------------------------
 // Integrates a new coincidence sorter
-void GateDigitizerOld::StoreNewCoincidenceSorter(GateCoincidenceSorter* coincidenceSorter)
+void GateDigitizerOld::StoreNewCoincidenceSorter(GateCoincidenceSorterOld* coincidenceSorter)
 {
   G4String outputName = coincidenceSorter->GetOutputName() ;
   //if (nVerboseLevel>1)

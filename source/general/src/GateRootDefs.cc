@@ -13,7 +13,6 @@
 #include "GateRootDefs.hh"
 #include "GateHit.hh"
 #include "GateDigi.hh"
-#include "GateSingleDigi.hh"
 #include "GateCoincidenceDigi.hh"
 
 #include "GateOutputMgr.hh"
@@ -366,7 +365,7 @@ void GateRootSingleBuffer::Clear()
 
 
 
-void GateRootSingleBuffer::Fill(GateSingleDigi* aDigi)
+void GateRootSingleBuffer::Fill(GateDigi* aDigi)
 {
   size_t d;
 
@@ -399,7 +398,6 @@ void GateRootSingleBuffer::Fill(GateSingleDigi* aDigi)
 // OK GND 2022
 void GateRootSingleBuffer::FillGND(GateDigi* aDigi)
 {
-	G4cout<<"GateRootSingleBuffer::FillGND"<<G4endl;
   size_t d;
 
   runID         =  aDigi->GetRunID();
@@ -436,48 +434,50 @@ void GateRootSingleBuffer::FillGND(GateDigi* aDigi)
 void GateSingleTree::Init(GateRootSingleBuffer& buffer)
 {
   SetAutoSave(1000);
-  if ( GateSingleDigi::GetSingleASCIIMask(0) )
-    Branch("runID",          &buffer.runID,"runID/I");
-  if ( GateSingleDigi::GetSingleASCIIMask(1) )
+
+  //TODO !! SingleDigi -> Digi !!
+  if ( GateDigi::GetSingleASCIIMask(0) )
+  {   Branch("runID",          &buffer.runID,"runID/I");}
+  if ( GateDigi::GetSingleASCIIMask(1) )
     Branch("eventID",        &buffer.eventID,"eventID/I");
-  if ( GateSingleDigi::GetSingleASCIIMask(2) )
+  if ( GateDigi::GetSingleASCIIMask(2) )
     Branch("sourceID",       &buffer.sourceID,"sourceID/I");
-  if ( GateSingleDigi::GetSingleASCIIMask(3) )
+  if ( GateDigi::GetSingleASCIIMask(3) )
     Branch("sourcePosX",     &buffer.sourcePosX,"sourcePosX/F");
-  if ( GateSingleDigi::GetSingleASCIIMask(4) )
+  if ( GateDigi::GetSingleASCIIMask(4) )
     Branch("sourcePosY",     &buffer.sourcePosY,"sourcePosY/F");
-  if ( GateSingleDigi::GetSingleASCIIMask(5) )
+  if ( GateDigi::GetSingleASCIIMask(5) )
     Branch("sourcePosZ",     &buffer.sourcePosZ,"sourcePosZ/F");
-  if ( GateSingleDigi::GetSingleASCIIMask(7) )
+  if ( GateDigi::GetSingleASCIIMask(7) )
     Branch("time",           &buffer.time,"time/D");
-  if ( GateSingleDigi::GetSingleASCIIMask(8) )
+  if ( GateDigi::GetSingleASCIIMask(8) )
     Branch("energy",         &buffer.energy,"energy/F");
-  if ( GateSingleDigi::GetSingleASCIIMask(9) )
+  if ( GateDigi::GetSingleASCIIMask(9) )
     Branch("globalPosX",     &buffer.globalPosX,"globalPosX/F");
-  if ( GateSingleDigi::GetSingleASCIIMask(10) )
+  if ( GateDigi::GetSingleASCIIMask(10) )
     Branch("globalPosY",     &buffer.globalPosY,"globalPosY/F");
-  if ( GateSingleDigi::GetSingleASCIIMask(11) )
+  if ( GateDigi::GetSingleASCIIMask(11) )
     Branch("globalPosZ",     &buffer.globalPosZ,"globalPosZ/F");
-  if ( GateSingleDigi::GetSingleASCIIMask(6) )
+  if ( GateDigi::GetSingleASCIIMask(6) )
     for (size_t d=0; d<ROOT_OUTPUTIDSIZE ; ++d)
       Branch(outputIDName[d],(void *)(buffer.outputID+d),outputIDLeafList[d]);
-  if ( GateSingleDigi::GetSingleASCIIMask(12) )
+  if ( GateDigi::GetSingleASCIIMask(12) )
     Branch("comptonPhantom", &buffer.comptonPhantom,"comptonPhantom/I");
-  if ( GateSingleDigi::GetSingleASCIIMask(13) )
+  if ( GateDigi::GetSingleASCIIMask(13) )
     Branch("comptonCrystal", &buffer.comptonCrystal,"comptonCrystal/I");
-  if ( GateSingleDigi::GetSingleASCIIMask(14) )
+  if ( GateDigi::GetSingleASCIIMask(14) )
     Branch("RayleighPhantom", &buffer.RayleighPhantom,"RayleighPhantom/I");
-  if ( GateSingleDigi::GetSingleASCIIMask(15) )
+  if ( GateDigi::GetSingleASCIIMask(15) )
     Branch("RayleighCrystal", &buffer.RayleighCrystal,"RayleighCrystal/I");
-  if ( GateSingleDigi::GetSingleASCIIMask(18) )
+  if ( GateDigi::GetSingleASCIIMask(18) )
     Branch("axialPos",       &buffer.axialPos,"axialPos/F");
-  if ( GateSingleDigi::GetSingleASCIIMask(19) )
+  if ( GateDigi::GetSingleASCIIMask(19) )
     Branch("rotationAngle",  &buffer.rotationAngle,"rotationAngle/F");
-  if ( GateSingleDigi::GetSingleASCIIMask(16) )
+  if ( GateDigi::GetSingleASCIIMask(16) )
     Branch("comptVolName",   (void *)buffer.comptonVolumeName,"comptVolName/C");
-  if ( GateSingleDigi::GetSingleASCIIMask(17) )
+  if ( GateDigi::GetSingleASCIIMask(17) )
     Branch("RayleighVolName",   (void *)buffer.RayleighVolumeName,"RayleighVolName/C");
-  if ( GateSingleDigi::GetSingleASCIIMask(20) )
+  if ( GateDigi::GetSingleASCIIMask(20) )
     // HDS : record septal penetration
     if (GateRootDefs::GetRecordSeptalFlag())	Branch("septalNb",   &buffer.septalNb,"septalNb/I");
 }
@@ -536,49 +536,49 @@ void GateRootCoincBuffer::Fill(GateCoincidenceDigi* aDigi)
 {
   size_t d;
 
-  runID          = (aDigi->GetPulse(0)).GetRunID();
-  axialPos       = (aDigi->GetPulse(0)).GetScannerPos().z()/mm;
-  rotationAngle  = (aDigi->GetPulse(0)).GetScannerRotAngle()/deg;
+  runID          = (aDigi->GetDigi(0))->GetRunID();
+  axialPos       = (aDigi->GetDigi(0))->GetScannerPos().z()/mm;
+  rotationAngle  = (aDigi->GetDigi(0))->GetScannerRotAngle()/deg;
 
-  eventID1       = (aDigi->GetPulse(0)).GetEventID();
-  sourceID1      = (aDigi->GetPulse(0)).GetSourceID();
-  sourcePosX1    = (aDigi->GetPulse(0)).GetSourcePosition().x()/mm;
-  sourcePosY1    = (aDigi->GetPulse(0)).GetSourcePosition().y()/mm;
-  sourcePosZ1    = (aDigi->GetPulse(0)).GetSourcePosition().z()/mm;
-  time1          = (aDigi->GetPulse(0)).GetTime()/s;
-  energy1        = (aDigi->GetPulse(0)).GetEnergy()/MeV;
-  globalPosX1    = (aDigi->GetPulse(0)).GetGlobalPos().x()/mm;
-  globalPosY1    = (aDigi->GetPulse(0)).GetGlobalPos().y()/mm;
-  globalPosZ1    = (aDigi->GetPulse(0)).GetGlobalPos().z()/mm;
+  eventID1       = (aDigi->GetDigi(0))->GetEventID();
+  sourceID1      = (aDigi->GetDigi(0))->GetSourceID();
+  sourcePosX1    = (aDigi->GetDigi(0))->GetSourcePosition().x()/mm;
+  sourcePosY1    = (aDigi->GetDigi(0))->GetSourcePosition().y()/mm;
+  sourcePosZ1    = (aDigi->GetDigi(0))->GetSourcePosition().z()/mm;
+  time1          = (aDigi->GetDigi(0))->GetTime()/s;
+  energy1        = (aDigi->GetDigi(0))->GetEnergy()/MeV;
+  globalPosX1    = (aDigi->GetDigi(0))->GetGlobalPos().x()/mm;
+  globalPosY1    = (aDigi->GetDigi(0))->GetGlobalPos().y()/mm;
+  globalPosZ1    = (aDigi->GetDigi(0))->GetGlobalPos().z()/mm;
   for (d=0; d<ROOT_OUTPUTIDSIZE ; ++d)
-    outputID1[d] = (aDigi->GetPulse(0)).GetComponentID(d);
-  comptonPhantom1       = (aDigi->GetPulse(0)).GetNPhantomCompton();
-  comptonCrystal1       = (aDigi->GetPulse(0)).GetNCrystalCompton();
-  RayleighPhantom1       = (aDigi->GetPulse(0)).GetNPhantomRayleigh();
-  RayleighCrystal1       = (aDigi->GetPulse(0)).GetNCrystalRayleigh();
+    outputID1[d] = (aDigi->GetDigi(0))->GetComponentID(d);
+  comptonPhantom1       = (aDigi->GetDigi(0))->GetNPhantomCompton();
+  comptonCrystal1       = (aDigi->GetDigi(0))->GetNCrystalCompton();
+  RayleighPhantom1       = (aDigi->GetDigi(0))->GetNPhantomRayleigh();
+  RayleighCrystal1       = (aDigi->GetDigi(0))->GetNCrystalRayleigh();
 
-  strcpy (comptonVolumeName1,((aDigi->GetPulse(0)).GetComptonVolumeName()).c_str());
-  strcpy (RayleighVolumeName1,((aDigi->GetPulse(0)).GetRayleighVolumeName()).c_str());
+  strcpy (comptonVolumeName1,((aDigi->GetDigi(0))->GetComptonVolumeName()).c_str());
+  strcpy (RayleighVolumeName1,((aDigi->GetDigi(0))->GetRayleighVolumeName()).c_str());
 
-  eventID2       = (aDigi->GetPulse(1)).GetEventID();
-  sourceID2      = (aDigi->GetPulse(1)).GetSourceID();
-  sourcePosX2    = (aDigi->GetPulse(1)).GetSourcePosition().x()/mm;
-  sourcePosY2    = (aDigi->GetPulse(1)).GetSourcePosition().y()/mm;
-  sourcePosZ2    = (aDigi->GetPulse(1)).GetSourcePosition().z()/mm;
-  time2          = (aDigi->GetPulse(1)).GetTime()/s;
-  energy2        = (aDigi->GetPulse(1)).GetEnergy()/MeV;
-  globalPosX2    = (aDigi->GetPulse(1)).GetGlobalPos().x()/mm;
-  globalPosY2    = (aDigi->GetPulse(1)).GetGlobalPos().y()/mm;
-  globalPosZ2    = (aDigi->GetPulse(1)).GetGlobalPos().z()/mm;
+  eventID2       = (aDigi->GetDigi(1))->GetEventID();
+  sourceID2      = (aDigi->GetDigi(1))->GetSourceID();
+  sourcePosX2    = (aDigi->GetDigi(1))->GetSourcePosition().x()/mm;
+  sourcePosY2    = (aDigi->GetDigi(1))->GetSourcePosition().y()/mm;
+  sourcePosZ2    = (aDigi->GetDigi(1))->GetSourcePosition().z()/mm;
+  time2          = (aDigi->GetDigi(1))->GetTime()/s;
+  energy2        = (aDigi->GetDigi(1))->GetEnergy()/MeV;
+  globalPosX2    = (aDigi->GetDigi(1))->GetGlobalPos().x()/mm;
+  globalPosY2    = (aDigi->GetDigi(1))->GetGlobalPos().y()/mm;
+  globalPosZ2    = (aDigi->GetDigi(1))->GetGlobalPos().z()/mm;
   for (d=0; d<ROOT_OUTPUTIDSIZE ; ++d)
-    outputID2[d] = (aDigi->GetPulse(1)).GetComponentID(d);
-  comptonPhantom2       = (aDigi->GetPulse(1)).GetNPhantomCompton();
-  comptonCrystal2       = (aDigi->GetPulse(1)).GetNCrystalCompton();
-  RayleighPhantom2       = (aDigi->GetPulse(1)).GetNPhantomRayleigh();
-  RayleighCrystal2       = (aDigi->GetPulse(1)).GetNCrystalRayleigh();
+    outputID2[d] = (aDigi->GetDigi(1))->GetComponentID(d);
+  comptonPhantom2       = (aDigi->GetDigi(1))->GetNPhantomCompton();
+  comptonCrystal2       = (aDigi->GetDigi(1))->GetNCrystalCompton();
+  RayleighPhantom2       = (aDigi->GetDigi(1))->GetNPhantomRayleigh();
+  RayleighCrystal2       = (aDigi->GetDigi(1))->GetNCrystalRayleigh();
 
-  strcpy (comptonVolumeName2,((aDigi->GetPulse(1)).GetComptonVolumeName()).c_str());
-  strcpy (RayleighVolumeName2,((aDigi->GetPulse(1)).GetRayleighVolumeName()).c_str());
+  strcpy (comptonVolumeName2,((aDigi->GetDigi(1))->GetComptonVolumeName()).c_str());
+  strcpy (RayleighVolumeName2,((aDigi->GetDigi(1))->GetRayleighVolumeName()).c_str());
 
   sinogramTheta  = ComputeSinogramTheta();
   sinogramS      = ComputeSinogramS();
@@ -630,6 +630,7 @@ void GateCoincTree::Init(GateRootCoincBuffer& buffer)
 {
   SetAutoSave(1000);
   if ( GateCoincidenceDigi::GetCoincidenceASCIIMask(0) )
+  {   Branch("runID",          &buffer.runID,"runID/I");}
     Branch("runID",          &buffer.runID,"runID/I");
   if ( GateCoincidenceDigi::GetCoincidenceASCIIMask(16) )
     Branch("axialPos",       &buffer.axialPos,"axialPos/F");
@@ -715,6 +716,7 @@ void GateCoincTree::Init(GateRootCoincBuffer& buffer)
     Branch("RayleighVolName1",  (void *)buffer.RayleighVolumeName1,"RayleighVolName1/C");
   if ( GateCoincidenceDigi::GetCoincidenceASCIIMask(21) )
     Branch("RayleighVolName2",  (void *)buffer.RayleighVolumeName2,"RayleighVolName2/C");
+
 }
 
 

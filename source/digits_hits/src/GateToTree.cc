@@ -29,6 +29,9 @@ See LICENSE.md for further details
 #include "G4DigiManager.hh"
 
 
+#include "GateCoincidenceDigiOld.hh"
+
+
 char GateToTree::m_outputIDName[GateToTree::MAX_NB_SYSTEM][GateToTree::MAX_DEPTH_SYSTEM][GateToTree::MAX_OUTPUTIDNAME_SIZE];
 bool GateToTree::m_outputIDHasName[GateToTree::MAX_NB_SYSTEM][GateToTree::MAX_DEPTH_SYSTEM];
 G4int GateToTree::m_max_depth_system[GateToTree::MAX_NB_SYSTEM];
@@ -757,7 +760,7 @@ void GateToTree::RecordEndOfEvent(const G4Event *event) {
 
     for (auto &&m: m_mmanager_coincidences) {
         auto collectionID = m_coincidences_to_collectionID.at(m.first);
-        auto SDC = static_cast<const GateCoincidenceDigiCollection *>(fDM->GetDigiCollection(collectionID));
+        auto SDC = static_cast<const GateCoincidenceDigiOldCollection *>(fDM->GetDigiCollection(collectionID));
 
         if (!SDC) {
             continue;
@@ -819,8 +822,9 @@ void GateToTree::RecordEndOfEvent(const G4Event *event) {
     RecordOpticalData(event);
 }
 
-void GateToTree::retrieve(GateCoincidenceDigi *aDigi, G4int side, G4int system_id) {
-    const auto &pulse = aDigi->GetPulse(side);
+void GateToTree::retrieve(GateCoincidenceDigiOld *aDigi, G4int side, G4int system_id) {
+
+	const auto &pulse = aDigi->GetPulse(side);
     m_eventID[side] = pulse.GetEventID();
     m_sourceID[side] = pulse.GetSourceID();
 //    m_sourceID[side] = digi->GetSourceID();

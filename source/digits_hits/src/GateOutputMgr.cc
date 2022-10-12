@@ -391,7 +391,7 @@ GateCoincidenceDigiCollection* GateOutputMgr::GetCoincidenceDigiCollection(const
 void GateOutputMgr::RegisterNewSingleDigiCollection(const G4String& aCollectionName,G4bool outputFlag)
 {
   GateMessage("Output", 5, " GateOutputMgr::RegisterNewSingleDigiCollection\n";);
-  G4cout<<" GateOutputMgr::RegisterNewSingleDigiCollection "<<aCollectionName<<Gateendl;
+//  G4cout<<" GateOutputMgr::RegisterNewSingleDigiCollection "<<aCollectionName<<Gateendl;
   for (size_t iMod=0; iMod<m_outputModules.size(); iMod++)
     m_outputModules[iMod]->RegisterNewSingleDigiCollection(aCollectionName,outputFlag);
 }

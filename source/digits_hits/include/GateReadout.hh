@@ -64,7 +64,7 @@ class GateReadout : public GateVDigitizerModule
 {
 public:
 
-  GateReadout(G4String DMname, GateDigitizer *digitizer);
+  GateReadout(GateDigitizer *digitizer);
   ~GateReadout();
   
   void Digitize() override;
@@ -111,7 +111,7 @@ protected:
 private:
   GateDigi* m_outputDigi;
 
-  GateDigiCollection*  OutputDigiCollection;
+  GateDigiCollection*  m_OutputDigiCollection;
 
   GateDigitizer *m_digitizer;
 

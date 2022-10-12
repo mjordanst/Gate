@@ -25,10 +25,13 @@
 #include <cstdlib>
 
 #include "GateVOutputModule.hh"
-#include "GateCoincidenceDigi.hh"
+#include "GateCoincidenceDigiOld.hh"
 #include "GateSingleDigi.hh"
 #include "GatePrimaryGeneratorAction.hh"
 #include "GateRunManager.hh"
+
+#include "GateCoincidenceDigi.hh"
+#include "GateDigi.hh"
 
 class GateToBinaryMessenger;
 

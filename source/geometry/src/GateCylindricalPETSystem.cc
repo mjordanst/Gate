@@ -24,7 +24,7 @@ See LICENSE.md for further details
 #include "GateToLMF.hh"
 #endif
 
-#include "GateDigitizerOld.hh"
+#include "GateDigitizerMng.hh"
 
 #include "GateCylindricalPETSystemMessenger.hh"
 
@@ -51,10 +51,15 @@ GateCylindricalPETSystem::GateCylindricalPETSystem(const G4String& itsName)
   new GateBoxComponent("layer3",crystalComponent,this);
 
   // Integrate a coincidence sorter into the digitizer
-  G4double coincidenceWindow = 10.* ns;
+  /*G4double coincidenceWindow = 10.* ns;
   GateDigitizerOld* digitizer = GateDigitizerOld::GetInstance();
   GateCoincidenceSorter* coincidenceSorter = new GateCoincidenceSorter(digitizer,"Coincidences",coincidenceWindow);
   digitizer->StoreNewCoincidenceSorter(coincidenceSorter);
+  */
+  //OK GND 2022
+  GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
+  GateCoincidenceSorter* coincidenceSorter = new GateCoincidenceSorter(digitizerMng,"Coincidences");
+  digitizerMng->AddNewCoincidenceSorter(coincidenceSorter);
   
 #ifdef GATE_USE_LMF
 

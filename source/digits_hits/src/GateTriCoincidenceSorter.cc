@@ -131,11 +131,13 @@ void GateTriCoincidenceSorter::RegisterTCSingles(GatePulseList& sPulseList)
 
    GatePulseConstIterator itr;
    for (itr = sPulseList.begin() ; itr != sPulseList.end() ; ++itr) {
-      GateSingleDigi* Digi = new GateSingleDigi((*itr));
+
+	   //TODO GND 2022 SingleDigi->Digi
+	   /*GateSingleDigi* Digi = new GateSingleDigi((*itr));
       m_sBuffer.Fill(Digi);
       m_sTree->Fill();
       delete Digi;
-
+*/
    }
 
    m_triCoincID++;

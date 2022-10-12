@@ -12,7 +12,7 @@
 #ifdef G4ANALYSIS_USE_FILE
 
 #include "GateOutputMgr.hh"
-#include "GateCoincidenceDigi.hh"
+#include "GateCoincidenceDigiOld.hh"
 
 #include "G4UIdirectory.hh"
 #include "G4UIcmdWithAString.hh"
@@ -118,7 +118,7 @@ void GateToASCIIMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
       maskVector.push_back(tempBool);
       //      G4cout << "[GateToASCIIMessenger::SetNewValue] iMask: " << iMask << " maskVector[iMask]: " << maskVector[iMask] << Gateendl;
     }
-    GateCoincidenceDigi::SetCoincidenceASCIIMask( maskVector );
+    GateCoincidenceDigiOld::SetCoincidenceASCIIMask( maskVector );
 
   } else if (command == SingleMaskCmd) {
 

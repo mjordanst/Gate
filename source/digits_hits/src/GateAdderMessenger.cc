@@ -19,16 +19,12 @@ See LICENSE.md for further details
 
 
 GateAdderMessenger::GateAdderMessenger (GateAdder* adder)
-:GateClockDependentMessenger(adder) , m_Adder(adder)
+:GateClockDependentMessenger(adder), m_Adder(adder)
 {
 	G4String guidance;
 	G4String cmdName;
 
-	G4String inputCollName=adder->GetCollectionName(0);
-
-    G4String DirectoryName = "/gate/digitizerMng/digitizer/"+inputCollName+"/adder/";
-
-    cmdName = DirectoryName+"positionPolicy";
+    cmdName = GetDirectoryName()+"positionPolicy";
     positionPolicyCmd = new G4UIcmdWithAString(cmdName,this);
     positionPolicyCmd->SetGuidance("How to generate position");
     positionPolicyCmd->SetCandidates("energyWeightedCentroid takeEnergyWinner");
@@ -38,7 +34,7 @@ GateAdderMessenger::GateAdderMessenger (GateAdder* adder)
 
 GateAdderMessenger::~GateAdderMessenger()
 {
-	delete  positionPolicyCmd;
+	delete positionPolicyCmd;
 }
 
 
@@ -48,10 +44,10 @@ void GateAdderMessenger::SetNewValue(G4UIcommand * aCommand,G4String aString)
 	      {
 			m_Adder->SetPositionPolicy(aString);
 	      }
-	    else
-	    {
-	    	GateClockDependentMessenger::SetNewValue(aCommand,aString);
-	    }
+	else
+	{
+		GateClockDependentMessenger::SetNewValue(aCommand,aString);
+	}
 }
 
 

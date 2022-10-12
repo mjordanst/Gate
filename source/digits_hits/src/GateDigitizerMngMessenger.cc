@@ -18,15 +18,13 @@
 #include "G4UIcmdWith3Vector.hh"
 #include "G4UIcmdWith3VectorAndUnit.hh"
 
-#include "GatePulseProcessorChain.hh"
 #include "GateCoincidenceSorter.hh"
-#include "GateCoincidencePulseProcessorChain.hh"
 
 // Constructor
 GateDigitizerMngMessenger::GateDigitizerMngMessenger(GateDigitizerMng* itsDigitizerMng)
 : GateClockDependentMessenger(itsDigitizerMng)
 {
-  //G4cout << " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!DEBUT Constructor GateDigitizerMngMessenger \n";
+  //G4cout << " DEBUT Constructor GateDigitizerMngMessenger \n";
 
   const G4String& elementTypeName = itsDigitizerMng->GetElementTypeName();
 
@@ -81,7 +79,6 @@ GateDigitizerMngMessenger::~GateDigitizerMngMessenger()
 // UI command interpreter method
 void GateDigitizerMngMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 {
-	G4cout<<"!!!!!!!!!!!!!!!!!!!GateDigitizerMngMessenger::SetNewValue "<< newValue<<G4endl;
   if( command==DefineNameCmd )
     { m_newCollectionName = newValue; }
   else if( command==pInsertCmd )
@@ -89,7 +86,7 @@ void GateDigitizerMngMessenger::SetNewValue(G4UIcommand* command,G4String newVal
   else if( command==ListChoicesCmd )
     { ListChoices(); }
   else if( command==ListCmd )
-    { GetDigitizerMng()->ListElements(); }
+    { GetDigitizerMng()->ShowSummary(); }
   else
     GateClockDependentMessenger::SetNewValue(command,newValue);
 }
@@ -99,7 +96,7 @@ void GateDigitizerMngMessenger::SetNewValue(G4UIcommand* command,G4String newVal
 
 const G4String& GateDigitizerMngMessenger::DumpMap()
 {
-  static G4String theList = "singleChain coincidenceSorter coincidenceChain";
+  static G4String theList = "SinglesDigitizer CoincidenceSorter coincidenceChain";
   return theList;
 }
 
@@ -108,19 +105,21 @@ const G4String& GateDigitizerMngMessenger::DumpMap()
 
 void GateDigitizerMngMessenger::DoInsertion(const G4String& childTypeName)
 {
-	G4cout<<"GateDigitizerMngMessenger::DoInsertion "<<childTypeName<<G4endl;
-  if (GetNewCollectionName().empty())
+//	G4cout<<"GateDigitizerMngMessenger::DoInsertion "<<childTypeName<<G4endl;
+
+	if (GetNewCollectionName().empty())
     SetNewCollectionName(childTypeName);
 
   AvoidNameConflicts();
 
   if (childTypeName=="SinglesDigitizer") {
     GetDigitizerMng()->AddNewSinglesDigitizer( new GateDigitizer(GetDigitizerMng(),GetNewCollectionName()) );
- /* } else if (childTypeName=="coincidenceSorter") {
-    GetDigitizerMng()->StoreNewCoincidenceSorter( new GateCoincidenceSorter(GetDigitizer(),GetNewInsertionBaseName(),10.*ns) );
-  } else if (childTypeName=="coincidenceChain") {
+  } else if (childTypeName=="CoincidenceSorter") {
+	  // One CoinSorter per System! Defined in the constructor of the system ! Only its parameters should be defiend with CS messenger
+	 GetDigitizerMng()->AddNewCoincidenceSorter( new GateCoincidenceSorter(GetDigitizerMng(),GetNewCollectionName()) );
+  }/* else if (childTypeName=="coincidenceChain") {
     GetDigitizerMng()->StoreNewCoincidenceProcessorChain( new GateCoincidencePulseProcessorChain(GetDigitizer(),GetNewInsertionBaseName()) );
-  */}
+  *///}
    else {
     G4cout << "Digitizer module type name '" << childTypeName << "' was not recognised --> insertion request must be ignored!\n";
     return;
@@ -134,11 +133,10 @@ void GateDigitizerMngMessenger::DoInsertion(const G4String& childTypeName)
 
 //  Check whether there may be a name conflict between a new
 //  attachment and an already existing one
-G4bool GateDigitizerMngMessenger::CheckNameConflict(const G4String& newBaseName)
+G4bool GateDigitizerMngMessenger::CheckNameConflict(const G4String& newName)
 {
   // Check whether an object with the same name already exists in the list
-	//TODO : FindElementByBaseName
-  return (1); //GetDigitizerMng()->FindElementByBaseName(newBaseName) != 0 ) ;
+  return (GetDigitizerMng()->FindElement(newName) != 0 ) ;
 }
 
 

@@ -28,7 +28,6 @@ See LICENSE.md for further details
 #include "G4SystemOfUnits.hh"
 
 class GateHit;
-class GateSingleDigi;
 class GateDigi;
 class GateCoincidenceDigi;
 
@@ -238,7 +237,7 @@ class GateRootSingleBuffer
     inline virtual ~GateRootSingleBuffer() {} 	      	  //!< Public destructor
 
     void Clear();     	      	      	      	  //!< Reset the fields of the structure
-    void Fill(GateSingleDigi* aDigi);
+    void Fill(GateDigi* aDigi);
     //OK GND 2022
     void FillGND(GateDigi* aDigi);
 

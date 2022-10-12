@@ -33,14 +33,30 @@ GateVDigitizerModule::GateVDigitizerModule(G4String name, GateDigitizer *digitiz
   :G4VDigitizerModule(name),
    GateClockDependent(name),
    m_digitizer(digitizer)//,
-  // m_digitizerModuleName(name)
+  // m_DMname(name)
  {
-	G4cout<<"GateVDigitizerModule::GateVDigitizerModule"<<G4endl;
+	//G4cout<<"GateVDigitizerModule::GateVDigitizerModule "<<this->GetName()<<G4endl;
   //G4String colName =  m_digitizer->m_digitizerName;
   //collectionName.push_back(colName);
   //fMessenger = new GateVDigitizerModuleMessenger(this);
 
 }
+
+GateVDigitizerModule::GateVDigitizerModule(G4String name)
+  :G4VDigitizerModule(name),
+   GateClockDependent(name)//,
+  // m_DMname(name)
+ //  m_digitizerMng(digitizerMng)//,
+  // m_digitizerModuleName(name)
+ {
+	//G4cout<<"GateVDigitizerModule::GateVDigitizerModule"<<G4endl;
+  //G4String colName =  m_digitizer->m_digitizerName;
+  //collectionName.push_back(colName);
+  //fMessenger = new GateVDigitizerModuleMessenger(this);
+
+}
+
+
 
 GateVDigitizerModule::~GateVDigitizerModule()
 {
@@ -64,7 +80,7 @@ G4int GateVDigitizerModule::InputCollectionID()
 	G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
 
 	G4String outputCollNameTMP = GetName() +"/"+(m_digitizer->m_digitizerName);
-
+	//G4cout<<outputCollNameTMP<<G4endl;
 	G4int DCID = -1;
 
 	if(DCID<0)
@@ -75,20 +91,45 @@ G4int GateVDigitizerModule::InputCollectionID()
 	//check if this module is the first in this digitizer
 	if ( m_digitizer->m_DMlist[0] == this)
 	{
-		//check if the module is called first time in a run /i.e. first after InitializationModule
-		if((DCID-1)==0)
-		{
-		 DCID=DCID-1;
-		}
-		else
-		{
-		G4String inputCollectionName = m_digitizer->GetInputName();
-		GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
-		GateDigitizer* inputDigitizer = digitizerMng->FindDigitizer(inputCollectionName);
+		//check if the digitizerMng has a CoincideceSorter
+			if (DigiMan->GetDigiCollectionID("Coincidences")==1)
+			{
+			//G4cout<<"there are coincidences"<<G4endl;
+			//check if the module is called first time in a run /i.e. first after InitializationModule
+				if((DCID-2)==0)
+				{
+					DCID=DCID-2;
+				}
+				else
+						{
+							//find the last ID of input Digitizer
+							G4String inputCollectionName = m_digitizer->GetInputName();
+							GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
+							GateDigitizer* inputDigitizer = digitizerMng->FindDigitizer(inputCollectionName);
 
-		DCID=inputDigitizer->m_outputDigiCollectionID;
+							DCID=inputDigitizer->m_outputDigiCollectionID;
+							//G4cout<<inputCollectionName<<DCID<<G4endl;
+						}
+			}
+			//check if the module is called first time in a run /i.e. first after InitializationModule
+			else
+			{
+				if ((DCID-1)==0)
+					{
+					DCID=DCID-1;
+					}
+				else
+						{
+							//find the last ID of input Digitizer
+							G4String inputCollectionName = m_digitizer->GetInputName();
+							GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
+							GateDigitizer* inputDigitizer = digitizerMng->FindDigitizer(inputCollectionName);
 
-		}
+							DCID=inputDigitizer->m_outputDigiCollectionID;
+							//G4cout<<inputCollectionName<<DCID<<G4endl;
+						}
+			}
+
 
 	}
 	//if not the first get the previous collection ID -> sequential processing
@@ -101,7 +142,6 @@ G4int GateVDigitizerModule::InputCollectionID()
 	{
       G4Exception( "GateVDigitizerModule::InputCollectionID", "InputCollectionID", FatalException, "Something wrong with collection ID. Please, contact olga[dot]kochebina[at]cea.fr. Abort.\n");
 	}
-
 
  return DCID;
 }

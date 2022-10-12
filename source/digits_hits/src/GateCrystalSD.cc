@@ -27,9 +27,11 @@
 #include "GateEccentRotMove.hh"
 #include "GateSystemListManager.hh"
 #include "GateVVolume.hh"
-#include "GateDigitizerOld.hh"
+
 //OK GND 2022
 #include "GateDigitizer.hh"
+#include "GateDigitizerMng.hh"
+
 
 #include "GateObjectStore.hh"
 #include "GateEmittedGammaInformation.hh"
@@ -43,7 +45,7 @@ const G4String GateCrystalSD::theCrystalCollectionName = "crystalCollection"; //
 GateCrystalSD::GateCrystalSD(const G4String& name)
 :G4VSensitiveDetector(name),m_system(0)
 {
-
+	 G4cout<<"GateCrystalSD::GateCrystalSD "<< name<<G4endl;
 	//collectionName.insert(theCrystalCollectionName);
 	//OK GND 2022
 	collectionName.insert(name);
@@ -296,17 +298,7 @@ G4int GateCrystalSD::PrepareCreatorAttachment(GateVVolume* aCreator)
 //------------------------------------------------------------------------------
 
 
-//------------------------------------------------------------------------------
-//mhadi_obso[ //! This method is no longer used.
-// Set the system to which the SD is attached
-void GateCrystalSD::SetSystem(GateVSystem* aSystem)
-{
-  m_system=aSystem;
-//Seb Modif 24/02/2009
-  //TODO GND
-  //GateDigitizerOld::GetInstance()->SetSystem(aSystem);
-}
-//mhadi_obso]
+
 //------------------------------------------------------------------------------
 // The next three methods were added for the multi-system approach
 
@@ -314,11 +306,7 @@ void GateCrystalSD::SetSystem(GateVSystem* aSystem)
 void GateCrystalSD::AddSystem(GateVSystem* aSystem)
 {
    m_systemList->push_back(aSystem);
-   //TODO GND
-   // GateDigitizerOld::GetInstance()->AddSystem(aSystem);
-
-   //OK GND 2022
-   //GateDigitizer::GetInstance()->AddSystem(aSystem);
+   GateDigitizerMng::GetInstance()->AddSystem(aSystem);
 }
 //------------------------------------------------------------------------------
 

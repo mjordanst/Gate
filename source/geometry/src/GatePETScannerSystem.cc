@@ -12,7 +12,7 @@ See LICENSE.md for further details
 #include "G4UnitsTable.hh"
 
 #include "GateClockDependentMessenger.hh"
-#include "GateDigitizerOld.hh"
+#include "GateDigitizerMng.hh"
 #include "GateCoincidenceSorter.hh"
 
 // Constructor
@@ -22,8 +22,13 @@ GatePETScannerSystem::GatePETScannerSystem(const G4String& itsName)
 
   G4cout << " Constructeur GatePETScannerSystem \n";
   // Integrate a coincidence sorter into the digitizer
-  G4double coincidenceWindow = 10.* ns;
+ /* G4double coincidenceWindow = 10.* ns;
   GateDigitizerOld* digitizer = GateDigitizerOld::GetInstance();
   GateCoincidenceSorter* coincidenceSorter = new GateCoincidenceSorter(digitizer,"Coincidences",coincidenceWindow);
   digitizer->StoreNewCoincidenceSorter(coincidenceSorter);
+    */
+  //OK GND 2022
+  GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
+  GateCoincidenceSorter* coincidenceSorter = new GateCoincidenceSorter(digitizerMng,"Coincidences");
+  digitizerMng->AddNewCoincidenceSorter(coincidenceSorter);
 }

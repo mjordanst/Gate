@@ -14,7 +14,7 @@
   The purpose of this class is to help to create new users digitizer module(DM).
 
    - Create your DM by coping this class and GateDummyDigitizerMessenger class for your DM messenger
-   - Places to change are marked with //****** comment and called with "dummy" names
+   - Places to change are marked with // ****** comment and called with "dummy" names
    - Include your module to GateDigitizerMessenger in the method DoInsertion(..)
 
 	If you adapting some already exiting class from Old Gate Digitizer here is some of the tips
@@ -46,20 +46,20 @@
 
 
 
-GateDummyDigitizerModule::GateDummyDigitizerModule(G4String name, GateDigitizer *digitizer)
-  :GateVDigitizerModule(name,digitizer),
+GateDummyDigitizerModule::GateDummyDigitizerModule(GateDigitizer *digitizer)
+  :GateVDigitizerModule("digitizerMng/SinglesDigitizer/"+digitizer->m_digitizerName+"/dummy",digitizer),
    m_parameter("dummy")
  {
 	G4String colName = digitizer->m_digitizerName;
 	collectionName.push_back(colName);
-	fMessenger = new GateDummyDigitizerModuleMessenger(this);
+	m_Messenger = new GateDummyDigitizerModuleMessenger(this);
 	m_digitizer=digitizer;
 }
 
 
 GateDummyDigitizerModule::~GateDummyDigitizerModule()
 {
-  delete fMessenger;
+  delete m_Messenger;
 }
 
 
@@ -67,10 +67,9 @@ void GateDummyDigitizerModule::Digitize()
 {
 
 	G4String digitizerName = m_digitizer->m_digitizerName;
-	G4String inputCollName = m_digitizer->GetInputName();
 	G4String outputCollName = digitizerName;
 
-	OutputDigiCollection = new GateDigiCollection("GateDummyDigitizerModule",outputCollName); // to create the Digi Collection
+	m_OutputDigiCollection = new GateDigiCollection("GateDummyDigitizerModule",outputCollName); // to create the Digi Collection
 
 	G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
 
@@ -82,9 +81,18 @@ void GateDummyDigitizerModule::Digitize()
 
 	GateDigi* inputDigi = new GateDigi();
 
-	std::vector< GateDigi* >* OutputDigiCollectionVector = OutputDigiCollection->GetVector ();
+	std::vector< GateDigi* >* OutputDigiCollectionVector = m_OutputDigiCollection->GetVector ();
 	std::vector<GateDigi*>::iterator iter;
 
+/*
+	 if (nVerboseLevel==1)
+			    {
+			    	G4cout << "[ GateDummyDigitizerModule::Digitize]: returning output digi-list with " << m_OutputDigiCollection->entries() << " entries\n";
+			    	for (long unsigned int k=0; k<m_OutputDigiCollection->entries();k++)
+			    		G4cout << *(*IDC)[k] << Gateendl;
+			    		G4cout << Gateendl;
+			    }
+	*/
 
   if (IDC)
      {
@@ -94,10 +102,10 @@ void GateDummyDigitizerModule::Digitize()
 	  for (G4int i=0;i<n_digi;i++)
 	  {
 		  inputDigi=(*IDC)[i];
-		  //****** the following part of the code to adapt
-		  ///*** This part is from ProcessPulseList
+		  // ***** the following part of the code to adapt
+		  /// *** This part is from ProcessPulseList
 
-		  //////** This part is from ProcessOnePulse
+		  ////// ** This part is from ProcessOnePulse
 		     for (iter=OutputDigiCollectionVector->begin(); iter!= OutputDigiCollectionVector->end() ; ++iter)
 		     {
 		    	 if ( (*iter)->GetVolumeID()   == inputDigi->GetVolumeID() )
@@ -130,10 +138,10 @@ void GateDummyDigitizerModule::Digitize()
 		 		 << "Resulting pulse is: \n"
 		 		 << *m_outputDigi << Gateendl << Gateendl ;
 		      /// !!!!!! The following line should be kept !!!! -> inserts the outputdigi to collection
-
+		       m_OutputDigiCollection->insert(m_outputDigi);
 
 		     }
-		 //////** End of the part from ProcessOnePulse
+		 ////// ** End of the part from ProcessOnePulse
 
 
 		if (nVerboseLevel==1) {
@@ -142,10 +150,10 @@ void GateDummyDigitizerModule::Digitize()
 				G4cout << **iter << Gateendl;
 			G4cout << Gateendl;
 		}
-	///*** End of the part from ProcessPulseList
+	/// *** End of the part from ProcessPulseList
 	  }
     }
-  StoreDigiCollection(OutputDigiCollection);
+  StoreDigiCollection(m_OutputDigiCollection);
 
 }
 
@@ -165,15 +173,6 @@ void GateDummyDigitizerModule::DummyMethod1(GateDigi *right)
 	//to copy all variables that are not changed
 	m_outputDigi=right;
 
-	// do your changes in output digi in the way shown below
-   /* // AE : Added in a real pulse no sense
-    m_outputDigi->m_Postprocess="NULL";         // PostStep process
-    m_outputDigi->m_energyIniTrack=0;         // Initial energy of the track
-    m_outputDigi->m_energyFin=0;         // final energy of the particle
-    m_outputDigi->m_processCreator="NULL";
-    m_outputDigi->m_trackID=0;
-    //-----------------
-    */
 
 }
 
@@ -182,15 +181,6 @@ void GateDummyDigitizerModule::DummyMethod2(GateDigi *right)
 	//to copy all variables that are not changed
 	m_outputDigi=right;
 
-	// do your changes in output digi in the way shown below
-   /* // AE : Added in a real pulse no sense
-    m_outputDigi->m_Postprocess="NULL";         // PostStep process
-    m_outputDigi->m_energyIniTrack=0;         // Initial energy of the track
-    m_outputDigi->m_energyFin=0;         // final energy of the particle
-    m_outputDigi->m_processCreator="NULL";
-    m_outputDigi->m_trackID=0;
-    //-----------------
-    */
 
 }
 

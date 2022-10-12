@@ -178,6 +178,16 @@ public:
        }
        //--------------------------------------------------------------------------------
 
+	public:
+       static void SetSingleASCIIMask(G4bool);
+       static void SetSingleASCIIMask(std::vector<G4bool>);
+       static std::vector<G4bool> GetSingleASCIIMask();
+       static G4bool GetSingleASCIIMask(G4int index);
+
+	protected:
+       static std::vector<G4bool> m_singleASCIIMask;
+       static G4bool                m_singleASCIIMaskDefault;
+
 
 public:
   G4int m_runID;      	      	  //!< runID
@@ -233,7 +243,6 @@ public:
 
 
 typedef G4TDigiCollection<GateDigi> GateDigiCollection;
-//typedef typename GateDigiCollection::const_iterator const_iterator;
 
 extern G4Allocator<GateDigi> GateDigiAllocator;
 

@@ -10,23 +10,25 @@
 /*!
   \class  GateReadout
 
-  This class is not used by GATE !
-  The purpose of this class is to help to create new users digitizer module(DM).
+ S. Stute - June 2014: complete redesign of the readout module and add a new policy to emulate PMT.
+    - Fix bug in choosing the maximum energy pulse.We now have some temporary lists of variables to deal
+      with the output pulses. These output pulses are only created at the end of the method. In previous
+      versions, the output pulse was accumulating energy as long as input pulses were merged together, but
+      the problem is that the comparison of energy was done between the input pulse and this output pulse
+      with increasing energy. So with more than 2 pulses to be merged together, the behaviour was undefined.
+    - Move all the processing into the upper method ProcessPulseList instead of using the mother version
+      working into the ProcessOnePulse method. Thus the ProcessOnePulse in this class is not used anymore.
+    - Create policy choice: now we can choose via the messenger between EnergyWinner and EnergyCentroid.
+    - For the EnergyCentroid policy, the centroid position is computed using the crystal indices in each
+      direction, doing the computation with floating point numbers, and then casting the result into
+      integer indices. Using that method, we ensure the centroid position to be in a crystal (if we work
+      with global position, we can fall between two crystals in the presence of gaps).
+      The depth is ignored with this strategy; it is forced to be at one level above the 'crystal' level.
+      If there a 'layer' level below the 'crystal' level, an energy winner strategy is adopted.
 
-   - Create your DM by coping this class and GateDummyDigitizerMessenger class for your DM messenger
-   - Places to change are marked with //****** comment and called with "dummy" names
-   - Include your module to GateDigitizerMessenger in the method DoInsertion(..)
+  O. Kochebina - April 2022: new messenger options are added and some minor bugs corrected
 
-	If you adapting some already exiting class from Old Gate Digitizer here is some of the tips
-	- Digitize () is a fusion of GateVdigiProcessor::ProcessdigiList and GateXXX::ProcessOnedigi
-	- digi --> Digi
-	- OutputDigiCollection --> v_OutputDigiCollection
-	- inputDigi-->inputDigi
-	- m_outputDigi --> m_m_outputDigi
-
-
-  !!!! DO NOT FORGET TO WRITE A SHORT EXPLANATION ON WHAT DOES YOUR DM !!!!
-	The example is also given in .hh
+  O. Kochebina - September 2022: passing to GND
 */
 
 #include "GateReadout.hh"
@@ -49,13 +51,13 @@
 #include "GateVSystem.hh"
 
 
-GateReadout::GateReadout(G4String name, GateDigitizer *digitizer)
-  :GateVDigitizerModule(name,digitizer),
+GateReadout::GateReadout(GateDigitizer *digitizer)
+  :GateVDigitizerModule("digitizerMng/SinglesDigitizer/"+digitizer->m_digitizerName+"/readout",digitizer),
    m_depth(0),
    m_policy("TakeEnergyWinner"),
    m_IsFirstEntrance(1)
  {
-	m_messenger = new GateReadoutMessenger(this);
+
 	// S. Stute: These variables are used for the energy centroid strategy
 	m_nbCrystalsX  = -1;
 	m_nbCrystalsY  = -1;
@@ -65,9 +67,11 @@ GateReadout::GateReadout(G4String name, GateDigitizer *digitizer)
 	m_systemDepth  = -1;
 	m_system = NULL;
 	m_crystalComponent = NULL;
+	m_IsForcedDepthCentroid = false;
 
 	G4String colName = digitizer->m_digitizerName;
 	collectionName.push_back(colName);
+	m_messenger = new GateReadoutMessenger(this);
 	m_digitizer=digitizer;
 }
 
@@ -153,13 +157,12 @@ void GateReadout::SetReadoutParameters()
 			// Find useful stuff for centroid based computation
 			//m_policy = "TakeEnergyCentroid";
 			// Get the system
-			//TODO: find where system is set for PulseProcChain!!!
 			GateVSystem* m_system = this->GetDigitizer()->GetSystem();
-			if (m_system==NULL) G4Exception( "GateReadout::ProcessdigiList", "ProcessdigiList", FatalException,
+			if (m_system==NULL) G4Exception( "GateReadout::Digitize", "Digitize", FatalException,
 					"Failed to get the system corresponding to that processor chain. Abort.\n");
 			// Get the array component corresponding to the crystal level using the name 'crystal'
 			GateArrayComponent* m_crystalComponent = m_system->FindArrayComponent("crystal");
-			if (m_crystalComponent==NULL) G4Exception( "GateReadout::ProcessdigiList", "ProcessdigiList", FatalException,
+			if (m_crystalComponent==NULL) G4Exception( "GateReadout::Digitize", "Digitize", FatalException,
 												  "Failed to get the array component corresponding to the crystal. Abort.\n");
 			// Get the number of crystals in each direction
 			m_nbCrystalsZ  = m_crystalComponent->GetRepeatNumber(2);
@@ -167,10 +170,8 @@ void GateReadout::SetReadoutParameters()
 			m_nbCrystalsX  = m_crystalComponent->GetRepeatNumber(0);
 			m_nbCrystalsXY = m_nbCrystalsX * m_nbCrystalsY;
 			if (m_nbCrystalsX<1 || m_nbCrystalsY<1 || m_nbCrystalsZ<1)
-				G4Exception( "GateReadout::ProcessdigiList", "ProcessdigiList", FatalException,
+				G4Exception( "GateReadout::Digitize", "Digitize", FatalException,
 						"Crystal repeater numbers are wrong !\n");
-			//G4cout << "[" << GetObjectName() << "] -> Found crystal array with associated repeater: ["
-			//       << m_nbCrystalsX << ";" << m_nbCrystalsY << ";" << m_nbCrystalsZ << "]\n";
 			// Get tree depth of the system
 			m_systemDepth = m_system->GetTreeDepth();
 			//G4cout << "  Depth of the system: " << m_systemDepth << Gateendl;
@@ -182,7 +183,7 @@ void GateReadout::SetReadoutParameters()
 				this_component = this_component->GetChildComponent(0);
 				m_crystalDepth++;
 			}
-			if (this_component!=m_crystalComponent) G4Exception( "GateReadout::ProcessdigiList", "ProcessdigiList", FatalException,
+			if (this_component!=m_crystalComponent) G4Exception( "GateReadout::Digitize", "Digitize", FatalException,
 																	"Failed to get the system depth corresponding to the crystal. Abort.\n");
 			// Now force m_depth to be right above the crystal depth
 			//m_depth = m_crystalDepth - 1;
@@ -205,126 +206,118 @@ void GateReadout::SetReadoutParameters()
 
 void GateReadout::Digitize()
 {
-  G4cout<<" GateReadout::Digitize"<<G4endl;
+  //G4cout<<" GateReadout::Digitize "<< m_IsFirstEntrance <<G4endl;
 
-	G4String digitizerName = m_digitizer->m_digitizerName;
-	G4String inputCollName = m_digitizer->GetInputName();
-	G4String outputCollName = digitizerName;
+  G4String digitizerName = m_digitizer->m_digitizerName;
+  G4String outputCollName = digitizerName;
 
-	OutputDigiCollection = new GateDigiCollection("GateReadout",outputCollName); // to create the Digi Collection
+  m_OutputDigiCollection = new GateDigiCollection("GateReadout",outputCollName); // to create the Digi Collection
 
-	G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
-
-	G4String outputCollNameTMP="GateReadout/"+outputCollName;
+  G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
+  G4String outputCollNameTMP="GateReadout/"+outputCollName;
 
 
-	GateDigiCollection* IDC = 0;
-	IDC = (GateDigiCollection*) (DigiMan->GetDigiCollection( InputCollectionID() ));
+  GateDigiCollection* IDC = 0;
+  IDC = (GateDigiCollection*) (DigiMan->GetDigiCollection( InputCollectionID() ));
 
-	GateDigi* inputDigi = new GateDigi();
+  GateDigi* inputDigi = new GateDigi();
 
-	std::vector< GateDigi* >* OutputDigiCollectionVector = OutputDigiCollection->GetVector ();
-	std::vector<GateDigi*>::iterator iter;
 
-    // S. Stute: these variables are used for the energy centroid policy
-	G4double* final_time = NULL;
-	G4double* final_crystal_posX = NULL;
-	G4double* final_crystal_posY = NULL;
-	G4double* final_crystal_posZ = NULL;
-	G4double* final_energy = NULL;
-	G4int* final_nb_digi = NULL;
-	GateDigi** final_digi = NULL;
+  if (!IDC)
+	  return;
 
-	G4int final_nb_out_digi = 0;
+  G4int n_digi = IDC->entries();
+  	  if (nVerboseLevel>1)
+  		  G4cout << "[GateReadout::Digitize]: processing input list with " << n_digi << " entries\n";
 
-  if (IDC)
-     {
-	  G4int n_digi = IDC->entries();
-	  //if (nVerboseLevel>1)
-	  	  G4cout << "[" << GetObjectName() << "::Digitize]: processing input list with " << n_digi << " entries\n";
-	  G4cout<<"n_digi "<<n_digi<<G4endl;
-	  //loop over input digits
+  // S. Stute: these variables are used for the energy centroid policy
+  G4double* final_time = NULL;
+  G4double* final_crystal_posX = NULL;
+  G4double* final_crystal_posY = NULL;
+  G4double* final_crystal_posZ = NULL;
+  G4double* final_energy = NULL;
+  G4int* final_nb_digi = NULL;
+  GateDigi** final_digi = NULL;
+
+  G4int final_nb_out_digi = 0;
+
+
+  if(m_IsFirstEntrance) //set parameters at the first iteration
+  {
+	  SetReadoutParameters();
+	  m_IsFirstEntrance=0;
+  }
+
+  // S. Stute: these variables are used for the energy centroid policy
+  final_time = NULL;
+  final_crystal_posX = NULL;
+  final_crystal_posY = NULL;
+  final_crystal_posZ = NULL;
+  final_energy = NULL;
+  final_nb_digi = NULL;
+  final_digi = NULL;
+
+  if (m_policy=="TakeEnergyCentroid")
+  {
+	  final_time         = (G4double*)calloc(n_digi,sizeof(G4double));
+	  final_crystal_posX = (G4double*)calloc(n_digi,sizeof(G4double));
+	  final_crystal_posY = (G4double*)calloc(n_digi,sizeof(G4double));
+	  final_crystal_posZ = (G4double*)calloc(n_digi,sizeof(G4double));
+	  final_nb_digi    = (G4int*)calloc(n_digi,sizeof(G4int));
+  }
+  // S. Stute: we need energy to sum up correctly for all output digi and affect only at the end.
+  //           In previous versions, even for take Winner, the energy was affected online so the
+  //           final digi was not the winner in all cases.
+  final_energy = (G4double*)calloc(n_digi,sizeof(G4double));
+  final_digi = (GateDigi**)calloc(n_digi,sizeof(GateDigi*));
+  final_nb_out_digi = 0;
+
+
+  // Start loop on input pulses
 	  for (G4int i=0;i<n_digi;i++)
 	  {
 		  inputDigi=(*IDC)[i];
-		  //****** the following part of the code to adapt
 
-
-		  if(m_IsFirstEntrance) //set parameters at the first iteration
-		  	{
-		  		SetReadoutParameters();
-		  		m_IsFirstEntrance=0;
-		  	}
-
-
-
+		  /*G4cout << "[GateReadout::Digitize]: input hit  \n"
+		  		                 <<  *inputDigi << G4endl;
+		  G4cout << "[GateReadout::Digitize]: first entrance "
+		 		  		                 <<  m_IsFirstEntrance << G4endl;
 		    //G4cout<<"Policy "<< m_policy<< " "<< m_depth<<" "<< m_resultingXY<<" "<< m_resultingZ<<Gateendl;
+*/
+		  const GateOutputVolumeID& blockID = inputDigi->GetOutputVolumeID().Top(m_depth);
 
-		    // S. Stute: these variables are used for the energy centroid policy
-		    final_time = NULL;
-		    final_crystal_posX = NULL;
-		    final_crystal_posY = NULL;
-		    final_crystal_posZ = NULL;
-		    final_energy = NULL;
-		    final_nb_digi = NULL;
-		    final_digi = NULL;
-		    if (m_policy=="TakeEnergyCentroid")
-		    {
-		      final_time         = (G4double*)calloc(n_digi,sizeof(G4double));
-		      final_crystal_posX = (G4double*)calloc(n_digi,sizeof(G4double));
-		      final_crystal_posY = (G4double*)calloc(n_digi,sizeof(G4double));
-		      final_crystal_posZ = (G4double*)calloc(n_digi,sizeof(G4double));
-		      final_nb_digi    = (G4int*)calloc(n_digi,sizeof(G4int));
-		    }
-		    // S. Stute: we need energy to sum up correctly for all output digi and affect only at the end.
-		    //           In previous versions, even for take Winner, the energy was affected online so the
-		    //           final digi was not the winner in all cases.
-		    final_energy = (G4double*)calloc(n_digi,sizeof(G4double));
-		    final_digi = (GateDigi**)calloc(n_digi,sizeof(GateDigi*));
-		    final_nb_out_digi = 0;
+		  if (blockID.IsInvalid())
+		  {
+			  if (nVerboseLevel>1)
+			  G4cout << "[GateReadout::Digitize]: out-of-block hit for \n"
+					  <<  *inputDigi << Gateendl
+					  << " -> digi ignored\n\n";
+			  continue;
+		   }
 
-		    // Start loop on input digi
-		   // G4cout<<"OutputDigiCollectionVector->size() "<<OutputDigiCollectionVector->size()<<G4endl;
-		//for (iter=OutputDigiCollectionVector->begin(); iter!= OutputDigiCollectionVector->end() ; ++iter)
-		 //  		{
-		   // for (iterIn = inputDigiList->begin() ; iterIn != inputDigiList->end() ; ++iterIn)
-		   // {
-		   //   GateDigi* inputDigi = *iterIn;
+		  // Loop inside the temporary output list to see if we have one digi with same blockID as input
+		  int this_output_digi = 0;
+		  for (this_output_digi=0; this_output_digi<final_nb_out_digi; this_output_digi++)
+			  if (final_digi[this_output_digi]->GetOutputVolumeID().Top(m_depth) == blockID) break;
 
-		      const GateOutputVolumeID& blockID = inputDigi->GetOutputVolumeID().Top(m_depth);
-
-		      if (blockID.IsInvalid())
-		      {
-		       if (nVerboseLevel>1)
-		          G4cout << "[GateReadout::Digitize]: out-of-block hit for \n"
-		                 <<  *inputDigi << Gateendl
-		                 << " -> digi ignored\n\n";
-		        continue;
-		      }
-
-		      // Loop inside the temporary output list to see if we have one digi with same blockID as input
-		      int this_output_digi = 0;
-		      for (this_output_digi=0; this_output_digi<final_nb_out_digi; this_output_digi++)
-		        if (final_digi[this_output_digi]->GetOutputVolumeID().Top(m_depth) == blockID) break;
-
-		      // Case: we found an output digi with same blockID
-		      if ( this_output_digi!=final_nb_out_digi )
-		      {
-		        // --------------------------------------------------------------------------------
-		        // WinnerTakeAllPolicy (APD like)
-		        // --------------------------------------------------------------------------------
-		        if (m_policy=="TakeEnergyWinner")
-		        {
-		          // If energy is higher then replace the digi by the new one
-		          if ( inputDigi->GetEnergy() > final_digi[this_output_digi]->GetEnergy() ) final_digi[this_output_digi] = inputDigi;
-		          final_energy[this_output_digi] += inputDigi->GetEnergy();
-		        }
-		        // --------------------------------------------------------------------------------
-		        // EnergyCentroidPolicy1 (like block PMT)
-		        // --------------------------------------------------------------------------------
-		        else if (m_policy=="TakeEnergyCentroid") // Crystal element is considered to be the deepest element
-		        {
-		          // First, if the energy of this digi is higher than the previous one, take it as the reference
+		  // Case: we found an output digi with same blockID
+		  if ( this_output_digi!=final_nb_out_digi )
+		  {
+			  // --------------------------------------------------------------------------------
+			  // WinnerTakeAllPolicy (APD like)
+			  // --------------------------------------------------------------------------------
+			  if (m_policy=="TakeEnergyWinner")
+			  {
+				  // If energy is higher then replace the digi by the new one
+				  if ( inputDigi->GetEnergy() > final_digi[this_output_digi]->GetEnergy() ) final_digi[this_output_digi] = inputDigi;
+		          	  final_energy[this_output_digi] += inputDigi->GetEnergy();
+		       }
+			  // --------------------------------------------------------------------------------
+			  // EnergyCentroidPolicy1 (like block PMT)
+			  // --------------------------------------------------------------------------------
+			  else if (m_policy=="TakeEnergyCentroid") // Crystal element is considered to be the deepest element
+			  {
+				  // First, if the energy of this digi is higher than the previous one, take it as the reference
 		          // in order to have an EnergyWinner policy at levels below the crystal, if any.
 		          // The final energy and crystal position will be modified at the end anyway.
 		          if ( inputDigi->GetEnergy() > final_digi[this_output_digi]->GetEnergy() ) final_digi[this_output_digi] = inputDigi;
@@ -375,52 +368,45 @@ void GateReadout::Digitize()
 		      }
 	  } // End for input digi
 
-		    // S. Stute: create now the output digi list
-		    for (int p=0; p<final_nb_out_digi; p++)
-		    {
-		      // Create the digi
-		      m_outputDigi = new GateDigi( final_digi[p] );
-		      // Affect energy
-		      m_outputDigi->SetEnergy( final_energy[p] );
-		      // Special affectations for centroid policy
-		      if (m_policy=="TakeEnergyCentroid")
-		      {
-		        // Affect time being the mean
-		        m_outputDigi->SetTime( final_time[p] / ((G4double)final_nb_digi[p]) );
-		        // Compute integer crystal indices weighted by total energy
-		        G4int crys_posX = ((G4int)(final_crystal_posX[p]/final_energy[p]));
-		        G4int crys_posY = ((G4int)(final_crystal_posY[p]/final_energy[p]));
-		        G4int crys_posZ = ((G4int)(final_crystal_posZ[p]/final_energy[p]));
-		        // Compute final crystal id
-		        G4int crystal_id = crys_posZ * m_nbCrystalsXY + crys_posY * m_nbCrystalsX + crys_posX;
-		        if((m_outputDigi->GetVolumeID()).GetDaughterID(m_crystalDepth) == (-1)) //check to avoid Seg. fault
-		        {
-		  	  GateError("Error: not all required geometry levels and sublevels for this system are defined. "
-		  			  "(Ex.: for cylindricalPET, the required levels are: rsector, module, submodule, crystal). Please, add them to your geometry macro");
-		        }
+	  // S. Stute: create now the output digi list
+	  for (int p=0; p<final_nb_out_digi; p++)
+	  {
+		  // Create the digi
+		  m_outputDigi = new GateDigi( final_digi[p] );
+		  // Affect energy
+		  m_outputDigi->SetEnergy( final_energy[p] );
+		  // Special affectations for centroid policy
+		  if (m_policy=="TakeEnergyCentroid")
+		  {
+			  // Affect time being the mean
+			  m_outputDigi->SetTime( final_time[p] / ((G4double)final_nb_digi[p]) );
+			  // Compute integer crystal indices weighted by total energy
+			  G4int crys_posX = ((G4int)(final_crystal_posX[p]/final_energy[p]));
+			  G4int crys_posY = ((G4int)(final_crystal_posY[p]/final_energy[p]));
+			  G4int crys_posZ = ((G4int)(final_crystal_posZ[p]/final_energy[p]));
+			  // Compute final crystal id
+			  G4int crystal_id = crys_posZ * m_nbCrystalsXY + crys_posY * m_nbCrystalsX + crys_posX;
+			  // We change the level of the volumeID and the outputVolumeID corresponding to the crystal with the new crystal ID
+			  ChangeVolumeIDAndOutputVolumeIDValue(m_crystalDepth,crystal_id);
+			  // Change coordinates (we choose here to place the coordinates at the center of the chosen crystal)
+			  //SetGlobalPos(m_system->ComputeObjectCenter(volID));
+			  ResetGlobalPos(m_system);
+			  ResetLocalPos();
+		   }
+		  if (nVerboseLevel>1)
+			  G4cout << "Created new digi for block " << m_outputDigi->GetOutputVolumeID().Top(m_depth) << ".\n"
+				  << "Resulting digi is: \n"
+				  << *m_outputDigi << Gateendl << Gateendl ;
 
+		m_OutputDigiCollection->insert(m_outputDigi);
+	   }
 
-		        // We change the level of the volumeID and the outputVolumeID corresponding to the crystal with the new crystal ID
-		        ChangeVolumeIDAndOutputVolumeIDValue(m_crystalDepth,crystal_id);
-		        // Change coordinates (we choose here to place the coordinates at the center of the chosen crystal)
-		        //SetGlobalPos(m_system->ComputeObjectCenter(volID));
-		        ResetGlobalPos(m_system);
-		        ResetLocalPos();
-		      }
-		      if (nVerboseLevel>1)
-		          G4cout << "Created new digi for block " << m_outputDigi->GetOutputVolumeID().Top(m_depth) << ".\n"
-		                 << "Resulting digi is: \n"
-		                 << *m_outputDigi << Gateendl << Gateendl ;
-		      OutputDigiCollection->insert(m_outputDigi);
-		      // OutputDigiCollection->push_back(m_outputDigi);
-		    }
-
-		    // Free temporary variables used by the centroid policy
-		    if (m_policy=="TakeEnergyCentroid")
-		    {
-		      free(final_time);
+	  // Free temporary variables used by the centroid policy
+	  if (m_policy=="TakeEnergyCentroid")
+		  {
+			  free(final_time);
 		      free(final_crystal_posX);
-		      free(final_crystal_posY);
+		      free	(final_crystal_posY);
 		      free(final_crystal_posZ);
 		      free(final_nb_digi);
 		    }
@@ -430,17 +416,15 @@ void GateReadout::Digitize()
 
 		    if (nVerboseLevel==1)
 		    {
-		      G4cout << "[" << GetObjectName() << "::Digitize]: returning output digi-list with " << OutputDigiCollectionVector->size() << " entries\n";
-		    //  GateDigiIterator iterOut;
-		      for (iter = OutputDigiCollectionVector->begin() ; iter != OutputDigiCollectionVector->end() ; ++iter)
-		        G4cout << **iter << Gateendl;
-		      G4cout << Gateendl;
+		    	G4cout << "[GateReadout::Digitize]: returning output digi-list with " << m_OutputDigiCollection->entries() << " entries\n";
+		    	for (long unsigned int k=0; k<m_OutputDigiCollection->entries();k++)
+		    		{
+		    		G4cout << *(*IDC)[k] << Gateendl;
+		    		}
+		    		G4cout << Gateendl;
 		    }
 
-	 // } //loop on input digi
-
-    }
-  StoreDigiCollection(OutputDigiCollection);
+  StoreDigiCollection(m_OutputDigiCollection);
 
 }
 
@@ -464,7 +448,16 @@ void GateReadout::ChangeVolumeIDAndOutputVolumeIDValue(size_t depth, G4int copyN
     // But for the the volumeID, we must add 1 as the world is the first volume in the vector.
     G4VPhysicalVolume* phys_vol = m_outputDigi->m_volumeID[depth].GetVolume();
     // Get physical volume of the wanted copy
-    phys_vol = phys_vol->GetLogicalVolume()->GetDaughter(copyNo+shift_id);
+    if(phys_vol->GetLogicalVolume()->GetNoDaughters()!=0)
+    {
+    	phys_vol = phys_vol->GetLogicalVolume()->GetDaughter(copyNo+shift_id);
+    }
+    else
+    {
+    	GateError("Error: not all required geometry levels and sublevels for this system are defined. "
+    			  			  "(Ex.: for cylindricalPET, the required levels are: rsector, module, submodule, crystal). Please, add them to your geometry macro for correct execution of the Readout module");
+
+    }
     // Create a volume selector with this volume
     GateVolumeSelector* volSelector = new GateVolumeSelector(phys_vol);
     // Copy the content of this selector into the given depth

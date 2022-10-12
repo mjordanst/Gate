@@ -18,7 +18,7 @@
 #include "GateVVolume.hh"
 #include "GateDigitizerOld.hh"
 #include "GateSingleDigi.hh"
-#include "GateCoincidenceDigi.hh"
+#include "GateCoincidenceDigiOld.hh"
 #include "GateSourceMgr.hh"
 #include "GateOutputMgr.hh"
 
@@ -63,7 +63,7 @@ GateToASCII::GateToASCII(const G4String& name, GateOutputMgr* outputMgr, DigiMod
 
   m_asciiMessenger = new GateToASCIIMessenger(this);
 
-  GateCoincidenceDigi::SetCoincidenceASCIIMask(1);
+  GateCoincidenceDigiOld::SetCoincidenceASCIIMask(1);
   GateSingleDigi::SetSingleASCIIMask(1);
 
   m_recordFlag = 0; // Design to embrace obsolete functions (histogram, recordVoxels, ...)
@@ -417,8 +417,8 @@ void GateToASCII::CoincidenceOutputChannel::RecordDigitizer()
   G4DigiManager * fDM = G4DigiManager::GetDMpointer();
   if (m_collectionID<0)
     m_collectionID = fDM->GetDigiCollectionID(m_collectionName);
-  GateCoincidenceDigiCollection * CDC =
-    (GateCoincidenceDigiCollection*) (fDM->GetDigiCollection( m_collectionID ));
+  GateCoincidenceDigiOldCollection * CDC =
+    (GateCoincidenceDigiOldCollection*) (fDM->GetDigiCollection( m_collectionID ));
 
   if (!CDC) {
     if (nVerboseLevel>0) G4cout << "[GateToASCII::CoincidenceOutputChannel::RecordDigitizer]: "

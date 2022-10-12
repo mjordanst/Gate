@@ -6,6 +6,8 @@ of the GNU Lesser General  Public Licence (LGPL)
 See LICENSE.md for further details
 ----------------------*/
 
+//GND:ClassToRemove
+
 #include "GateConfiguration.h"
 #include "GatePulseProcessorChainMessenger.hh"
 

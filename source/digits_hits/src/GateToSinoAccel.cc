@@ -13,7 +13,7 @@ See LICENSE.md for further details
 #include "G4UnitsTable.hh"
 #include "G4Run.hh"
 
-#include "GateCoincidenceDigi.hh"
+#include "GateCoincidenceDigiOld.hh"
 #include "GateOutputMgr.hh"
 #include "GateSinogram.hh"
 #include "GateToSinoAccelMessenger.hh"
@@ -228,7 +228,9 @@ void GateToSinoAccel::RecordEndOfEvent(const G4Event* )
   double x1,x2,y1,y2;
   // double orig1,orig2,azipos1,azipos2,alpha,view,elem;
 
-  const GateCoincidenceDigiCollection * CDC = GetOutputMgr()->GetCoincidenceDigiCollection(m_inputDataChannel);
+  //TODO OK GND 2022
+  //const GateCoincidenceDigiOldCollection * CDC = GetOutputMgr()->GetCoincidenceDigiCollection(m_inputDataChannel);
+  const GateCoincidenceDigiOldCollection * CDC = (GateCoincidenceDigiOldCollection *)GetOutputMgr()->GetCoincidenceDigiCollection(m_inputDataChannel);
 
   if (!CDC) {
     return;

@@ -23,16 +23,13 @@ See LICENSE.md for further details
 
 
 GateDummyDigitizerModuleMessenger::GateDummyDigitizerModuleMessenger (GateDummyDigitizerModule* DummyDigitizerModule)
-:GateClockDependentMessenger(DummyDigitizerModule), m_DummyDigitizerModule(DummyDigitizerModule)
+:GateClockDependentMessenger(DummyDigitizerModule),
+ 	 m_DummyDigitizerModule(DummyDigitizerModule)
 {
 	G4String guidance;
 	G4String cmdName;
 
-	G4String inputCollName=DummyDigitizerModule->GetCollectionName(0);
-
-    G4String DirectoryName = "/gate/digitizerMng/digitizer/"+inputCollName+"/DummyDigitizerModule/";
-
-    cmdName = DirectoryName+"positionPolicy";
+    cmdName = GetDirectoryName()+"positionPolicy";
     dummyCmd = new G4UIcmdWithAString(cmdName,this);
     dummyCmd->SetGuidance("How to generate position");
     dummyCmd->SetCandidates("energyWeightedCentroid takeEnergyWinner");

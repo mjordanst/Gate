@@ -40,7 +40,7 @@ GateToBinary::GateToBinary( G4String const& name, GateOutputMgr* outputMgr,
 
   // Intializing the mask of the singles and the coincidences to 1
   GateCoincidenceDigi::SetCoincidenceASCIIMask( 1 );
-  GateSingleDigi::SetSingleASCIIMask( 1 );
+  GateDigi::SetSingleASCIIMask( 1 );
 }
 
 GateToBinary::~GateToBinary()
@@ -453,8 +453,9 @@ void GateToBinary::CoincidenceOutputChannel::RecordDigitizer()
       m_collectionID = fDM->GetDigiCollectionID( m_collectionName );
     }
 
-  GateCoincidenceDigiCollection* CDC =
-    (GateCoincidenceDigiCollection*)
+
+  GateCoincidenceDigiOldCollection* CDC =
+    (GateCoincidenceDigiOldCollection*)
     ( fDM->GetDigiCollection( m_collectionID ) );
 
   if( !CDC )
@@ -501,28 +502,28 @@ void GateToBinary::CoincidenceOutputChannel::RecordDigitizer()
 
               for( G4int iP = 0; iP < 2; ++iP )
                 {
-                  if ( GateCoincidenceDigi::GetCoincidenceASCIIMask( 0 ) )
+                  if ( GateCoincidenceDigiOld::GetCoincidenceASCIIMask( 0 ) )
                     {
                       runID = ( (*CDC)[ iDigi ]->GetPulse( iP ) ).GetRunID();
                       m_outputFile.write( reinterpret_cast< char* >( &runID ),
                                           sizeof( G4int ) );
                     }
 
-                  if ( GateCoincidenceDigi::GetCoincidenceASCIIMask( 1 ) )
+                  if ( GateCoincidenceDigiOld::GetCoincidenceASCIIMask( 1 ) )
                     {
                       eventID = ( (*CDC)[ iDigi ]->GetPulse( iP ) ).GetEventID();
                       m_outputFile.write( reinterpret_cast< char* >( &eventID ),
                                           sizeof( G4int ) );
                     }
 
-                  if ( GateCoincidenceDigi::GetCoincidenceASCIIMask( 2 ) )
+                  if ( GateCoincidenceDigiOld::GetCoincidenceASCIIMask( 2 ) )
                     {
                       sourceID = ( (*CDC)[ iDigi ]->GetPulse( iP ) ).GetSourceID();
                       m_outputFile.write( reinterpret_cast< char* >( &sourceID ),
                                           sizeof( G4int ) );
                     }
 
-                  if ( GateCoincidenceDigi::GetCoincidenceASCIIMask( 3 ) )
+                  if ( GateCoincidenceDigiOld::GetCoincidenceASCIIMask( 3 ) )
                     {
                       sourcePosX = ( (*CDC)[ iDigi ]->
                                      GetPulse( iP ) ).GetSourcePosition().x()/mm;
@@ -530,7 +531,7 @@ void GateToBinary::CoincidenceOutputChannel::RecordDigitizer()
                                           sizeof( G4double ) );
                     }
 
-                  if ( GateCoincidenceDigi::GetCoincidenceASCIIMask( 4 ) )
+                  if ( GateCoincidenceDigiOld::GetCoincidenceASCIIMask( 4 ) )
                     {
                       sourcePosY = ( (*CDC)[ iDigi ]->
                                      GetPulse( iP ) ).GetSourcePosition().y()/mm;
@@ -538,7 +539,7 @@ void GateToBinary::CoincidenceOutputChannel::RecordDigitizer()
                                           sizeof( G4double ) );
                     }
 
-                  if ( GateCoincidenceDigi::GetCoincidenceASCIIMask( 5 ) )
+                  if ( GateCoincidenceDigiOld::GetCoincidenceASCIIMask( 5 ) )
                     {
                       sourcePosZ = ( (*CDC)[ iDigi ]->
                                      GetPulse( iP ) ).GetSourcePosition().z()/mm;
@@ -546,42 +547,42 @@ void GateToBinary::CoincidenceOutputChannel::RecordDigitizer()
                                           sizeof( G4double ) );
                     }
 
-                  if ( GateCoincidenceDigi::GetCoincidenceASCIIMask( 6 ) )
+                  if ( GateCoincidenceDigiOld::GetCoincidenceASCIIMask( 6 ) )
                     {
                       time = ( (*CDC)[ iDigi ]->GetPulse( iP ) ).GetTime()/s;
                       m_outputFile.write( reinterpret_cast< char* >( &time ),
                                           sizeof( G4double ) );
                     }
 
-                  if ( GateCoincidenceDigi::GetCoincidenceASCIIMask( 7 ) )
+                  if ( GateCoincidenceDigiOld::GetCoincidenceASCIIMask( 7 ) )
                     {
                       energy = ( (*CDC)[ iDigi ]->GetPulse( iP ) ).GetEnergy()/MeV;
                       m_outputFile.write( reinterpret_cast< char* >( &energy ),
                                           sizeof( G4double ) );
                     }
 
-                  if ( GateCoincidenceDigi::GetCoincidenceASCIIMask( 8 ) )
+                  if ( GateCoincidenceDigiOld::GetCoincidenceASCIIMask( 8 ) )
                     {
                       posX = ( (*CDC)[ iDigi ]->GetPulse( iP ) ).GetGlobalPos().x()/mm;
                       m_outputFile.write( reinterpret_cast< char* >( &posX ),
                                           sizeof( G4double ) );
                     }
 
-                  if ( GateCoincidenceDigi::GetCoincidenceASCIIMask( 9 ) )
+                  if ( GateCoincidenceDigiOld::GetCoincidenceASCIIMask( 9 ) )
                     {
                       posY = ( (*CDC)[ iDigi ]->GetPulse( iP ) ).GetGlobalPos().y()/mm;
                       m_outputFile.write( reinterpret_cast< char* >( &posY ),
                                           sizeof( G4double ) );
                     }
 
-                  if ( GateCoincidenceDigi::GetCoincidenceASCIIMask( 10 ) )
+                  if ( GateCoincidenceDigiOld::GetCoincidenceASCIIMask( 10 ) )
                     {
                       posZ = ( (*CDC)[ iDigi ]->GetPulse( iP ) ).GetGlobalPos().z()/mm;
                       m_outputFile.write( reinterpret_cast< char* >( &posZ ),
                                           sizeof( G4double ) );
                     }
 
-                  if ( GateCoincidenceDigi::GetCoincidenceASCIIMask( 11 ) )
+                  if ( GateCoincidenceDigiOld::GetCoincidenceASCIIMask( 11 ) )
                     {
                       // For each level of volume
                       for( size_t lvl = 0;
@@ -597,7 +598,7 @@ void GateToBinary::CoincidenceOutputChannel::RecordDigitizer()
                                          ( ( (*CDC)[ iDigi ]->GetPulse( iP ) ).GetOutputVolumeID() ).size() * sizeof( G4int ) );
                     }
 
-                  if ( GateCoincidenceDigi::GetCoincidenceASCIIMask( 12 ) )
+                  if ( GateCoincidenceDigiOld::GetCoincidenceASCIIMask( 12 ) )
                     {
                       nPhantCompt = ( (*CDC)[ iDigi ]->GetPulse( iP ) ).
                         GetNPhantomCompton();
@@ -605,7 +606,7 @@ void GateToBinary::CoincidenceOutputChannel::RecordDigitizer()
                                           sizeof( G4int ) );
                     }
 
-                  if ( GateCoincidenceDigi::GetCoincidenceASCIIMask( 13 ) )
+                  if ( GateCoincidenceDigiOld::GetCoincidenceASCIIMask( 13 ) )
                     {
                       nCrysCompt = ( (*CDC)[ iDigi ]->GetPulse( iP ) ).
                         GetNCrystalCompton();
@@ -613,7 +614,7 @@ void GateToBinary::CoincidenceOutputChannel::RecordDigitizer()
                                           sizeof( G4int ) );
                     }
 
-                  if ( GateCoincidenceDigi::GetCoincidenceASCIIMask( 14 ) )
+                  if ( GateCoincidenceDigiOld::GetCoincidenceASCIIMask( 14 ) )
                     {
                       nPhantRay = ( (*CDC)[ iDigi ]->GetPulse( iP ) ).
                         GetNPhantomRayleigh();
@@ -621,7 +622,7 @@ void GateToBinary::CoincidenceOutputChannel::RecordDigitizer()
                                           sizeof( G4int ) );
                     }
 
-                  if ( GateCoincidenceDigi::GetCoincidenceASCIIMask( 15 ) )
+                  if ( GateCoincidenceDigiOld::GetCoincidenceASCIIMask( 15 ) )
                     {
                       nCrysRay = ( (*CDC)[ iDigi ]->GetPulse( iP ) ).
                         GetNCrystalRayleigh();
@@ -629,7 +630,7 @@ void GateToBinary::CoincidenceOutputChannel::RecordDigitizer()
                                           sizeof( G4int ) );
                     }
 
-                  if ( GateCoincidenceDigi::GetCoincidenceASCIIMask( 16 ) )
+                  if ( GateCoincidenceDigiOld::GetCoincidenceASCIIMask( 16 ) )
                     {
                       scannerPosZ = ( (*CDC)[ iDigi ]->GetPulse( iP ) ).
                         GetScannerPos().z()/mm;
@@ -637,7 +638,7 @@ void GateToBinary::CoincidenceOutputChannel::RecordDigitizer()
                                           sizeof( G4double ) );
                     }
 
-                  if ( GateCoincidenceDigi::GetCoincidenceASCIIMask( 17 ) )
+                  if ( GateCoincidenceDigiOld::GetCoincidenceASCIIMask( 17 ) )
                     {
                       scannerRotAng = ( (*CDC)[ iDigi ]->GetPulse( iP ) ).
                         GetScannerRotAngle()/deg;

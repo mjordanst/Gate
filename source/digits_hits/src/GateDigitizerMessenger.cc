@@ -24,8 +24,7 @@ See LICENSE.md for further details
 #include "GateDigitizerMng.hh"
 #include "GateAdder.hh"
 #include "GateReadout.hh"
-
-
+/*
 
 #include "GatePileup.hh"
 #include "GateThresholder.hh"
@@ -63,14 +62,14 @@ See LICENSE.md for further details
 #include "GateGridDiscretization.hh"
 #include "GateLocalMultipleRejection.hh"
 #include "GateLocalTimeResolution.hh"
-
+*/
 #ifdef GATE_USE_OPTICAL
 #include "GateOpticalAdder.hh"
 #endif
 #include "GateSystemFilter.hh"
 
 GateDigitizerMessenger::GateDigitizerMessenger(GateDigitizer* itsDigitizer)
-:GateListMessenger(itsDigitizer)
+:GateListMessenger(itsDigitizer),m_digitizer(itsDigitizer)
 {
 	G4cout<<"GateDigitizerMessenger constr"<<G4endl;
   pInsertCmd->SetCandidates(DumpMap());
@@ -99,7 +98,7 @@ void GateDigitizerMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	G4cout<<"GateDigitizerMessenger SetNewValue "<< newValue <<G4endl;
 
   if (command == SetInputNameCmd)
-    { GetDigitizer()->SetInputName(newValue); }
+    { m_digitizer->SetInputName(newValue); }
   else
     GateListMessenger::SetNewValue(command,newValue);
 }
@@ -124,110 +123,108 @@ void GateDigitizerMessenger::DoInsertion(const G4String& childTypeName)
   AvoidNameConflicts();
 
   GateVDigitizerModule* newDM=0;
-  //G4cout<<"Input name "<<GetDigitizer()->GetInputName()<<G4endl; ;
-  G4String newInsertionName = GetDigitizer()->MakeElementName(GetNewInsertionBaseName());
+  //G4cout<<"Input name "<<m_digitizer->GetInputName()<<G4endl; ;
+  G4String newInsertionName = m_digitizer->MakeElementName(GetNewInsertionBaseName());
 
-  G4String collName=GetDigitizer()->m_digitizerName;
+  G4String collName=m_digitizer->m_digitizerName;
 
   if (childTypeName=="readout")
   {
-	  newDM = new GateReadout( "GateReadout", GetDigitizer() );
-	  GetDigitizer()->AddNewModule(newDM);
+	  newDM = new GateReadout(m_digitizer);
+	  m_digitizer->AddNewModule(newDM);
 	  G4DigiManager::GetDMpointer()->AddNewModule(newDM);
   }
-   // newDM = new GateReadout(GetDigitizer(),newInsertionName);
+   // newDM = new GateReadout(m_digitizer,newInsertionName);
 /*  else if (childTypeName=="pileup")
-    newDM = new GatePileup(GetDigitizer(),newInsertionName);
+    newDM = new GatePileup(m_digitizer,newInsertionName);
   else if (childTypeName=="discretizer")
-    newDM = new GateDiscretizer(GetDigitizer(),newInsertionName);
+    newDM = new GateDiscretizer(m_digitizer,newInsertionName);
   else if (childTypeName=="thresholder")
-    newDM = new GateThresholder(GetDigitizer(),newInsertionName,50.*keV);
+    newDM = new GateThresholder(m_digitizer,newInsertionName,50.*keV);
   else if (childTypeName=="energyThresholder")
-    newDM = new GateEnergyThresholder(GetDigitizer(),newInsertionName,50.*keV);
+    newDM = new GateEnergyThresholder(m_digitizer,newInsertionName,50.*keV);
   else if (childTypeName=="localEnergyThresholder")
-    newDM = new GateLocalEnergyThresholder(GetDigitizer(),newInsertionName);
+    newDM = new GateLocalEnergyThresholder(m_digitizer,newInsertionName);
   else if (childTypeName=="DoImodel")
-    //newDM = new GateDoIModels(GetDigitizer(),newInsertionName,G4ThreeVector(0.,0.,1.));
-    newDM = new GateDoIModels(GetDigitizer(),newInsertionName);
+    //newDM = new GateDoIModels(m_digitizer,newInsertionName,G4ThreeVector(0.,0.,1.));
+    newDM = new GateDoIModels(m_digitizer,newInsertionName);
   else if (childTypeName=="upholder")
-    newDM = new GateUpholder(GetDigitizer(),newInsertionName,150.*keV);
+    newDM = new GateUpholder(m_digitizer,newInsertionName,150.*keV);
   else if (childTypeName=="deadtime")
-    newDM = new GateDeadTime(GetDigitizer(),newInsertionName);
+    newDM = new GateDeadTime(m_digitizer,newInsertionName);
   else if (childTypeName=="blurring")
-    newDM = new GateBlurring(GetDigitizer(),newInsertionName);
+    newDM = new GateBlurring(m_digitizer,newInsertionName);
   else if (childTypeName=="localBlurring")
-    newDM = new GateLocalBlurring(GetDigitizer(),newInsertionName);
+    newDM = new GateLocalBlurring(m_digitizer,newInsertionName);
   else if (childTypeName=="localTimeDelay")
-    newDM = new GateLocalTimeDelay(GetDigitizer(),newInsertionName);
+    newDM = new GateLocalTimeDelay(m_digitizer,newInsertionName);
   else if (childTypeName=="transferEfficiency")
-    newDM = GateTransferEfficiency::GetInstance(GetDigitizer(),newInsertionName);
+    newDM = GateTransferEfficiency::GetInstance(m_digitizer,newInsertionName);
   else if (childTypeName=="lightYield")
-    newDM = GateLightYield::GetInstance(GetDigitizer(),newInsertionName);
+    newDM = GateLightYield::GetInstance(m_digitizer,newInsertionName);
   else if (childTypeName=="crosstalk")
-    newDM = GateCrosstalk::GetInstance(GetDigitizer(),newInsertionName,0.,0.);
+    newDM = GateCrosstalk::GetInstance(m_digitizer,newInsertionName,0.,0.);
   else if (childTypeName=="quantumEfficiency")
-    newDM = GateQuantumEfficiency::GetInstance(GetDigitizer(),newInsertionName);
+    newDM = GateQuantumEfficiency::GetInstance(m_digitizer,newInsertionName);
   else if (childTypeName=="intrinsicResolutionBlurring")
-    newDM = new GateBlurringWithIntrinsicResolution(GetDigitizer(),newInsertionName);
+    newDM = new GateBlurringWithIntrinsicResolution(m_digitizer,newInsertionName);
   else if (childTypeName=="sigmoidalThresholder")
-    newDM = new GateSigmoidalThresholder(GetDigitizer(),newInsertionName,0.,1.,0.5);
+    newDM = new GateSigmoidalThresholder(m_digitizer,newInsertionName,0.,1.,0.5);
   else if (childTypeName=="calibration")
-    newDM = new GateCalibration(GetDigitizer(),newInsertionName);
+    newDM = new GateCalibration(m_digitizer,newInsertionName);
   else if (childTypeName=="spblurring")
-    newDM = new GateSpblurring(GetDigitizer(),newInsertionName,0.1);
+    newDM = new GateSpblurring(m_digitizer,newInsertionName,0.1);
   else if (childTypeName=="sp3Dlocalblurring")
-    newDM = new GateCC3DlocalSpblurring(GetDigitizer(),newInsertionName);
+    newDM = new GateCC3DlocalSpblurring(m_digitizer,newInsertionName);
   */else if (childTypeName=="adder")
   {
-	  newDM = new GateAdder( "GateAdder", GetDigitizer() );
-	  GetDigitizer()->AddNewModule(newDM);
+	  newDM = new GateAdder(m_digitizer );
+	  m_digitizer->AddNewModule(newDM);
 	  G4DigiManager::GetDMpointer()->AddNewModule(newDM);
   }
   /*  else if (childTypeName=="adderLocal")
-    newDM = new GatePulseAdderLocal(GetDigitizer(),newInsertionName);
+    newDM = new GatePulseAdderLocal(m_digitizer,newInsertionName);
   else if (childTypeName=="adderCompton")
-    newDM = new GatePulseAdderCompton(GetDigitizer(),newInsertionName);
+    newDM = new GatePulseAdderCompton(m_digitizer,newInsertionName);
   else if (childTypeName=="adderComptPhotIdeal")
-    newDM = new GatePulseAdderComptPhotIdeal(GetDigitizer(),newInsertionName);
+    newDM = new GatePulseAdderComptPhotIdeal(m_digitizer,newInsertionName);
   else if (childTypeName=="adderComptPhotIdealLocal")
-    newDM = new GatePulseAdderComptPhotIdealLocal(GetDigitizer(),newInsertionName);
+    newDM = new GatePulseAdderComptPhotIdealLocal(m_digitizer,newInsertionName);
   else if (childTypeName=="localClustering")
-    newDM = new GateLocalClustering(GetDigitizer(),newInsertionName);
+    newDM = new GateLocalClustering(m_digitizer,newInsertionName);
   else if (childTypeName=="clustering")
-    newDM = new GateClustering(GetDigitizer(),newInsertionName);
+    newDM = new GateClustering(m_digitizer,newInsertionName);
   else if (childTypeName=="crystalblurring")
-    newDM = new GateCrystalBlurring(GetDigitizer(),newInsertionName,-1.,-1.,1.,-1.*keV);
+    newDM = new GateCrystalBlurring(m_digitizer,newInsertionName,-1.,-1.,1.,-1.*keV);
   else if (childTypeName=="localEfficiency")
-    newDM = new GateLocalEfficiency(GetDigitizer(),newInsertionName);
+    newDM = new GateLocalEfficiency(m_digitizer,newInsertionName);
   else if (childTypeName=="energyEfficiency")
-    newDM = new GateEnergyEfficiency(GetDigitizer(),newInsertionName);
+    newDM = new GateEnergyEfficiency(m_digitizer,newInsertionName);
   else if (childTypeName=="noise")
-    newDM = new GateNoise(GetDigitizer(),newInsertionName);
+    newDM = new GateNoise(m_digitizer,newInsertionName);
   else if (childTypeName=="buffer")
-    newDM = new GateBuffer(GetDigitizer(),newInsertionName);
+    newDM = new GateBuffer(m_digitizer,newInsertionName);
   else if (childTypeName=="timeResolution")
-    newDM = new GateTemporalResolution(GetDigitizer(),newInsertionName,0. * ns);
+    newDM = new GateTemporalResolution(m_digitizer,newInsertionName,0. * ns);
   else if (childTypeName=="localTimeResolution")
-    newDM = new GateLocalTimeResolution(GetDigitizer(),newInsertionName);
+    newDM = new GateLocalTimeResolution(m_digitizer,newInsertionName);
   else if (childTypeName=="systemFilter")
-     newDM = new GateSystemFilter(GetDigitizer(),newInsertionName);
+     newDM = new GateSystemFilter(m_digitizer,newInsertionName);
  // else if (childTypeName=="stripSpDiscretization")
-  //   newDM = new GateStripSpatialDiscretization(GetDigitizer(),newInsertionName);
+  //   newDM = new GateStripSpatialDiscretization(m_digitizer,newInsertionName);
 else if (childTypeName=="gridDiscretization")
-     newDM = new GateGridDiscretization(GetDigitizer(),newInsertionName);
+     newDM = new GateGridDiscretization(m_digitizer,newInsertionName);
 else if (childTypeName=="localMultipleRejection")
-     newDM = new GateLocalMultipleRejection(GetDigitizer(),newInsertionName);
+     newDM = new GateLocalMultipleRejection(m_digitizer,newInsertionName);
 #ifdef GATE_USE_OPTICAL
   else if (childTypeName=="opticaladder")
-    newDM = new GateOpticalAdder(GetDigitizer(), newInsertionName);
+    newDM = new GateOpticalAdder(m_digitizer, newInsertionName);
 #endif
 */
   else {
     G4cout << "Pulse-processor type name '" << childTypeName << "' was not recognised --> insertion request must be ignored!\n";
     return;
   }
-
-  //GetDigitizer()->InsertProcessor(newDM);
 
   SetNewInsertionBaseName("");
 }

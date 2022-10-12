@@ -31,7 +31,7 @@
 GateDigitizerInitializationModule::GateDigitizerInitializationModule(G4String name)
   :G4VDigitizerModule(name)
 {
-	G4cout<<" GateDigitizerInitializationModule constr "<<G4endl;
+	//G4cout<<" GateDigitizerInitializationModule constr "<<G4endl;
 	//G4String insertionBaseName=GatePreDigitizer::GetInstance()->GetNewInsertionBaseName();
 
 	//The name is Singles is hardcoded in this class, as it is just a transformation from Hits -> Digi and HitsColleciton to DigiColleciton.
@@ -50,7 +50,7 @@ GateDigitizerInitializationModule::~GateDigitizerInitializationModule()
 void GateDigitizerInitializationModule::Digitize()
 {
 
-	G4cout<<"DigitizerInitialization::Digitize()"<<G4endl;
+	//G4cout<<"DigitizerInitialization::Digitize()"<<G4endl;
 	//G4String insertionBaseName=GatePreDigitizer::GetInstance()->GetNewInsertionBaseName();
 	OutputDigiCollection = new GateDigiCollection ("GateDigitizerInitializationModule","SinglesInit"); // to create the Digi Collection
 
@@ -143,7 +143,7 @@ void GateDigitizerInitializationModule::Digitize()
    }
 	//G4cout<<"n digi = "<<	OutputDigiCollection->GetSize () <<G4endl;
   StoreDigiCollection(OutputDigiCollection);
-  G4cout<<"outputDigiColleciton = "<<	OutputDigiCollection->GetName () <<G4endl;
+ // G4cout<<"outputDigiColleciton = "<<	OutputDigiCollection->GetName () <<G4endl;
 
 }
 

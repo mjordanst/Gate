@@ -35,7 +35,6 @@ public:
   
   void SetNewValue(G4UIcommand*, G4String);
 
-  
 private:
   GateAdder* m_Adder;
   //G4UIdirectory           *Dir;

@@ -31,7 +31,7 @@
 #include "GateCrystalSD.hh"
 #include "G4DigiManager.hh"
 #include "GateDigitizer.hh"
-
+#include "GateCoincidenceSorter.hh"
 class GateDigitizerMngMessenger;
 class GateVSystem;
 
@@ -46,9 +46,31 @@ class GateVSystem;
  *
  *
  *
- *
- *
- *
+ * TODO :
+ *  - Adder -> done
+ *  - Readout
+ *  - Energy windowing 2j
+ *  	- upholder
+ *  	- thresholder
+ *  	- local energy thresholder
+ *  	- Energy thresoler
+ *  	- sigmoidal thresholder
+ *  - Blurring -> big block 3s
+ *  	- Energy Blurring
+ *  	- Time Blurring/TemporalResolution
+ *  	- SP Blurring
+ *  	- local bluring
+ *  	- crystal bluring
+ *  	- local time resolution
+ *  	- intrinistic resolution blurring
+ *  - Efficiencies -> big block 3s
+ *  	- quantum
+ *  	- light yield
+ *  	- energy efficiency
+ *  - Dead time 2j
+ *  - Noise 2j
+ *  - Pile up ??
+ *  - system filter ??
  *
  *
  *
@@ -72,32 +94,43 @@ public:
    // Add a system to the DigitizerOld systems list
    virtual void AddSystem(GateVSystem* aSystem);
    // To find a system from the DigitizerOld systems list
-   //GateVSystem* FindSystem(GatePulseProcessorChain* processorChain);
+   GateVSystem* FindSystem(GateDigitizer* digitizer);
    GateVSystem* FindSystem(G4String& systemName);
 
    //Messenger commands
-   /**/
    inline const G4String&  GetElementTypeName()
    { return m_elementTypeName;}
 
-   void ListElements(size_t indent=0);
+    GateClockDependent* FindElement(G4String baseName);
+   //	   { return FindElement( MakeElementName(baseName) ) ; }
+   //	*/
 
+
+   void ShowSummary();
+   /// Methods for Singles
+   //! Run Singles Digitizers
+   void RunDigitizers();
    //! Integrates a new digitizer/singlesCollection
    void AddNewSinglesDigitizer(GateDigitizer* digitizer);
+   //! Find Digitizer by its name
+  GateDigitizer* FindDigitizer(G4String mName);
+   /// End of methods for Singles
 
-   GateDigitizer* FindDigitizer(G4String mName);
 
-   //! Integrates a new DM to a digitizer
- //  void InsertSinglesDigitizerModule(GateDigitizer* digitizer, G4VDigitizerModule* DM);
+   /// Methods for Coincidences
 
-  // virtual inline GateNamedObject* FindElementByBaseName(const G4String& baseName)
-  //   { return FindElement( MakeElementName(baseName) ) ; }
-   /**/
+   //Sorters
+   //Sorters -> Initialization of Coincidence Digitizers
+   //void AddNewSinglesDigitizer(GateDigitizer* digitizer);
 
-  // void InsertDigitizerBlock(GateDigitizer* newDigitizer); //InsertChain
-
-   void RunDigitizers(); //Digitize, DigitizePulses
-
+   void RunCoincidenceSorters();
+   void AddNewCoincidenceSorter(GateCoincidenceSorter* coincidenceSorter);
+   GateCoincidenceSorter* FindCoincidenceSorter(G4String mName);
+   //Coincidence digitizers
+   void RunCoincidenceDigitizers();
+   //void AddNewCoincidenceDigitizer(GateCoincidenceSorter* coincidenceSorter);
+   //GateCoincidenceDigitizer* FindCoincidenceDigitizer(G4String mName);
+   /// End of methods for Coincidences
 
 
 
@@ -130,10 +163,12 @@ protected:
   //G4String 					m_newInsertionBaseType;	 //!< Type-name for all DigitizerOld modules
   //G4String 					m_newInsertionBaseName;	 //!< Type-name for all DigitizerOld modules
 
+  G4int m_collectionID;
 
 public:
   G4bool m_isInitialized;
-  std::vector<GateDigitizer*>    	m_SingleDigitizersList;	 //!< Vector of pulse-processor chains
+  std::vector<GateDigitizer*>    	m_SingleDigitizersList;	 //!< Vector of digitizers
+  std::vector<GateCoincidenceSorter*>    	m_CoincidenceSortersList;	 //!< Vector of coincidence sorters
 
 };
 #endif

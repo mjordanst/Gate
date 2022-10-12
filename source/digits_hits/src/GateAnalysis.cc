@@ -127,7 +127,7 @@ void GateAnalysis::RecordEndOfEvent(const G4Event* event)
 
   G4int eventID = event->GetEventID();
   G4int runID   = GateRunManager::GetRunManager()->GetCurrentRun()->GetRunID();
-  G4cout << "GateAnalysis::EventID et RunID :  " <<eventID<<" - "<<runID<< Gateendl;
+  //G4cout << "GateAnalysis::EventID et RunID :  " <<eventID<<" - "<<runID<< Gateendl;
 
   //G4int i;
 
@@ -469,7 +469,13 @@ void GateAnalysis::RecordEndOfEvent(const G4Event* event)
   GateDigitizerMng* digitizerMng=GateDigitizerMng::GetInstance();
   digitizerMng->RunDigitizers();
 
-
+  //TODO GND 2022 : condition if (there is coincidences in the current system)
+  //check on spect
+ // if (digitizerMng->m_CoincidenceSortersList)
+  //{
+	  digitizerMng->RunCoincidenceSorters();
+	  digitizerMng->RunCoincidenceDigitizers();
+ // }
 } // end function
 //--------------------------------------------------------------------------------------------------
 

@@ -24,7 +24,7 @@
 #include "GatePulseProcessorChain.hh"
 #include "GateCoincidencePulseProcessorChain.hh"
 #include "GateCoincidencePulse.hh"
-#include "GateCoincidenceSorter.hh"
+#include "GateCoincidenceSorterOld.hh"
 #include "GateVDigiMakerModule.hh"
 #include "GateCrystalSD.hh"
 
@@ -103,7 +103,7 @@ public:
   void StoreNewCoincidenceProcessorChain(GateCoincidencePulseProcessorChain* processorChain);
 
   //! Integrates a new coincidence sorter
-  void StoreNewCoincidenceSorter(GateCoincidenceSorter* coincidenceSorter);
+  void StoreNewCoincidenceSorter(GateCoincidenceSorterOld* coincidenceSorter);
 
   void MakeCoincidencePulse(G4int i)
   { m_coincidenceSorterList[i]->ProcessSinglePulseList();}
@@ -139,7 +139,7 @@ public:
   inline const std::vector<GateCoincidencePulseProcessorChain*> GetCoinPulseProcessorChainList()
   { return m_coincidenceChainList;}
 
-  inline const std::vector<GateCoincidenceSorter*> GetCoinSorterList()
+  inline const std::vector<GateCoincidenceSorterOld*> GetCoinSorterList()
   { return m_coincidenceSorterList;}
 
   inline const std::vector<GateVDigiMakerModule*>  GetDigiMakerList()
@@ -164,7 +164,7 @@ protected:
   GateHitConvertor*    				m_hitConvertor;	      	 //!< Hit convertor
   std::vector<GatePulseProcessorChain*>    	m_singleChainList;	 //!< Vector of pulse-processor chains
   std::vector<GateCoincidencePulseProcessorChain*>   m_coincidenceChainList;	 //!< Vector of pulse-processor chains
-  std::vector<GateCoincidenceSorter*>  		m_coincidenceSorterList; //!< Vector of coincidence sorters
+  std::vector<GateCoincidenceSorterOld*>  		m_coincidenceSorterList; //!< Vector of coincidence sorters
 
   std::vector<GateVDigiMakerModule*>  		m_digiMakerList;       	 //!< Vector of digi-maker modules
 

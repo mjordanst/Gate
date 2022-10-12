@@ -6,6 +6,7 @@ of the GNU Lesser General  Public Licence (LGPL)
 See LICENSE.md for further details
 ----------------------*/
 
+//GND:ClassToRemove
 
 #include "GateReadoutOld.hh"
 
@@ -214,10 +215,11 @@ GatePulseList* GateReadoutOld::ProcessPulseList(const GatePulseList* inputPulseL
 
   size_t n_pulses = inputPulseList->size();
 
-  if (nVerboseLevel>1)
+  //if (nVerboseLevel>1)
     G4cout << "[" << GetObjectName() << "::ProcessPulseList]: processing input list with " << n_pulses << " entries\n";
   if (!n_pulses)
     return 0;
+
 
   GatePulseList* outputPulseList = new GatePulseList(GetObjectName());
   //G4cout<<"Policy "<< m_policy<< " "<< m_depth<<" "<< m_resultingXY<<" "<< m_resultingZ<<Gateendl;
@@ -251,11 +253,14 @@ GatePulseList* GateReadoutOld::ProcessPulseList(const GatePulseList* inputPulseL
   {
     GatePulse* inputPulse = *iterIn;
 
+    G4cout << "[GateReadoutOld::ProcessOnePulse]: input hit \n"
+                   <<  *inputPulse << Gateendl;
+
     const GateOutputVolumeID& blockID = inputPulse->GetOutputVolumeID().Top(m_depth);
 
     if (blockID.IsInvalid())
     {
-     if (nVerboseLevel>1)
+     //if (nVerboseLevel>1)
         G4cout << "[GateReadoutOld::ProcessOnePulse]: out-of-block hit for \n"
                <<  *inputPulse << Gateendl
                << " -> pulse ignored\n\n";
@@ -367,7 +372,7 @@ GatePulseList* GateReadoutOld::ProcessPulseList(const GatePulseList* inputPulseL
       outputPulse->ResetGlobalPos(m_system);
       outputPulse->ResetLocalPos();
     }
-    if (nVerboseLevel>1)
+   // if (nVerboseLevel>1)
         G4cout << "Created new pulse for block " << outputPulse->GetOutputVolumeID().Top(m_depth) << ".\n"
                << "Resulting pulse is: \n"
                << *outputPulse << Gateendl << Gateendl ;
@@ -387,7 +392,7 @@ GatePulseList* GateReadoutOld::ProcessPulseList(const GatePulseList* inputPulseL
   free(final_energy);
   free(final_pulses);
 
-  if (nVerboseLevel==1)
+ // if (nVerboseLevel==1)
   {
     G4cout << "[" << GetObjectName() << "::ProcessPulseList]: returning output pulse-list with " << outputPulseList->size() << " entries\n";
     GatePulseIterator iterOut;

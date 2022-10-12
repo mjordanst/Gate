@@ -15,16 +15,20 @@
 #include "GateCoincidenceSorter.hh"
 #include "GateToSinogram.hh"
 #include "GateSinoToEcat7.hh"
-#include "GateDigitizerOld.hh"
+#include "GateDigitizerMng.hh"
 #include "GateOutputMgr.hh"
 
 #include "G4UnitsTable.hh"
+#include "G4DigiManager.hh"
 
 // Constructor
 GateEcatSystem::GateEcatSystem(const G4String& itsName)
   : GateVSystem( itsName , true ),
     m_gateToSinogram(0)
 {
+	//TODO : Switch from GateVSystem to GateScannerSystem for PET systems and add
+	//in the coincidence sorter constructurs there ??
+	G4cout<<"GateEcatSystem constr"<<G4endl;
   // Set up a messenger
   m_messenger = new GateClockDependentMessenger(this);
   m_messenger->SetDirectoryGuidance(G4String("Controls the system '") + GetObjectName() + "'" );
@@ -34,12 +38,17 @@ GateEcatSystem::GateEcatSystem(const G4String& itsName)
   /*GateArrayComponent* arrayComponent =*/ new GateArrayComponent("crystal",blockComponent,this);
 
   // Integrate a coincidence sorter into the digitizer
-  G4double coincidenceWindow = 10.* ns;
-  //OK GND 2022 TODO
-  /*GateDigitizerOld* digitizer = GateDigitizerOld::GetInstance();
+
+  //OK GND 2022
+  /*   //G4double coincidenceWindow = 10.* ns;
+    GateDigitizerOld* digitizer = GateDigitizerOld::GetInstance();
   //GateDigitizer* digitizer = GateDigitizer::GetInstance();
   GateCoincidenceSorter* coincidenceSorter = new GateCoincidenceSorter(digitizer,"Coincidences",coincidenceWindow);
   digitizer->StoreNewCoincidenceSorter(coincidenceSorter);
+*/
+  GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
+  GateCoincidenceSorter* coincidenceSorter = new GateCoincidenceSorter(digitizerMng,"Coincidences");
+  digitizerMng->AddNewCoincidenceSorter(coincidenceSorter);
 
   // Insert a sinogram maker and a ECAT7 writer into the output manager
   GateOutputMgr *outputMgr = GateOutputMgr::GetInstance();
@@ -49,7 +58,7 @@ GateEcatSystem::GateEcatSystem(const G4String& itsName)
   m_gateSinoToEcat7 = new GateSinoToEcat7("ecat7", outputMgr,this,GateOutputMgr::GetDigiMode());
   outputMgr->AddOutputModule((GateVOutputModule*)m_gateSinoToEcat7);
 #endif
-*/
+
   SetOutputIDName((char *)"gantryID",0);
   SetOutputIDName((char *)"blockID",1);
   SetOutputIDName((char *)"crystalID",2);

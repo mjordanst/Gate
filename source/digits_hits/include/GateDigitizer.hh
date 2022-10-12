@@ -19,6 +19,7 @@
 
 #include "GateModuleListManager.hh"
 #include "GateDigi.hh"
+#include "GateVDigitizerModule.hh"
 
 class GateDigitizerMng;
 class G4VDigitizerModule;
@@ -26,10 +27,12 @@ class GateDigitizerMessenger;
 class GatePulseList;
 class GateVSystem;
 
+class GateVDigitizerModule;
+
 class GateDigitizer : public GateModuleListManager
 {
   public:
-    GateDigitizer(GateDigitizerMng* itsDigitizer,
+    GateDigitizer(GateDigitizerMng* itsDigitizerMng,
     			    const G4String& itsOutputName);
     virtual ~GateDigitizer();
 
@@ -50,30 +53,26 @@ class GateDigitizer : public GateModuleListManager
      GatePulseList* ProcessPulseList();
      virtual size_t GetProcessorNumber()
       	  { return size();}
-
+*/
      const G4String& GetInputName() const
        { return m_inputName; }
      void SetInputName(const G4String& anInputName)
        {  m_inputName = anInputName; }
      const G4String& GetOutputName() const
        { return m_outputName; }
-*/
+
      virtual inline GateVSystem* GetSystem() const
        { return m_system;}
-
-     //TODO: find where SetSystem is called for PulseProcessorChain and
-     //call also for the digitizer
 
      virtual inline void SetSystem(GateVSystem* aSystem)
        { m_system = aSystem; }
 
-    const G4String& GetInputName() const
-    { return m_inputName; }
-    void SetInputName(const G4String& anInputName)
-    {  m_inputName = anInputName; }
-    const G4String& GetOutputName() const
-    { return m_outputName; }
+     virtual GateVDigitizerModule* GetDigitizerModule(size_t i)
+           	  {return (GateVDigitizerModule*) GetElement(i);}
 
+
+     void SetName(const G4String& anInputName)
+        {  m_digitizerName = anInputName; }
 
     const G4String& GetLastDMname() const
     { return m_lastDMname; }
@@ -82,18 +81,18 @@ class GateDigitizer : public GateModuleListManager
 
     void AddNewModule(G4VDigitizerModule* DM);
 
+    void DescribeMyself();
 
  protected:
       GateDigitizerMessenger*    m_messenger;
-      GateVSystem *m_system;            //!< System to which the chain is attached
+      GateVSystem *m_system;            //!< System to which the digitizer is attached
       G4String				   m_outputName;
       G4String                 m_inputName;
-      G4String                 m_collectionName;
 
       G4String                 m_lastDMname;
 
 
-      GateDigiCollection*      m_inputDigiCollection;
+     // GateDigiCollection*      m_inputDigiCollection;
 public:
       std::vector<G4VDigitizerModule*>    	m_DMlist;	 //!< List of DigitizerModules for this digitizer
       G4String                 m_digitizerName;

@@ -16,8 +16,6 @@
 
 */
 
-
-
 #include "GateDigitizer.hh"
 #include "GateDigitizerMessenger.hh"
 
@@ -33,25 +31,18 @@
 
 GateDigitizer::GateDigitizer( GateDigitizerMng* itsDigitizerMng,
     			                          const G4String& digitizerName)
-  : GateModuleListManager(itsDigitizerMng,itsDigitizerMng->GetObjectName() + "/digitizer/" + digitizerName,"pulse-processor"),
-    m_collectionName(digitizerName)
-	//m_digitizerName(digitizerName)//,
-    //m_inputName(GateHitConvertor::GetOutputAlias())
+  : GateModuleListManager(itsDigitizerMng,itsDigitizerMng->GetObjectName() + "/SinglesDigitizer/" + digitizerName,"SinglesDigitizer"),
+	m_outputName(digitizerName),
+    m_inputName(digitizerName),
+	m_digitizerName(digitizerName)
 {
-	G4cout << " DEBUT Constructor GateDigitizer \n";
-	m_digitizerName = m_collectionName;
-	G4cout<<m_digitizerName<<G4endl;
-  m_messenger = new GateDigitizerMessenger(this);
+	m_messenger = new GateDigitizerMessenger(this);
 
   //Prepare OutputMng for this digitizer
-  	GateOutputMgr::GetInstance()->RegisterNewSingleDigiCollection(m_collectionName,true);
+  	GateOutputMgr::GetInstance()->RegisterNewSingleDigiCollection(m_digitizerName,true);
 
-  	//G4cout<<"GateDigitizer::constr "<< itsDigitizerMng->m_isInitialized << " "<<m_collectionName<<G4endl;
-  	//If it is not the first digitizer (i.e. the default one is "Singles") add it to DigitizerMng List
   	if(!itsDigitizerMng->m_isInitialized)
   	{
-  		G4cout<<"GateDigitizer::constr "<< itsDigitizerMng->m_isInitialized << " "<<m_collectionName<<G4endl;
-
   		itsDigitizerMng->AddNewSinglesDigitizer(this);
   	}
 }
@@ -72,8 +63,24 @@ GateDigitizer::~GateDigitizer()
 
 void GateDigitizer::AddNewModule(G4VDigitizerModule* DM)
 {
+	if (nVerboseLevel>1)
+		G4cout << "[GateSinglesDigitizer::AddNewModule]: "<< DM->GetName() <<"\n";
 	m_DMlist.push_back(DM);
 
 }
 
+
+void GateDigitizer::DescribeMyself()
+{
+	G4cout<<"Digitizer Describe"<<G4endl;
+	G4cout<<"Digitizer Name: "<< m_digitizerName<<G4endl;
+	G4cout<<"Input Name: "<< m_inputName<<G4endl;
+	G4cout<<"Output Name: "<< m_outputName<<G4endl;
+	G4cout<<"Digitizer Modules: "<<G4endl;
+	for (long unsigned int j = 0; j<m_DMlist.size(); j++)
+			{
+				G4cout<<"    " <<m_DMlist[j]->GetName()<<" "<<G4endl;
+			}
+
+}
 

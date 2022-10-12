@@ -26,6 +26,7 @@ See LICENSE.md for further details
 GateReadoutMessenger::GateReadoutMessenger (GateReadout* itsReadout)
 :GateClockDependentMessenger(itsReadout), m_Readout(itsReadout)
 {
+	G4cout<<"GateReadoutMessenger::GateReadoutMessenger"<<G4endl;
     G4String cmdName;
 
     // Command for choosing the depth of application of the Readout
@@ -88,6 +89,7 @@ GateReadoutMessenger::~GateReadoutMessenger()
 
 void GateReadoutMessenger::SetNewValue(G4UIcommand * aCommand,G4String aString)
 {
+	G4cout<<"GateReadoutMessenger::SetNewValue"<<G4endl;
 	if( aCommand==SetDepthCmd )
 	    { GetReadout()->SetDepth(SetDepthCmd->GetNewIntValue(aString)); }
 	  else if ( aCommand==SetVolNameCmd )

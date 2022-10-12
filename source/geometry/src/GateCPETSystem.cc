@@ -15,7 +15,7 @@ See LICENSE.md for further details
 #include "GateBox.hh"
 #include "GateSystemComponent.hh"
 #include "GateVolumePlacement.hh"
-#include "GateDigitizerOld.hh"
+#include "GateDigitizerMng.hh"
 #include "GateCoincidenceSorter.hh"
 
 // Constructor
@@ -40,10 +40,15 @@ GateCPETSystem::GateCPETSystem(const G4String& itsName)
   new GateArrayComponent("layer3",submoduleComponent,this);
 
   // Integrate a coincidence sorter into the digitizer
-  G4double coincidenceWindow = 10.* ns;
+  /*G4double coincidenceWindow = 10.* ns;
   GateDigitizerOld* digitizer = GateDigitizerOld::GetInstance();
   GateCoincidenceSorter* coincidenceSorter = new GateCoincidenceSorter(digitizer,"Coincidences",coincidenceWindow);
   digitizer->StoreNewCoincidenceSorter(coincidenceSorter);
+  */
+  //OK GND 2022
+  GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
+  GateCoincidenceSorter* coincidenceSorter = new GateCoincidenceSorter(digitizerMng,"Coincidences");
+  digitizerMng->AddNewCoincidenceSorter(coincidenceSorter);
   
   SetOutputIDName((char *)"gantryID",0);
   SetOutputIDName((char *)"sectorID",1);

@@ -6,6 +6,7 @@ of the GNU Lesser General  Public Licence (LGPL)
 See LICENSE.md for further details
 ----------------------*/
 
+//GND:ClassToRemove
 
 #ifndef GateReadoutOld_h
 #define GateReadoutOld_h 1

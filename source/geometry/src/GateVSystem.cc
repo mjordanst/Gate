@@ -44,6 +44,7 @@ GateVSystem::GateVSystem(const G4String& itsName,G4bool isWithGantry)
     m_BaseComponent(0),
     m_mainComponentDepth( isWithGantry ? 1 : 0 ) 
 {
+	G4cout<<"GateVSystem::GateVSystem "<<itsName<<G4endl;
   // Next lines were added for the multi-system approach
   G4String itsOwnName = GateSystemListManager::GetInstance()->GetInsertedSystemsNames()->back();
 
@@ -495,3 +496,9 @@ G4ThreeVector GateVSystem::ComputeObjectCenter(const GateVolumeID* volID) const
     G4ThreeVector(0,0,0);
 }
 //-----------------------------------------------------------------------------
+
+//OK GND 2022
+G4int GateVSystem::GetMainComponentIDGND(const GateDigi& digi)
+   {  return digi.GetComponentID(m_mainComponentDepth) ; }
+
+

@@ -22,7 +22,7 @@ See LICENSE.md for further details
 #include "G4UnitsTable.hh"
 #include "G4Run.hh"
 
-#include "GateCoincidenceDigi.hh"
+#include "GateCoincidenceDigiOld.hh"
 #include "GateOutputMgr.hh"
 #include "GateSinogram.hh"
 #include "GateToSinogramMessenger.hh"
@@ -440,8 +440,10 @@ void GateToSinogram::RecordEndOfEvent(const G4Event* )
   G4int  Delayed;
 
   // double orig1,orig2,azipos1,azipos2,alpha,view,elem;
+ //TODO OK GND 2022
+  //const GateCoincidenceDigiOldCollection * CDC = GetOutputMgr()->GetCoincidenceDigiCollection(m_inputDataChannel);
 
-  const GateCoincidenceDigiCollection * CDC = GetOutputMgr()->GetCoincidenceDigiCollection(m_inputDataChannel);
+  const GateCoincidenceDigiOldCollection * CDC = (GateCoincidenceDigiOldCollection *)GetOutputMgr()->GetCoincidenceDigiCollection(m_inputDataChannel);
 
   if (!CDC) {
     return;
@@ -480,6 +482,7 @@ void GateToSinogram::RecordEndOfEvent(const G4Event* )
     G4int ScattID1 = ((*CDC)[iDigi]->GetPulse(0)).GetNPhantomCompton()+((*CDC)[iDigi]->GetPulse(0)).GetNPhantomRayleigh();
     G4int ScattID2 = ((*CDC)[iDigi]->GetPulse(1)).GetNPhantomCompton()+((*CDC)[iDigi]->GetPulse(1)).GetNPhantomRayleigh();
     G4double DiffTime = fabs(((*CDC)[iDigi]->GetPulse(0)).GetTime()/s-((*CDC)[iDigi]->GetPulse(1)).GetTime()/s);
+    //OK GND 2022 MIN_COINC_OFFSET changed from 500.0E-09 to -1.
     if (DiffTime > MIN_COINC_OFFSET/2.) Delayed = 1;  else Delayed = 0;
     if (Delayed && (eventID1 == eventID2)) {
       G4Exception("GateToSinogram::RecordEndOfEvent","RecordEndOfEvent",FatalException, "Delayed coincidence with same event ID !!!\n");

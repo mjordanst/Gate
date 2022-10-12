@@ -47,6 +47,15 @@ G4int GateUIterminal::ReceiveG4cerr(const G4String& cerrString)
 
     if (isMacroError) {
       std::cerr << "[Gate] Sorry, error in a macro command : abort.\n";
+      i = cerrString.find("digitzer", 0);
+      bool isDigitizerMacroError = isMacroError || (i != std::string::npos);
+      if (isDigitizerMacroError)
+      	  {
+    	  std::cerr << "------------------------ [GateDigitizer Messenger Problem]------------------------ \n";
+    	  std::cerr << "Probably you try to use a command for the old version of the digitizer.\n";
+    	  std::cerr << "Try </gate/digitizerMng> commands instead, you can find the documentation here: XXXX \n"; //TODO insert the link to the documentation page
+    	  std::cerr << "---------------------------------------------------------------------------------- \n";
+      	  }
       exit(-1);
     }
 

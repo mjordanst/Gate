@@ -6,6 +6,7 @@ of the GNU Lesser General  Public Licence (LGPL)
 See LICENSE.md for further details
 ----------------------*/
 
+//GND:ClassToRemove
 
 #ifndef GateVPulseProcessor_h
 #define GateVPulseProcessor_h 1

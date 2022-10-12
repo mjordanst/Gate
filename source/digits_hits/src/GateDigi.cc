@@ -11,6 +11,9 @@
 
 #include <iomanip>
 
+std::vector<G4bool> GateDigi::m_singleASCIIMask;
+G4bool                GateDigi::m_singleASCIIMaskDefault;
+
 G4Allocator<GateDigi> GateDigiAllocator;
 
 GateDigi::GateDigi():
@@ -95,6 +98,37 @@ std::ofstream& operator<<(std::ofstream& flux, GateDigi* digi)
 
   return flux;
 }
+
+
+void GateDigi::SetSingleASCIIMask(G4bool newValue)
+{
+	G4cout<<"GateDigi::SetSingleASCIIMask1"<<G4endl;
+  m_singleASCIIMaskDefault = newValue;
+  for (G4int iMask=0; ((unsigned int)iMask)<m_singleASCIIMask.size(); iMask++) {
+    m_singleASCIIMask[iMask] = newValue;
+  }
+}
+
+
+void GateDigi::SetSingleASCIIMask(std::vector<G4bool> newMask)
+{
+	G4cout<<"GateDigi::SetSingleASCIIMask2"<<G4endl;
+  m_singleASCIIMask = newMask;
+}
+
+G4bool GateDigi::GetSingleASCIIMask(G4int index)
+{
+  G4bool mask = m_singleASCIIMaskDefault;
+  if ((index >=0 ) && (((unsigned int)index) < m_singleASCIIMask.size())) mask = m_singleASCIIMask[index];
+  return mask;
+}
+
+std::vector<G4bool> GateDigi::GetSingleASCIIMask()
+{
+  return m_singleASCIIMask;
+}
+
+
 
 
 

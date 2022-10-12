@@ -15,7 +15,7 @@
 #include "GateCoincidenceSorter.hh"
 #include "GateToSinoAccel.hh"
 #include "GateSinoAccelToEcat7.hh"
-#include "GateDigitizerOld.hh"
+#include "GateDigitizerMng.hh"
 #include "GateOutputMgr.hh"
 
 #include "G4UnitsTable.hh"
@@ -34,11 +34,15 @@ GateEcatAccelSystem::GateEcatAccelSystem(const G4String& itsName)
   /*GateArrayComponent* arrayComponent =  */ new GateArrayComponent("crystal",blockComponent,this);
 
   // Integrate a coincidence sorter into the digitizer
-  G4double coincidenceWindow = 10.* ns;
+  /*G4double coincidenceWindow = 10.* ns;
   GateDigitizerOld* digitizer = GateDigitizerOld::GetInstance();
   GateCoincidenceSorter* coincidenceSorter = new GateCoincidenceSorter(digitizer,"Coincidences",coincidenceWindow);
   digitizer->StoreNewCoincidenceSorter(coincidenceSorter);
-
+  */
+  //OK GND 2022
+  GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
+  GateCoincidenceSorter* coincidenceSorter = new GateCoincidenceSorter(digitizerMng,"Coincidences");
+  digitizerMng->AddNewCoincidenceSorter(coincidenceSorter);
   // Insert a sinogram maker and a ECAT7 writer into the output manager
   GateOutputMgr *outputMgr = GateOutputMgr::GetInstance();
   m_gateToSinoAccel = new GateToSinoAccel("sinoAccel", outputMgr,this,GateOutputMgr::GetDigiMode());

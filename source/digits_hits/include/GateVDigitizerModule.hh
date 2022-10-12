@@ -18,13 +18,14 @@ See LICENSE.md for further details
 
 #include "globals.hh"
 
-
+class GateDigitizer;
 
 class GateVDigitizerModule : public G4VDigitizerModule, public GateClockDependent
 {
 public:
   
   GateVDigitizerModule(G4String DMname, GateDigitizer *digitizer);
+  GateVDigitizerModule(G4String DMname);
   virtual ~GateVDigitizerModule();
   
   virtual void Digitize()=0;
@@ -41,7 +42,6 @@ public:
   inline GateDigitizer* GetDigitizer()
     { return m_digitizer; }
 
-
 private:
  /* GateDigi* m_outputDigi;
 
@@ -50,7 +50,6 @@ private:
   GateDigiCollection*  OutputDigiCollection;
 */
   GateDigitizer *m_digitizer;
-
 
 };
 

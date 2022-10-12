@@ -57,12 +57,13 @@ class GateDigitizerMessenger: public GateListMessenger
     virtual void DoInsertion(const G4String& typeName);
 
     //! Returns the pulse-processor chain managed by this messenger
-    virtual GateDigitizer* GetDigitizer()
-      {   	return (GateDigitizer*) GetListManager(); }
+   // virtual GateDigitizer* GetDigitizer()
+   //   {   	return (GateDigitizer*) GetListManager(); }
 
   private:
 
     G4UIcmdWithAString*         SetInputNameCmd;        //!< The UI command "set input name"
+    GateDigitizer* m_digitizer;
 };
 
 #endif

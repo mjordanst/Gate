@@ -65,6 +65,7 @@ GateDetectorConstruction::GateDetectorConstruction()
 	 nvarOfIntegratorStepper(8) // The Equation of motion for Electric (or combined Electric/Magnetic)
                                 // field requires 8 integration variables
 {
+	G4cout<<"GateDetectorConstruction::GateDetectorConstruction"<<G4endl;
   GateMessage("Geometry", 1, "GateDetectorConstruction instantiating...\n");
   GateMessage("Geometry", 5, " GateDetectorConstruction constructor -- begin ");
   GateMessage("Geometry", 5, " nGeometryStatus = " << nGeometryStatus << Gateendl;);
@@ -142,6 +143,8 @@ GateDetectorConstruction::~GateDetectorConstruction()
 //---------------------------------------------------------------------------------
 G4VPhysicalVolume* GateDetectorConstruction::Construct()
 {
+ G4cout<<"GateDetectorConstruction::Construct "	<<G4endl;
+
   GateMessage("Geometry", 3, "Geometry construction starts. \n");
 
   pworldPhysicalVolume = pworld->GateVVolume::Construct();

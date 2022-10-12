@@ -106,7 +106,7 @@ void GateToBinaryMessenger::SetNewValue( G4UIcommand* command,
           iss >> mask;
           maskVector.push_back( mask );
         }
-      GateCoincidenceDigi::SetCoincidenceASCIIMask( maskVector );
+      GateCoincidenceDigiOld::SetCoincidenceASCIIMask( maskVector );
     }
   else if( command == m_singleMaskCmd )
     {

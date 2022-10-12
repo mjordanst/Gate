@@ -956,14 +956,9 @@ void GateToRoot::RecordDigitizer(const G4Event *) {
  */
     // Digitizer information
        // G4cout<<"size "<<m_outputChannelList.size()<<Gateendl;
-    //for (size_t i = 0; i < m_outputChannelList.size(); ++i)
-    // OK GND 2022 TODO loop only for Singles --> add coincidences
-
-    GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
-	for (size_t i = 0; i < digitizerMng->m_SingleDigitizersList.size(); ++i)
+    for (size_t i = 0; i < m_outputChannelList.size(); ++i)
     {
-        m_outputChannelList[i]->RecordDigitizer();
-       //G4cout<<m_outputChannelList[i]->m_collectionName<<Gateendl;
+    	m_outputChannelList[i]->RecordDigitizer();
     }
 
 }
@@ -1169,42 +1164,41 @@ void GateToRoot::RegisterNewCoincidenceDigiCollection(const G4String &aCollectio
 //--------------------------------------------------------------------------
 void GateToRoot::SingleOutputChannel::RecordDigitizer() {
     G4DigiManager *fDM = G4DigiManager::GetDMpointer();
-
+    //G4cout<<"GateToRoot::SingleOutputChannel::RecordDigitizer() "<<G4endl;
     //OK GND 2022
     GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
-	GateDigitizer* inputDigitizer = digitizerMng->FindDigitizer(m_collectionName);
 
-	G4int lastDCID=inputDigitizer->m_outputDigiCollectionID;
+	GateDigitizer* digitizer = digitizerMng->FindDigitizer(m_collectionName);
+	//digitizer->DescribeMyself();
 
+	G4int lastDCID=digitizer->m_outputDigiCollectionID;
+
+	//G4cout<<"lastDCID = "<<lastDCID<<G4endl;
     if (m_collectionID < 0)
     	m_collectionID = lastDCID;
 
-    //G4cout<<"m_collectionID "<<m_collectionID<<G4endl;
     const GateDigiCollection *SDC =
                 (GateDigiCollection *) (fDM->GetDigiCollection(m_collectionID));
 
-    G4cout<<"GateToRoot::SingleOutputChannel::RecordDigitizer "<< m_collectionName<<" "<<m_collectionID<<" "<<Gateendl;
+   // G4cout<<"GateToRoot::SingleOutputChannel::RecordDigitizer "<< m_collectionName<<" "<<m_collectionID<<" "<<Gateendl;
     if (!SDC) {
         //GateMessage("OutputMgr", 5, " There is no SDC collection\n";);
-       // if (nVerboseLevel > 0)
+        if (nVerboseLevel > 0)
             G4cout << "[GateToRoot::SingleOutputChannel::RecordDigitizer]:"
                    << " digi collection '" << m_collectionName << "' not found\n";
     } else {
+    	//digitizerMng->List();
         // Digi loop
         //GateMessage("OutputMgr", 5, " There is SDC collection. \n";);
-        //if (nVerboseLevel > 0)
+        if (nVerboseLevel > 0)
             G4cout << "[GateToRoot::SingleOutputChannel::RecordDigitizer]: Total Digits: "
                    << SDC->entries() << Gateendl;
 
         //  GateMessage("OutputMgr", 5, " Single collection m_outputFlag = " << m_outputFlag << Gateendl;);
-            G4cout<<"m_outputFlag "<<m_outputFlag<<G4endl;
         if (m_outputFlag) {
             G4int n_digi = SDC->entries();
-            //G4cout<<"n digi "<< n_digi<<G4endl;
             //GateMessage("OutputMgr", 5, " Single collection m_outputFlag = " << m_outputFlag << Gateendl;);
             for (G4int iDigi = 0; iDigi < n_digi; iDigi++) {
-            	//TODO Seg fault if try to access (*SDC)[iDigi]
-            	//G4cout<<"!!! "<<(*SDC)[iDigi]->GetEventID()<<G4endl;
                 m_buffer.FillGND((*SDC)[iDigi]);
             	m_tree->Fill();
             }
@@ -1216,9 +1210,45 @@ void GateToRoot::SingleOutputChannel::RecordDigitizer() {
 //--------------------------------------------------------------------------
 void GateToRoot::CoincidenceOutputChannel::RecordDigitizer() {
     //GateMessage("OutputMgr", 5, " GateToRoot::CoincidenceOutputChannel::RecordDigitizer -- begin\n";);
-    G4DigiManager *fDM = G4DigiManager::GetDMpointer();
-    if (m_collectionID < 0)
-        m_collectionID = fDM->GetDigiCollectionID(m_collectionName);
+    G4cout<<"GateToRoot::CoincidenceOutputChannel::RecordDigitizer() "<<G4endl;
+	G4DigiManager *fDM = G4DigiManager::GetDMpointer();
+
+	 GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
+	 GateCoincidenceSorter* cs = digitizerMng->FindCoincidenceSorter(m_collectionName);
+	 //digitizerMng->List();
+
+
+	 G4String DCname=cs->GetName()+"/"+m_collectionName;
+	 //	 G4cout<<DCname<<G4endl;
+	 G4int lastDCID=fDM->GetDigiCollectionID(DCname);
+
+		//G4cout<<"lastDCID = "<<lastDCID<<G4endl;
+	    if (m_collectionID < 0)
+	    	m_collectionID = lastDCID;
+	    //fDM->List();
+
+	//OK GND 2022
+	//G4cout<<"m_collectionName "<<m_collectionName<<G4endl;
+	//OK GND 2022 TODO correct collectionID to record coincidences
+		/*if (m_collectionID < 0)
+			{
+			//if (no coinDigitizers)
+			//	{
+				G4String DCname="GateCoincidenceSorter/Coincidences";
+				m_collectionID=fDM->GetDigiCollectionID(DCname);
+		/*		}
+			else
+				{
+				GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
+				GateCoinDigitizer* digitizer = digitizerMng->FindCoincidenceDigitizer(m_collectionName);
+				m_collectionID=digitizer->m_outputDigiCollectionID;
+				}
+				*/
+			//}
+
+		//m_collectionID=1;
+
+	//G4cout<<"m_collectionName = "<<m_collectionName << " ; ID = "<< m_collectionID <<G4endl;
     GateCoincidenceDigiCollection *CDC =
             (GateCoincidenceDigiCollection *) (fDM->GetDigiCollection(m_collectionID));
 
@@ -1228,7 +1258,6 @@ void GateToRoot::CoincidenceOutputChannel::RecordDigitizer() {
             G4cout << "[GateToRoot::CoincidenceOutputChannel::RecordDigitizer]:"
                    << " digi collection '" << m_collectionName << "' not found\n";
     } else {
-
         //GateMessage("OutputMgr", 5, " There is CDC collection. \n";);
         // Digi loop
         if (nVerboseLevel > 0)

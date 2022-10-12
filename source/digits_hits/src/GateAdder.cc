@@ -23,15 +23,16 @@
 #include "G4UnitsTable.hh"
 
 
-
-GateAdder::GateAdder(G4String name, GateDigitizer *digitizer)
-  :GateVDigitizerModule(name,digitizer),
+// :GateVDigitizerModule(name,digitizer),
+GateAdder::GateAdder(GateDigitizer *digitizer)
+  :GateVDigitizerModule("digitizerMng/SinglesDigitizer/"+digitizer->m_digitizerName+"/adder",digitizer),
    m_positionPolicy(kEnergyCentroid)
 {
 	G4String colName = digitizer->m_digitizerName;
 	collectionName.push_back(colName);
 	m_Messenger = new GateAdderMessenger(this);
 	m_digitizer=digitizer;
+	G4cout<< m_digitizer->m_digitizerName <<G4endl;
 }
 
 
@@ -43,38 +44,39 @@ GateAdder::~GateAdder()
 
 void GateAdder::Digitize()
 {
-	//G4cout<<"Adder::Digitize() "<< m_positionPolicy <<G4endl;
+	if (nVerboseLevel>1)
+		G4cout<<"[GateAdder::Digitize] for "<< m_digitizer->m_digitizerName <<G4endl;
 
 	G4String digitizerName = m_digitizer->m_digitizerName;
-	G4String inputCollName = m_digitizer->GetInputName();
 	G4String outputCollName = digitizerName;
 
-	OutputDigiCollection = new GateDigiCollection("GateAdder",outputCollName); // to create the Digi Collection
+	m_OutputDigiCollection = new GateDigiCollection("GateAdder",outputCollName); // to create the Digi Collection
 
 	G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
 
-	//G4String outputCollNameTMP="GateAdder/"+outputCollName;
-
+	InputCollectionID();
 
 	GateDigiCollection* IDC = 0;
 	IDC = (GateDigiCollection*) (DigiMan->GetDigiCollection( InputCollectionID() ));
 
 	GateDigi* inputDigi = new GateDigi();
 
-	std::vector< GateDigi* >* OutputDigiCollectionVector = OutputDigiCollection->GetVector ();
+	std::vector< GateDigi* >* m_OutputDigiCollectionVector = m_OutputDigiCollection->GetVector ();
 	std::vector<GateDigi*>::iterator iter;
 
 
   if (IDC)
      {
-	  G4int n_digi = IDC->entries();
+	  if (nVerboseLevel>1)
+		G4cout<<"[GateAdder::Digitize] Number of input digis "<< IDC->entries() <<G4endl;
 
+	  G4int n_digi = IDC->entries();
 	  //loop over input digits
 	  for (G4int i=0;i<n_digi;i++)
 	  {
 		  inputDigi=(*IDC)[i];
 		  //This part is from ProcessOnePulse
-		     for (iter=OutputDigiCollectionVector->begin(); iter!= OutputDigiCollectionVector->end() ; ++iter)
+		     for (iter=m_OutputDigiCollectionVector->begin(); iter!= m_OutputDigiCollectionVector->end() ; ++iter)
 		     {
 		    	 if ( (*iter)->GetVolumeID()   == inputDigi->GetVolumeID() )
 		    	 {
@@ -85,10 +87,9 @@ void GateAdder::Digitize()
 		    			 m_outputDigi = CentroidMerge( inputDigi,*iter );
 		    		 }
 
-
 		    		 if (nVerboseLevel>1)
 		    		 	 {
-		    			 	 G4cout << "Merged previous digi for volume " << inputDigi->GetVolumeID()
+		    			 	 G4cout << " [GateAdder::Digitize] Merged previous digi for volume " << inputDigi->GetVolumeID()
 		 						 << " with new digi of energy " << G4BestUnit(inputDigi->GetEnergy(),"Energy") <<".\n"
 								 << "Resulting digi is: \n"
 								 << **iter << Gateendl << Gateendl ;
@@ -98,37 +99,35 @@ void GateAdder::Digitize()
 
 		     }//loop over iter
 
-		     if ( iter == OutputDigiCollectionVector->end() )
+		     if ( iter == m_OutputDigiCollectionVector->end() )
 		     {
 		    	 m_outputDigi = new GateDigi(*inputDigi);
 		    	 m_outputDigi->SetEnergyIniTrack(-1);
 		    	 m_outputDigi->SetEnergyFin(-1);
 		    	 if (nVerboseLevel>1)
-		    		 G4cout << "Created new digi for volume " << inputDigi->GetVolumeID() << ".\n"
+		    		 G4cout << "[GateAdder::Digitize] Created new digi for volume " << inputDigi->GetVolumeID() << ".\n"
 					 << "Resulting digi is: \n"
 					 << *m_outputDigi << Gateendl << Gateendl ;
-		    	 OutputDigiCollection->insert(m_outputDigi);
+		    	 m_OutputDigiCollection->insert(m_outputDigi);
 		     }
 
 		//This part is from ProcessPulseList
 		     if (nVerboseLevel==1) {
-		    	 G4cout << "[GateAdder::Digitizer]: returning output digi collection with " << OutputDigiCollectionVector->size() << " entries\n";
-		    	 for (iter=OutputDigiCollectionVector->begin(); iter!= OutputDigiCollectionVector->end() ; ++iter)
+		    	 G4cout << "[GateAdder::Digitizer]: returning output digi collection with " << m_OutputDigiCollectionVector->size() << " entries\n";
+		    	 for (iter=m_OutputDigiCollectionVector->begin(); iter!= m_OutputDigiCollectionVector->end() ; ++iter)
 		    		 G4cout << **iter << Gateendl;
 		    	 G4cout << Gateendl;
 		     }
 	  }
      }
-  
-  	StoreDigiCollection(OutputDigiCollection);
+ // G4cout<<"Output collection "<<m_OutputDigiCollection->GetSize()<<G4endl;
+  	StoreDigiCollection(m_OutputDigiCollection);
 
 }
 
 
 void GateAdder::SetPositionPolicy(const G4String &policy)
 {
-	G4cout<<"GateAdder::SetPositionPolicy "<< policy <<G4endl;
-	G4cout<<m_positionPolicy<<G4endl;
 	if (policy=="takeEnergyWinner")
     {
 		m_positionPolicy=kEnergyWinner;

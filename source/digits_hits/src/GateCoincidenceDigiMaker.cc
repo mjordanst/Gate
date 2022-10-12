@@ -5,13 +5,13 @@ This software is distributed under the terms
 of the GNU Lesser General  Public Licence (LGPL)
 See LICENSE.md for further details
 ----------------------*/
-
+//GND:ClassToRemove
 
 #include "GateCoincidenceDigiMaker.hh"
 
 #include "G4DigiManager.hh"
 
-#include "GateCoincidenceDigi.hh"
+#include "GateCoincidenceDigiOld.hh"
 #include "GateDigitizerOld.hh"
 #include "GateTools.hh"
 #include "GateDigitizerOld.hh"
@@ -47,7 +47,7 @@ void GateCoincidenceDigiMaker::Digitize()
     return;
   }
   // Create the digi collection
-  GateCoincidenceDigiCollection* CoincidenceDigiCollection = new GateCoincidenceDigiCollection(m_digitizer->GetObjectName(),m_collectionName);
+  GateCoincidenceDigiOldCollection* CoincidenceDigiOldCollection = new GateCoincidenceDigiOldCollection(m_digitizer->GetObjectName(),m_collectionName);
 
   // Create and store the digi
   for (std::vector<GateCoincidencePulse*>::const_iterator it = coincidencePulse.begin();it != coincidencePulse.end() ; ++it){
@@ -55,18 +55,18 @@ void GateCoincidenceDigiMaker::Digitize()
       	if (nVerboseLevel)
       	    G4cout  << "[GateCoincidenceDigiMaker::Digitize]: ignoring multiple coincidence --> no digits created\n";
       } else {
-      	GateCoincidenceDigi* Digi = new GateCoincidenceDigi( **it);
-      	CoincidenceDigiCollection->insert(Digi);
+      	GateCoincidenceDigiOld* Digi = new GateCoincidenceDigiOld( **it);
+      	CoincidenceDigiOldCollection->insert(Digi);
       }
   }
 
   if (nVerboseLevel>0) {
       	  G4cout  << "[GateCoincidenceDigiMaker::Digitize]:  created 1 coincidence digi in this event:" <<	Gateendl;
-	  (*CoincidenceDigiCollection)[0]->Print();
+	  (*CoincidenceDigiOldCollection)[0]->Print();
 	  G4cout << Gateendl;
   }
 
 
   // Store the digits into the digit collection of this event
-  m_digitizer->StoreDigiCollection(CoincidenceDigiCollection);
+  m_digitizer->StoreDigiCollection(CoincidenceDigiOldCollection);
 }

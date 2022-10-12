@@ -18,7 +18,7 @@ See LICENSE.md for further details
 
 #include "GateToRoot.hh"
 #include "GateOutputMgr.hh"
-#include "GateCoincidenceDigi.hh"
+#include "GateCoincidenceDigiOld.hh"
 
 #include "G4UIdirectory.hh"
 #include "G4UIcmdWithAString.hh"
@@ -124,7 +124,7 @@ GateToRootMessenger::~GateToRootMessenger()
 //--------------------------------------------------------------------------
 void GateToRootMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 {
-
+ G4cout<<"GateToRootMessenger::SetNewValue"<<G4endl;
   if( command == ResetCmd ) {
     m_gateToRoot->Reset();
   } else if (command == SetFileNameCmd) {
@@ -157,7 +157,7 @@ void GateToRootMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
       is >> tempIntBool; // NB: is >> bool does not work, so we put is to an integer and we copy the integer to the bool
       tempBool = tempIntBool;
       maskVector.push_back(tempBool);
-      //      G4cout << "[GateToASCIIMessenger::SetNewValue] iMask: " << iMask << " maskVector[iMask]: " << maskVector[iMask] << Gateendl;
+           // G4cout << "[GateToASCIIMessenger::SetNewValue] iMask: " << iMask << " maskVector[iMask]: " << maskVector[iMask] << Gateendl;
     }
     GateCoincidenceDigi::SetCoincidenceASCIIMask( maskVector );
 
@@ -176,7 +176,7 @@ void GateToRootMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
       is >> tempIntBool; // NB: is >> bool does not work, so we put is to an integer and we copy the integer to the bool
       tempBool = tempIntBool;
       maskVector.push_back(tempBool);
-      //      G4cout << "[GateToASCIIMessenger::SetNewValue] iMask: " << iMask << " maskVector[iMask]: " << maskVector[iMask] << Gateendl;
+           // G4cout << "[GateToASCIIMessenger::SetNewValue] iMask: " << iMask << " maskVector[iMask]: " << maskVector[iMask] << Gateendl;
     }
     GateSingleDigi::SetSingleASCIIMask( maskVector );
   

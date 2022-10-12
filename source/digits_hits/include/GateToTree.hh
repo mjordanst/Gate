@@ -21,7 +21,7 @@ See LICENSE.md for further details
 #include <unordered_map>
 
 class GateToTreeMessenger;
-class GateCoincidenceDigi;
+class GateCoincidenceDigiOld;
 
 class SaveDataParam
 {
@@ -77,7 +77,7 @@ public:
 
 private:
 
-  void retrieve(GateCoincidenceDigi* aDigi, G4int side, G4int system_id);
+  void retrieve(GateCoincidenceDigiOld* aDigi, G4int side, G4int system_id);
 
   template <typename T>
   void retrieve(T* p, G4int system_id) //p == GateHit, GateSingleDigi, or &GatePulses
