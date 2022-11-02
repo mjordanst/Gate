@@ -71,15 +71,20 @@ See LICENSE.md for further details
 GateDigitizerMessenger::GateDigitizerMessenger(GateDigitizer* itsDigitizer)
 :GateListMessenger(itsDigitizer),m_digitizer(itsDigitizer)
 {
-	G4cout<<"GateDigitizerMessenger constr"<<G4endl;
+	//G4cout<<"GateDigitizerMessenger constr"<<G4endl;
   pInsertCmd->SetCandidates(DumpMap());
 
   G4String cmdName;
+  //G4cout<< GetDirectoryName()<<G4endl;
 
-  cmdName = GetDirectoryName()+"setInputCollection";
+ cmdName = GetDirectoryName()+"setInputCollection";
   SetInputNameCmd = new G4UIcmdWithAString(cmdName,this);
   SetInputNameCmd->SetGuidance("Set the name of the input pulse channel");
   SetInputNameCmd->SetParameterName("Name",false);
+
+
+
+
 }
 
 
@@ -88,6 +93,7 @@ GateDigitizerMessenger::GateDigitizerMessenger(GateDigitizer* itsDigitizer)
 GateDigitizerMessenger::~GateDigitizerMessenger()
 {
   delete SetInputNameCmd;
+
 }
 
 
@@ -95,7 +101,7 @@ GateDigitizerMessenger::~GateDigitizerMessenger()
 
 void GateDigitizerMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 {
-	G4cout<<"GateDigitizerMessenger SetNewValue "<< newValue <<G4endl;
+	//G4cout<<"GateDigitizerMessenger SetNewValue "<< newValue <<G4endl;
 
   if (command == SetInputNameCmd)
     { m_digitizer->SetInputName(newValue); }
@@ -130,7 +136,7 @@ void GateDigitizerMessenger::DoInsertion(const G4String& childTypeName)
 
   if (childTypeName=="readout")
   {
-	  newDM = new GateReadout(m_digitizer);
+	  newDM = new GateReadout(m_digitizer,m_digitizer->m_SD);
 	  m_digitizer->AddNewModule(newDM);
 	  G4DigiManager::GetDMpointer()->AddNewModule(newDM);
   }
@@ -178,7 +184,7 @@ void GateDigitizerMessenger::DoInsertion(const G4String& childTypeName)
     newDM = new GateCC3DlocalSpblurring(m_digitizer,newInsertionName);
   */else if (childTypeName=="adder")
   {
-	  newDM = new GateAdder(m_digitizer );
+	  newDM = new GateAdder(m_digitizer, m_digitizer->m_SD);
 	  m_digitizer->AddNewModule(newDM);
 	  G4DigiManager::GetDMpointer()->AddNewModule(newDM);
   }

@@ -73,8 +73,8 @@ class GateCrystalSD : public G4VSensitiveDetector
 
 
       //! Tool method returning the name of the hit-collection where the crystal hits are stored
-      static inline const G4String& GetCrystalCollectionName()
-      	  { return theCrystalCollectionName; }
+      //inline const G4String& GetCrystalCollectionName()
+     // 	  { return m_CrystalCollectionName; }
 
 
       //! Returns the system to which the SD is attached
@@ -94,11 +94,13 @@ class GateCrystalSD : public G4VSensitiveDetector
   protected:
      GateVSystem* m_system;                           //! System to which the SD is attached //mhadi_obso obsollete, because we use the multi-system approach
      GateSystemList* m_systemList = nullptr;          //! System list instead of one system
+
   private:
       GateHitsCollection * crystalHitsCollection;  //! Hit collection
       G4int collectionID;
+      G4int HCID;
 
-      static const G4String theCrystalCollectionName; //! Name of the hit collection
+    //  const G4String m_CrystalCollectionName; //! Name of the hit collection
 
       static GateCrystalSD*  theSD;
 

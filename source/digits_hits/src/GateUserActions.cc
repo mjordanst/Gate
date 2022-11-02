@@ -91,7 +91,7 @@ GateUserActions::~GateUserActions()
   delete pUserActions;
   GateDebugMessageInc("Core", 4, "GateUserActions Destructor.\n");
 
-  delete digitizer;
+  //delete digitizer;
 }
 //-----------------------------------------------------------------------------
 
@@ -147,15 +147,6 @@ void GateUserActions::BeginOfEventAction(const G4Event* evt)
   theListOfTrackIDInfo.clear();
   GateActorManager::GetInstance()->BeginOfEventAction(evt);
 
-  //OK: GND 2022
-  /*G4SDManager * SDman = G4SDManager::GetSDMpointer();
-
-  if ( HitsCollectionID ==-1)
-  	  {
-	  HitsCollectionID = SDman->GetCollectionID(GateCrystalSD::GetCrystalCollectionName() ); //defined in constructor of SD
-  	  }
-	//
-*/
 }
 //-----------------------------------------------------------------------------
 

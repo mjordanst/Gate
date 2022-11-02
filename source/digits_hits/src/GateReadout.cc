@@ -51,8 +51,8 @@
 #include "GateVSystem.hh"
 
 
-GateReadout::GateReadout(GateDigitizer *digitizer)
-  :GateVDigitizerModule("digitizerMng/SinglesDigitizer/"+digitizer->m_digitizerName+"/readout",digitizer),
+GateReadout::GateReadout(GateDigitizer *digitizer, GateCrystalSD *SD)
+  :GateVDigitizerModule("GateReadout","digitizerMng/"+digitizer->GetSD()->GetName()+"/SinglesDigitizer/"+digitizer->m_digitizerName+"/readout",digitizer, SD),
    m_depth(0),
    m_policy("TakeEnergyWinner"),
    m_IsFirstEntrance(1)
@@ -69,7 +69,7 @@ GateReadout::GateReadout(GateDigitizer *digitizer)
 	m_crystalComponent = NULL;
 	m_IsForcedDepthCentroid = false;
 
-	G4String colName = digitizer->m_digitizerName;
+	G4String colName = digitizer->GetOutputName();
 	collectionName.push_back(colName);
 	m_messenger = new GateReadoutMessenger(this);
 	m_digitizer=digitizer;
@@ -209,13 +209,11 @@ void GateReadout::Digitize()
   //G4cout<<" GateReadout::Digitize "<< m_IsFirstEntrance <<G4endl;
 
   G4String digitizerName = m_digitizer->m_digitizerName;
-  G4String outputCollName = digitizerName;
-
+  G4String outputCollName = m_digitizer-> GetOutputName();
+  //G4cout<<"outputCollName "<<outputCollName<<G4endl;
   m_OutputDigiCollection = new GateDigiCollection("GateReadout",outputCollName); // to create the Digi Collection
 
   G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
-  G4String outputCollNameTMP="GateReadout/"+outputCollName;
-
 
   GateDigiCollection* IDC = 0;
   IDC = (GateDigiCollection*) (DigiMan->GetDigiCollection( InputCollectionID() ));

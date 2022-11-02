@@ -79,10 +79,12 @@ private:
   G4UIcmdWithoutParameter*    ListChoicesCmd;       //!< the UI command 'info'
   G4UIcmdWithoutParameter*    ListCmd;	      //!< the UI command 'list'
   G4UIcmdWithAString*         pInsertCmd;	      //!< the UI command 'insert'
-
+  G4UIcmdWithAString* 		  SetChooseSDCmd;     //!< the UI command 'chooseSD'
 private:
   G4String  	      	m_newCollectionName; //m_newInsertionBaseName  //!< the name to be given to the next insertion
   	  	  	  	  	  	  	  	  	  	  	  	  //!< (if empty, the type-name will be used)
+
+  G4String m_SDname;
 
 };
 

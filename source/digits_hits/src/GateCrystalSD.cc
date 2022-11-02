@@ -31,25 +31,48 @@
 //OK GND 2022
 #include "GateDigitizer.hh"
 #include "GateDigitizerMng.hh"
-
+//#include "GateDigitizerInitializationModule.hh"
 
 #include "GateObjectStore.hh"
 #include "GateEmittedGammaInformation.hh"
 
 // Name of the hit collection
-const G4String GateCrystalSD::theCrystalCollectionName = "crystalCollection"; //CrystalSD"; //has to be hardcoded somewhere. Add modifs for multiple HCs
+//const G4String GateCrystalSD::m_CrystalCollectionName = "crystalCollection"; //CrystalSD"; //has to be hardcoded somewhere. Add modifs for multiple HCs
 
 
 //------------------------------------------------------------------------------
 // Constructor
 GateCrystalSD::GateCrystalSD(const G4String& name)
-:G4VSensitiveDetector(name),m_system(0)
+:G4VSensitiveDetector(name),
+ m_system(0)
 {
-	 G4cout<<"GateCrystalSD::GateCrystalSD "<< name<<G4endl;
-	//collectionName.insert(theCrystalCollectionName);
+	// G4cout<<"GateCrystalSD::GateCrystalSD "<< name<<G4endl;
+	//collectionName.insert(m_CrystalCollectionName);
 	//OK GND 2022
-	collectionName.insert(name);
-	collectionID = -1;
+	G4String collName=name+"Collection";
+	collectionName.insert(collName);
+//	collectionID = -1;
+
+	GateDigitizerMng* digitizerMng=GateDigitizerMng::GetInstance();
+	digitizerMng->AddNewSD(this);
+
+	digitizerMng->AddNewSinglesDigitizer( new GateDigitizer(digitizerMng,"Singles",this));
+
+	//In order to get unique HCID each time when we create a new SD
+	// one can take GetCollectionCapacity of G4SDManager
+	// by default there is always phantomSD attached
+	// thus: 1st HCID = 1
+	// This is done in order to replace a block from Intialize()
+	/*
+	 static G4int HCID=-1;
+	 if(HCID<0 ) // call only in the first event
+	 			{
+				HCID = G4SDManager::GetSDMpointer()->GetCollectionID(GetName()+"Collection");
+
+			}
+	 */
+	HCID = G4SDManager::GetSDMpointer()->GetCollectionCapacity() ;
+
 }
 //------------------------------------------------------------------------------
 
@@ -85,33 +108,11 @@ GateCrystalSD *GateCrystalSD::Clone() const {
 // Method overloading the virtual method Initialize() of G4VSensitiveDetector
 void GateCrystalSD::Initialize(G4HCofThisEvent*HCE)
 {
-	//G4cout<<"GateCrystalSD::Initialize"<<G4endl;
-	//G4SDManager *SDMan=G4SDManager::GetSDMpointer();
-  //OK GND 2022
- if (collectionID==-1)
-		{
-	  	  crystalHitsCollection = new GateHitsCollection(theCrystalCollectionName,collectionName[0]);
-		}
+	//G4cout<<"GateCrystalSD::Initialize("<<G4endl;
+	crystalHitsCollection=new GateHitsCollection(GetName(),collectionName[0]);
 
-  if (collectionID > 0)
-  	{
-  		collectionID = G4SDManager::GetSDMpointer()->GetCollectionID(crystalHitsCollection);
-  	}
+	HCE->AddHitsCollection(HCID, crystalHitsCollection);
 
-  HCE->AddHitsCollection(collectionID, crystalHitsCollection);
-/*
-	static int HCID = -1; // Static variable storing the hit collection ID
-  // Not thread safe but moving to local variable doesn't work
-    // Creation of a new hit collection
-	 crystalHitsCollection = new GateHitsCollection
-	                   (SensitiveDetectorName,theCrystalCollectionName);
-  // We store the hit collection ID into the static variable HCID
-  if(HCID<0)
-  { HCID = GetCollectionID(0); }
-
-  // Add the hit collection to the G4HCofThisEvent
-  HCE->AddHitsCollection(HCID,crystalHitsCollection);
-*/
 }
 //------------------------------------------------------------------------------
 
@@ -246,9 +247,10 @@ G4bool GateCrystalSD::ProcessHits(G4Step*aStep, G4TouchableHistory*)
   GateOutputVolumeID outputVolumeID = system->ComputeOutputVolumeID(aHit->GetVolumeID());
   aHit->SetOutputVolumeID(outputVolumeID);
 
-
+// G4cout<<"This hit is in "<< this->GetName()<< " added to "<< crystalHitsCollection-> GetName () << " "<<G4SDManager::GetSDMpointer()->GetCollectionID(crystalHitsCollection) <<G4endl;
   // Insert the new hit into the hit collection
-  crystalHitsCollection->insert( aHit );
+	//collectionID =
+			crystalHitsCollection->insert( aHit );
   return true;
 }
 //------------------------------------------------------------------------------
@@ -257,12 +259,17 @@ G4bool GateCrystalSD::ProcessHits(G4Step*aStep, G4TouchableHistory*)
 //OK GND 2022
 void GateCrystalSD::EndOfEvent(G4HCofThisEvent* HCE)
 {
-	static G4int HCID = -1;
-	  if(HCID<0)
-	    {
-	      HCID = G4SDManager::GetSDMpointer()->GetCollectionID(theCrystalCollectionName);//collectionName[0]);
-	    }
-	  HCE->AddHitsCollection(HCID,crystalHitsCollection); //to use later in EndEventAction
+	//G4cout<<"GateCrystalSD::EndOfEvent "<<this->GetName() <<G4endl;
+
+/*	static G4int HCID = -1;
+		  if(HCID<0)
+		  {
+			  G4int  HCID = G4SDManager::GetSDMpointer()->GetCollectionID(GetName()+"Collection");//collectionName[0]);
+			  //G4cout<<GetName()+"Collection "<< HCID<<G4endl;
+			  //G4cout<< HCID <<" "<<HCE->GetHC(HCID)->GetName ()<<" "<< HCE ->GetHC(HCID)-> GetSize ()   <<G4endl;
+		  }
+*/
+
 }
 
 //-------------------------------------------------------------------------------

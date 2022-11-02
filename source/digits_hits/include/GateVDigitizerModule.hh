@@ -15,6 +15,7 @@ See LICENSE.md for further details
 #include "GateDigi.hh"
 #include "GateDigitizer.hh"
 #include "GateClockDependent.hh"
+#include "GateCrystalSD.hh"
 
 #include "globals.hh"
 
@@ -24,12 +25,15 @@ class GateVDigitizerModule : public G4VDigitizerModule, public GateClockDependen
 {
 public:
   
-  GateVDigitizerModule(G4String DMname, GateDigitizer *digitizer);
+  GateVDigitizerModule(G4String DMname, G4String path, GateDigitizer *digitizer, GateCrystalSD* SD);
   GateVDigitizerModule(G4String DMname);
   virtual ~GateVDigitizerModule();
   
   virtual void Digitize()=0;
   G4int InputCollectionID();
+
+
+
 
   //! Method overloading GateClockDependent::Describe()
   //! Print-out a description of the component
@@ -50,6 +54,13 @@ private:
   GateDigiCollection*  OutputDigiCollection;
 */
   GateDigitizer *m_digitizer;
+
+
+protected:
+  GateCrystalSD *m_SD;
+  G4int m_outputDCID;
+  G4int	m_InitDMID;
+
 
 };
 

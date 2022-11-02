@@ -123,7 +123,7 @@ GateVVolume::GateVVolume(const G4String &itsName,
 // Destructeur
 GateVVolume::~GateVVolume() {
 
-    delete pMessenger;
+   delete pMessenger;
     delete pOwnVisAtt;
 
     //delete pOwnMaterial;
@@ -151,6 +151,9 @@ GateVVolume::~GateVVolume() {
     // but if this were the case, these volumes are left to survive.
     // In that case, these volumes become orphans with regards to the
     // creator tree.
+
+
+
 }
 //----------------------------------------------------------------------------------------
 
@@ -214,6 +217,7 @@ void GateVVolume::ConstructGeometry(G4LogicalVolume *mother_log, G4bool flagUpda
 
     // Attach a sensitive detector as required
     if (m_sensitiveDetector) {
+    	//G4cout<<" GateVVolume::ConstructGeometry "<< m_sensitiveDetector->GetName() <<" to vol "<< pOwnLog->GetName()<<G4endl;
         pOwnLog->SetSensitiveDetector(m_sensitiveDetector);
         GateMessage("Geometry", 7, "A sensitive detector has been attached to " << GetObjectName() << " volume.\n");
     }
@@ -371,7 +375,7 @@ void GateVVolume::ConstructOwnPhysicalVolume(G4bool flagUpdateOnly) {
 //----------------------------------------------------------------------------------------
 // Tell the creator that the logical volume should be attached to the crystal-SD
 void GateVVolume::AttachCrystalSD() {
-	G4cout<<"GateVVolume::AttachCrystalSD() "<<G4endl;
+	//G4cout<<"GateVVolume::AttachCrystalSD() "<< GetObjectName()<<G4endl;
     /*
       if (!CheckOutputExistence()){
       // Add OutputMgr output actor to theListOfActors
@@ -382,8 +386,16 @@ void GateVVolume::AttachCrystalSD() {
       AttachOutputToVolume();
     */
     // Retrieve the crystal-SD pointer from the detector-construction
-    GateCrystalSD *crystalSD = GateDetectorConstruction::GetGateDetectorConstruction()->GetCrystalSD();
+   // GateCrystalSD *crystalSD = GateDetectorConstruction::GetGateDetectorConstruction()->GetCrystalSD();
 
+    // OK GND 2022
+    //----
+	G4SDManager* SDman = G4SDManager::GetSDMpointer();
+    G4String crystalSDname = GetObjectName();// GateCrystalSD::GetCrystalCollectionName();//check GateCrystalSD class for hardcoded value
+        //
+    GateCrystalSD *crystalSD = new GateCrystalSD(crystalSDname);
+    SDman->AddNewDetector(crystalSD);
+    //----
 
     // Check whether this attachement is allowed or forbidden
     if (crystalSD->PrepareCreatorAttachment(this)) {

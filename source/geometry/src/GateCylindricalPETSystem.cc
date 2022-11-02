@@ -32,6 +32,7 @@ See LICENSE.md for further details
 GateCylindricalPETSystem::GateCylindricalPETSystem(const G4String& itsName)
 : GateVSystem( itsName , true )
 {
+//	G4cout<<"GateCylindricalPETSystem constr"<< G4endl;
   // Set up a messenger
   m_messenger = new GateClockDependentMessenger(this);
   m_messenger->SetDirectoryGuidance(G4String("Controls the system '") + GetObjectName() + "'" );

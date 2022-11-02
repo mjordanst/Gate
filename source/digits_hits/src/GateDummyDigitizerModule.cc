@@ -46,8 +46,8 @@
 
 
 
-GateDummyDigitizerModule::GateDummyDigitizerModule(GateDigitizer *digitizer)
-  :GateVDigitizerModule("digitizerMng/SinglesDigitizer/"+digitizer->m_digitizerName+"/dummy",digitizer),
+GateDummyDigitizerModule::GateDummyDigitizerModule(GateDigitizer *digitizer, GateCrystalSD *SD)
+  :GateVDigitizerModule("GateDummyDigitizerModule","digitizerMng/SinglesDigitizer/"+digitizer->m_digitizerName+"/dummy",digitizer, SD),
    m_parameter("dummy")
  {
 	G4String colName = digitizer->m_digitizerName;

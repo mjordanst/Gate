@@ -32,6 +32,10 @@
 #include "G4DigiManager.hh"
 #include "GateDigitizer.hh"
 #include "GateCoincidenceSorter.hh"
+
+#include "GateDigitizerInitializationModule.hh"
+
+
 class GateDigitizerMngMessenger;
 class GateVSystem;
 
@@ -86,6 +90,9 @@ protected:
 
 public:
   ~GateDigitizerMng();
+  void Initialize();
+
+  void GetDigiCollection();
 
   //mhadi_add[
     // Next methods were added for the multi-system approach
@@ -105,6 +112,7 @@ public:
    //	   { return FindElement( MakeElementName(baseName) ) ; }
    //	*/
 
+    void AddNewSD(GateCrystalSD*);
 
    void ShowSummary();
    /// Methods for Singles
@@ -167,8 +175,11 @@ protected:
 
 public:
   G4bool m_isInitialized;
+  std::vector<GateCrystalSD*>    	m_SDlist;	 //!< Vector of Sensitive Detectors
+  std::vector<GateDigitizerInitializationModule*>    	m_digitizerIMList;	 //!< Vector of initialisation modules for different SD
   std::vector<GateDigitizer*>    	m_SingleDigitizersList;	 //!< Vector of digitizers
   std::vector<GateCoincidenceSorter*>    	m_CoincidenceSortersList;	 //!< Vector of coincidence sorters
+
 
 };
 #endif

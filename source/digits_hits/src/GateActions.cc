@@ -62,13 +62,14 @@ GateEventAction* GateEventAction::peventAction=0;
 GateRunAction::GateRunAction(GateUserActions * cbm)
   : pCallbackMan(cbm), flagBasicOutput(false)
 {
-	G4cout<<"GateRunAction constr"<<G4endl;
+	//G4cout<<"GateRunAction constr"<<G4endl;
 	SetRunAction(this); runIDcounter = 0;
 
 	//OK GND 2022. moved from Gate.cc
 	//Very first initialization of GateDigitizerMng
 #ifdef G4ANALYSIS_USE_GENERAL
 	GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
+	//digitizerMng->Enable(false);
 #endif
 }
 //-----------------------------------------------------------------------------
@@ -78,7 +79,7 @@ GateRunAction::GateRunAction(GateUserActions * cbm)
 void GateRunAction::BeginOfRunAction(const G4Run* aRun)
 {
   GateMessage("Core", 1, "Begin Of Run " << aRun->GetRunID() << Gateendl);
-  G4cout<<"GateACTIONS ------ GateRunAction::BeginOfRunAction " <<G4endl;
+ G4cout<<"GateACTIONS ------ GateRunAction::BeginOfRunAction " <<G4endl;
 
   //#ifdef GATE_BasicROOT_Output
   //if(GateApplicationMgr::GetInstance()->GetOutputMode()){
@@ -96,6 +97,37 @@ void GateRunAction::BeginOfRunAction(const G4Run* aRun)
 #endif
 
   pCallbackMan->BeginOfRunAction(aRun);
+
+  // OK GND 2022
+  // Filling CHCollID for
+  //In order to get unique CHCollID each time when we create a new SD
+  	// one can take GetCollectionCapacity of G4SDManager
+  	// by default there is always phantomSD attached
+  	// thus: 1st CHCollID = 1
+  	// This is done in order to replace a block from Intialize()
+  	/*
+  	 static G4int CHCollID=-1;
+  	 if(CHCollID<0 ) // call only in the first event
+  	 			{
+  				CHCollID = G4SDManager::GetSDMpointer()->GetCollectionID(GetName()+"Collection");
+
+  			}
+  	 */
+
+  G4SDManager* SDman = G4SDManager::GetSDMpointer();
+
+  for (int i=0; i< SDman->GetCollectionCapacity(); i++)
+  {
+	   G4String HCname = SDman->GetHCtable()->GetHCname(i);
+	  // G4cout<<SDman->GetHCtable()->GetSDname(i)<<" "<<SDman->GetHCtable()->GetHCname(i)  <<G4endl;
+	  G4int CHCollID = G4SDManager::GetSDMpointer()->GetCollectionID(SDman->GetHCtable()->GetHCname(i));
+	  //G4cout<<CHCollID<<" "<< SDman->GetHCtable()->GetHCname(i)<<G4endl;
+	  m_CHCollIDs.push_back(CHCollID);
+
+  }
+
+
+
 }
 //-----------------------------------------------------------------------------
 
@@ -123,7 +155,7 @@ inline void GateRunAction::EndOfRunAction(const G4Run* aRun)
 
 //-----------------------------------------------------------------------------
 GateEventAction::GateEventAction(GateUserActions * cbm)
-  : pCallbackMan(cbm), flagBasicOutput(false), pHitsCollectionID(-1)
+  : pCallbackMan(cbm), flagBasicOutput(false)
 { SetEventAction(this); }
 //-----------------------------------------------------------------------------
 
@@ -133,12 +165,6 @@ inline void GateEventAction::BeginOfEventAction(const G4Event* anEvent)
 {
   GateMessage("Core", 2, "Begin Of Event " << anEvent->GetEventID() << "\n");
   G4cout<<"GateACTIONS ------ GateEventAction::BeginOfEventAction " << anEvent->GetEventID() <<G4endl;
-
-  //OK GND 2022
-  G4SDManager * SDman = G4SDManager::GetSDMpointer();
-  if ( pHitsCollectionID ==-1) {
-      pHitsCollectionID = SDman->GetCollectionID(GateCrystalSD::GetCrystalCollectionName());//defined in constructor of SD
-    }
 
   TrackingMode theMode =( (GateSteppingAction *)(GateRunManager::GetRunManager()->GetUserSteppingAction() ) )->GetMode();
   if ( theMode != TrackingMode::kTracker )
@@ -165,7 +191,7 @@ inline void GateEventAction::EndOfEventAction(const G4Event* anEvent)
 {
   GateMessage("Core", 2, "End Of Event " << anEvent->GetEventID() << "\n");
 
-  G4cout<<"GateACTIONS ------ GateEventAction::EndOfEventAction " << anEvent->GetEventID() <<G4endl;
+ // G4cout<<"GateACTIONS ------ GateEventAction::EndOfEventAction " << anEvent->GetEventID() <<G4endl;
   //OK GND 2022 TODO
   //I would like to RunDigitizers here but some aHit attronites are filled in OutputMng/GateAnalysis->RecordEndOfEvent
   //GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
@@ -181,19 +207,28 @@ inline void GateEventAction::EndOfEventAction(const G4Event* anEvent)
 #endif
 
 
-
+  GateRunManager* RunMan = GateRunManager::GetRunManager();
 
 
   /* PY Descourt 08/09/2009 */
 
-  GateSteppingAction* myAction = ( (GateSteppingAction *)(GateRunManager::GetRunManager()->GetUserSteppingAction() ) );
+  //GateSteppingAction* myAction = ( (GateSteppingAction *)(GateRunManager::GetRunManager()->GetUserSteppingAction() ) );
+  GateSteppingAction* myAction = ( (GateSteppingAction *)(RunMan->GetUserSteppingAction() ) );
+
   TrackingMode theMode = myAction->GetMode();
 
 
-  if ( theMode == TrackingMode::kTracker )
+  //OK GND 2022
+  GateRunAction* RunAction = ( (GateRunAction*)(RunMan->GetUserRunAction()) );
+
+  for (long unsigned int i=0; i<RunAction->m_CHCollIDs.size(); i++)
+   {
+	  // TODO: OK GND 2022, test that in traking mode it still works
+	   if ( theMode == TrackingMode::kTracker )
     {
-	  G4int CHCollID = G4SDManager::GetSDMpointer()->GetCollectionID(GateCrystalSD::GetCrystalCollectionName() ); //"crystalCollection");
-      GateHitsCollection * CHC = (GateHitsCollection *) ( anEvent->GetHCofThisEvent()->GetHC( CHCollID ) );
+	  //OK GND 2022
+	  G4int CHCollID = RunAction->m_CHCollIDs[i];
+	  GateHitsCollection * CHC = (GateHitsCollection *) ( anEvent->GetHCofThisEvent()->GetHC( CHCollID ) );
 
       if (CHC != 0)
 	{ if ( CHC->GetSize() > 0 )
@@ -218,7 +253,7 @@ inline void GateEventAction::EndOfEventAction(const G4Event* anEvent)
       // se charge de remplir les histos      : steppingAction contient la colllection de tracks
     }//tracker mode
 
-
+   }
   if(anEvent->GetNumberOfPrimaryVertex() > 0) pCallbackMan->EndOfEventAction(anEvent);
 
 

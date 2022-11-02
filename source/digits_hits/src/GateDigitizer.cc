@@ -28,23 +28,32 @@
 #include "GateSingleDigiMaker.hh"
 
 #include "GateOutputMgr.hh"
+#include "GateDigitizerInitializationModule.hh"
 
 GateDigitizer::GateDigitizer( GateDigitizerMng* itsDigitizerMng,
-    			                          const G4String& digitizerName)
-  : GateModuleListManager(itsDigitizerMng,itsDigitizerMng->GetObjectName() + "/SinglesDigitizer/" + digitizerName,"SinglesDigitizer"),
-	m_outputName(digitizerName),
-    m_inputName(digitizerName),
-	m_digitizerName(digitizerName)
+										  const G4String& digitizerUsersName,
+    			                          GateCrystalSD* SD)
+  : GateModuleListManager(itsDigitizerMng,itsDigitizerMng->GetObjectName() + "/"+ SD->GetName() +"/SinglesDigitizer/" + digitizerUsersName ,"SinglesDigitizer"),
+	m_outputName(digitizerUsersName+"_"+SD->GetName()),
+    m_inputName(digitizerUsersName+"_"+SD->GetName()),
+	m_SD(SD),
+	m_digitizerName(digitizerUsersName)
 {
+	//G4cout<<"GateDigitizer::GateDigitizer "<<  itsDigitizerMng->GetObjectName() + "/"+ SD->GetName() +"/SinglesDigitizer/" + digitizerUsersName <<G4endl;
 	m_messenger = new GateDigitizerMessenger(this);
 
   //Prepare OutputMng for this digitizer
-  	GateOutputMgr::GetInstance()->RegisterNewSingleDigiCollection(m_digitizerName,true);
+  	GateOutputMgr::GetInstance()->RegisterNewSingleDigiCollection(m_digitizerName+"_"+SD->GetName(),true);
 
   	if(!itsDigitizerMng->m_isInitialized)
   	{
+
   		itsDigitizerMng->AddNewSinglesDigitizer(this);
+
   	}
+	//G4cout<<"end GateDigitizer::GateDigitizer "<<  itsDigitizerMng->GetObjectName() + "/"+ SD->GetName() +"/SinglesDigitizer/" + "Singles" <<G4endl;
+
+
 }
 
 
@@ -65,6 +74,7 @@ void GateDigitizer::AddNewModule(G4VDigitizerModule* DM)
 {
 	if (nVerboseLevel>1)
 		G4cout << "[GateSinglesDigitizer::AddNewModule]: "<< DM->GetName() <<"\n";
+
 	m_DMlist.push_back(DM);
 
 }

@@ -416,7 +416,7 @@ int main( int argc, char* argv[] )
       }
     }
 
-
+ 
 #ifdef G4ANALYSIS_USE_GENERAL
   if (outputMgr) delete outputMgr;
 #endif
@@ -424,7 +424,7 @@ int main( int argc, char* argv[] )
 #ifdef G4VIS_USE
   delete visManager;
 #endif
-
+  
   delete sourceMgr;
   delete appMgr;
   delete randomEngine;

@@ -24,6 +24,7 @@ See LICENSE.md for further details
 #include "GateDigi.hh"
 #include "GateDigitizer.hh"
 #include "GateClockDependent.hh"
+#include "GateCrystalSD.hh"
 
 #include "globals.hh"
 
@@ -36,7 +37,7 @@ class GateAdder : public GateVDigitizerModule
 {
 public:
   
-  GateAdder(GateDigitizer *digitizer);
+  GateAdder(GateDigitizer *digitizer,  GateCrystalSD* SD);
   ~GateAdder();
   
   void Digitize() override;

@@ -108,8 +108,10 @@ public:
   //! If it is not the case the module is disabled and a warning is sent.
   void CheckFileNameForAllOutput();
 
-  //! Return the current crystal-hit collection (if nay)
+  //! Return the current crystal-hit collection (if any)
   GateHitsCollection*  	  GetHitCollection();
+  std::vector<GateHitsCollection*> GetHitCollections();
+
   //! Return the current phantom-hit collection (if nay)
   GatePhantomHitsCollection*  	  GetPhantomHitCollection();
   //! Return the current single-digi collection (if nay)

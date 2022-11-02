@@ -99,9 +99,10 @@ ComptonRayleighData &ComptonRayleighData::operator=(const ComptonRayleighData &a
 
 //--------------------------------------------------------------------------
 GateToRoot::GateToRoot(const G4String &name, GateOutputMgr *outputMgr, DigiMode digiMode)
-        : GateVOutputModule(name, outputMgr, digiMode), m_hfile(0), m_treeHit(0),
-          m_rootHitFlag(digiMode == kruntimeMode), m_rootNtupleFlag(true), m_saveRndmFlag(true),
-          m_fileName(" ") // All default output file from all output modules are set to " ".
+        : GateVOutputModule(name, outputMgr, digiMode), m_hfile(0), m_treesHit(0),
+		  m_rootHitFlag(digiMode == kruntimeMode),  m_rootSinglesFlag(true), m_rootCoincidencesFlag(true), m_rootNtupleFlag(true), m_saveRndmFlag(true),
+         // m_rootHitFlag(digiMode == kruntimeMode), m_rootNtupleFlag(true), m_saveRndmFlag(true),
+		  m_fileName(" ") // All default output file from all output modules are set to " ".
         // They are then checked in GateApplicationMgr::StartDAQ, using
         // the VOutputModule pure virtual method GiveNameOfFile()
         , m_rootMessenger(0) {
@@ -137,6 +138,8 @@ GateToRoot::GateToRoot(const G4String &name, GateOutputMgr *outputMgr, DigiMode 
     m_trajectoryNavigator = new GateTrajectoryNavigator();
     // v. cuplov - optical photons
 
+
+
 }
 //--------------------------------------------------------------------------
 
@@ -163,6 +166,8 @@ const G4String &GateToRoot::GiveNameOfFile() {
 
 //--------------------------------------------------------------------------
 void GateToRoot::Book() {
+
+	G4cout<<"GateToRoot::Book"<<G4endl;
 
     if (nVerboseLevel > 2)
         G4cout << "GateToRoot::Book\n";
@@ -228,8 +233,23 @@ void GateToRoot::Book() {
     pet_data->Branch("start_time_sec", &mTimeStart);
     pet_data->Branch("stop_time_sec", &mTimeStop);
 
-    m_treeHit = new GateHitTree(GateHitConvertor::GetOutputAlias());
-    m_treeHit->Init(m_hitBuffer);
+    //OK GND 2022
+    //m_treeHit = new GateHitTree(GateHitConvertor::GetOutputAlias());
+    //m_treeHit->Init(m_hitBuffer)
+    GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
+
+   // G4cout<<"GateToRoot SD size "<<digitizerMng->m_SDlist.size()<<G4endl;
+	for (long unsigned int i=0; i< digitizerMng->m_SDlist.size();i++)
+	{
+		GateHitTree *treeHit;
+		if (digitizerMng->m_SDlist.size() ==1 ) // keep the old name "Hits" if there is only one collection
+			treeHit = new GateHitTree("Hits");
+		else
+			treeHit = new GateHitTree("Hits_"+digitizerMng->m_SDlist[i]->GetName());
+		//		m_treesHit.push_back(treeHit)
+		treeHit->Init(m_hitBuffers[i]);
+		m_treesHit.push_back(treeHit);
+	}
 
     // v. cuplov - optical photons
     OpticalTree = new TTree(G4String("OpticalData").c_str(), "OpticalData");
@@ -281,8 +301,25 @@ void GateToRoot::Book() {
 // Method called at the beginning of each acquisition by the application manager: opens the ROOT file and prepare the trees
 void GateToRoot::RecordBeginOfAcquisition() {
 
-   // if (nVerboseLevel > 2)
+   if (nVerboseLevel > 2)
         G4cout << "GateToRoot::RecordBeginOfAcquisition\n";
+
+	//OK GND 2022 multiSD
+	   GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
+	   SetSDlistSize(digitizerMng->m_SDlist.size() );
+	   for (G4int i=0; i<GetSDlistSize();i++)
+		{
+			GateRootHitBuffer hitBuffer;
+			m_hitBuffers.push_back(hitBuffer);
+
+			/*GateRootSingleBuffer singleBuffer;
+			//ingleOutputChannel::m_buffers.push_back(singleBuffer);
+			m_SingleBuffers.push_back(singleBuffer);
+		*/
+		}
+
+
+
 
     GateSteppingAction *myAction = ((GateSteppingAction *) (GateRunManager::GetRunManager()->GetUserSteppingAction()));
     TrackingMode theMode = myAction->GetMode();
@@ -318,6 +355,7 @@ void GateToRoot::RecordBeginOfAcquisition() {
                 // Additionnal root files names will be of the form GateOutPut_additionnalName.root.
                 // In the previous version of the code, file names would appear as GateOutPut.root_additionnalName.root
                 //    m_hfile = new TFile( GetFilePath() ,"RECREATE","ROOT file with histograms");
+
                 m_hfile = new TFile((m_fileName + ".root").c_str(), "RECREATE", "ROOT file with histograms");
                 // v. cuplov
 
@@ -550,7 +588,9 @@ void GateToRoot::RecordEndOfAcquisition() {
         //!    current Root File
         //!  which is not the one we intstantiated if more than one Root File has been written
 
-        m_hfile = m_treeHit->GetCurrentFile();
+    	// TODO OK GND 2022
+    	// vector of m_hfiles
+    	m_hfile = m_treesHit[0]->GetCurrentFile();
 
         if (nVerboseLevel > 0)
             G4cout << "GateToRoot: ROOT: files writing...\n";
@@ -612,6 +652,7 @@ void GateToRoot::RecordEndOfRun(const G4Run *) {
 
 //--------------------------------------------------------------------------
 void GateToRoot::RecordBeginOfEvent(const G4Event *evt) {
+	//G4cout<<"GateToRoot::RecordBeginOfEvent"<<G4endl;
 
 
     //  GateMessage("Output", 5 , " GateToRoot::RecordBeginOfEvent -- begin\n";);
@@ -619,7 +660,12 @@ void GateToRoot::RecordBeginOfEvent(const G4Event *evt) {
     if (nVerboseLevel > 2)
         G4cout << "GateToRoot::RecordBeginOfEvent\n";
 
-    m_hitBuffer.Clear();
+    //OK GND 2022
+       // GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
+        for (G4int i=0; i< GetSDlistSize() ;i++)
+        {
+   		  m_hitBuffers[i].Clear();
+        }
 
     for (size_t i = 0; i < m_outputChannelList.size(); ++i)
         m_outputChannelList[i]->Clear();
@@ -685,16 +731,14 @@ void GateToRoot::RecordBeginOfEvent(const G4Event *evt) {
     /*PY Descourt 08/09/2009 */
 
     //  GateMessage("Output", 5, " GateToRoot::RecordBeginOfEvent -- end\n";);
-
 }
 //--------------------------------------------------------------------------
 
 
 //--------------------------------------------------------------------------
 void GateToRoot::RecordEndOfEvent(const G4Event *event) {
-G4cout<<"GateToRoot::RecordEndOfEvent"<<G4endl;
     // GateMessage("Output", 5 , " GateToRoot::RecordEndOfEvent -- begin\n";);
-
+	//G4cout<< "GateToRoot::RecordEndOfEvent "<<G4endl;
 
     GateSteppingAction *myAction = ((GateSteppingAction *) (GateRunManager::GetRunManager()->GetUserSteppingAction()));
     TrackingMode theMode = myAction->GetMode();
@@ -703,14 +747,20 @@ G4cout<<"GateToRoot::RecordEndOfEvent"<<G4endl;
     nbPrimaries += 1.;
     latestEventID += 1.;
 
-    GateHitsCollection *CHC = GetOutputMgr()->GetHitCollection();
+    //OK GND 2022
+    //GateHitsCollection *CHC = GetOutputMgr()->GetHitCollection();
+    std::vector<GateHitsCollection*> CHC_vector = GetOutputMgr()->GetHitCollections();
+
+    for (long unsigned int i=0; i<CHC_vector.size();i++ )//HC_vector.size()
+          {
+        GateHitsCollection* CHC = CHC_vector[i];
 
     if (CHC) {
 
         // Hits loop
 
         G4int NbHits = CHC->entries();
-        //G4cout<<"NbHits "<< NbHits<<G4endl;
+        //G4cout<<"NbHits "<< NbHits<< " in "<< i<<G4endl;
         for (G4int iHit = 0; iHit < NbHits; iHit++) {
 
             GateHit *aHit = (*CHC)[iHit];
@@ -723,12 +773,11 @@ G4cout<<"GateToRoot::RecordEndOfEvent"<<G4endl;
                         << ">    Particls PDG code : " << PDGEncoding << Gateendl;
 
             if (aHit->GoodForAnalysis()) {
-                m_hitBuffer.Fill(aHit);
+            	 m_hitBuffers[i].Fill(aHit);
                 if (nVerboseLevel > 1)
                     G4cout << "GateToRoot::RecordEndOfEvent : m_treeHit->Fill\n";
 
-
-                if (m_rootHitFlag) m_treeHit->Fill();
+            		if (m_rootHitFlag) m_treesHit[i]->Fill();
             }
         }
 
@@ -809,6 +858,7 @@ G4cout<<"GateToRoot::RecordEndOfEvent"<<G4endl;
 
     }
 
+   }
     RecordDigitizer(event);
 
     // v. cuplov - optical photons
@@ -823,7 +873,10 @@ G4cout<<"GateToRoot::RecordEndOfEvent"<<G4endl;
 
 // v.cuplov - optical photon: Record OpticalPhoton Data
 void GateToRoot::RecordOpticalData(const G4Event *event) {
-    G4TrajectoryContainer *trajectoryContainer = event->GetTrajectoryContainer();
+	//G4cout<<"GateToRoot::RecordOpticalData"<<G4endl;
+    //TODO GND 2022
+
+	/*G4TrajectoryContainer *trajectoryContainer = event->GetTrajectoryContainer();
     if (trajectoryContainer) m_trajectoryNavigator->SetTrajectoryContainer(trajectoryContainer);
 
     GateHitsCollection *CHC = GetOutputMgr()->GetHitCollection();
@@ -924,13 +977,13 @@ void GateToRoot::RecordOpticalData(const G4Event *event) {
     if (nPhantomOpticalWLS > 0) NumPhantomWLS++;
 
     if (m_rootOpticalFlag && trajectoryContainer) { OpticalTree->Fill(); }
-
+*/
 }
 
 
 //--------------------------------------------------------------------------
 void GateToRoot::RecordDigitizer(const G4Event *) {
-   // if (nVerboseLevel > 2)
+   if (nVerboseLevel > 2)
         G4cout << "GateToRoot::RecordDigitizer\n";
 
        /* //
@@ -955,9 +1008,10 @@ void GateToRoot::RecordDigitizer(const G4Event *) {
 
  */
     // Digitizer information
-       // G4cout<<"size "<<m_outputChannelList.size()<<Gateendl;
-    for (size_t i = 0; i < m_outputChannelList.size(); ++i)
+        //G4cout<<"size outputChannelList "<<m_outputChannelList.size()<<Gateendl;
+    for (size_t i = 0; i < m_outputChannelList.size(); i++)
     {
+    	//G4cout<< i << " "<<m_outputChannelList[i]->m_collectionName<<G4endl;
     	m_outputChannelList[i]->RecordDigitizer();
     }
 
@@ -1140,20 +1194,25 @@ void GateToRoot::RecordVoxels(GateVGeometryVoxelStore *voxelStore) {
 //--------------------------------------------------------------------------
 void GateToRoot::RegisterNewSingleDigiCollection(const G4String &aCollectionName, G4bool outputFlag) {
 
-	 G4cout << " GateToRoot::RegisterNewSingleDigiCollection "<<aCollectionName << Gateendl;
+	// G4cout << " GateToRoot::RegisterNewSingleDigiCollection "<<aCollectionName << Gateendl;
 	SingleOutputChannel *singleOutputChannel =
             new SingleOutputChannel(aCollectionName, outputFlag);
-    m_outputChannelList.push_back(singleOutputChannel);
 
 
+	m_outputChannelList.push_back(singleOutputChannel);
+
+	//G4cout<<" m_outputChannelList size "<<	m_outputChannelList.size()<<G4endl;
     m_rootMessenger->CreateNewOutputChannelCommand(singleOutputChannel);
+
 }
 //--------------------------------------------------------------------------
 
 
 //--------------------------------------------------------------------------
 void GateToRoot::RegisterNewCoincidenceDigiCollection(const G4String &aCollectionName, G4bool outputFlag) {
-    CoincidenceOutputChannel *coincidenceOutputChannel =
+	//G4cout << " GateToRoot::RegisterNewCoincidenceDigiCollection "<<aCollectionName << Gateendl;
+
+	CoincidenceOutputChannel *coincidenceOutputChannel =
             new CoincidenceOutputChannel(aCollectionName, outputFlag);
     m_outputChannelList.push_back(coincidenceOutputChannel);
     m_rootMessenger->CreateNewOutputChannelCommand(coincidenceOutputChannel);
@@ -1163,14 +1222,19 @@ void GateToRoot::RegisterNewCoincidenceDigiCollection(const G4String &aCollectio
 
 //--------------------------------------------------------------------------
 void GateToRoot::SingleOutputChannel::RecordDigitizer() {
+
+	if (!m_outputFlag) return;
+
     G4DigiManager *fDM = G4DigiManager::GetDMpointer();
-    //G4cout<<"GateToRoot::SingleOutputChannel::RecordDigitizer() "<<G4endl;
-    //OK GND 2022
+   // G4cout<<"GateToRoot::SingleOutputChannel::RecordDigitizer() "<<G4endl;
+   //OK GND 2022
     GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
 
+    //G4cout<<" m_collectionName "<<m_collectionName<<G4endl;
 	GateDigitizer* digitizer = digitizerMng->FindDigitizer(m_collectionName);
-	//digitizer->DescribeMyself();
+	//digitizerMng->ShowSummary();
 
+	//G4cout<<"digitizer "<< digitizer->GetName()+"_"+digitizer->m_SD->GetName()<<G4endl;
 	G4int lastDCID=digitizer->m_outputDigiCollectionID;
 
 	//G4cout<<"lastDCID = "<<lastDCID<<G4endl;
@@ -1180,38 +1244,36 @@ void GateToRoot::SingleOutputChannel::RecordDigitizer() {
     const GateDigiCollection *SDC =
                 (GateDigiCollection *) (fDM->GetDigiCollection(m_collectionID));
 
-   // G4cout<<"GateToRoot::SingleOutputChannel::RecordDigitizer "<< m_collectionName<<" "<<m_collectionID<<" "<<Gateendl;
-    if (!SDC) {
-        //GateMessage("OutputMgr", 5, " There is no SDC collection\n";);
-        if (nVerboseLevel > 0)
-            G4cout << "[GateToRoot::SingleOutputChannel::RecordDigitizer]:"
-                   << " digi collection '" << m_collectionName << "' not found\n";
-    } else {
-    	//digitizerMng->List();
-        // Digi loop
-        //GateMessage("OutputMgr", 5, " There is SDC collection. \n";);
-        if (nVerboseLevel > 0)
-            G4cout << "[GateToRoot::SingleOutputChannel::RecordDigitizer]: Total Digits: "
-                   << SDC->entries() << Gateendl;
 
-        //  GateMessage("OutputMgr", 5, " Single collection m_outputFlag = " << m_outputFlag << Gateendl;);
-        if (m_outputFlag) {
-            G4int n_digi = SDC->entries();
-            //GateMessage("OutputMgr", 5, " Single collection m_outputFlag = " << m_outputFlag << Gateendl;);
-            for (G4int iDigi = 0; iDigi < n_digi; iDigi++) {
-                m_buffer.FillGND((*SDC)[iDigi]);
-            	m_tree->Fill();
-            }
-        }
-    }
+   //G4cout<<"GateToRoot::SingleOutputChannel::RecordDigitizer "<< m_collectionName<<" "<<m_collectionID<<" "<<Gateendl;
+	if (!SDC) {
+		//GateMessage("OutputMgr", 5, " There is no SDC collection\n";);
+		if (nVerboseLevel > 0)
+			G4cout << "[GateToRoot::SingleOutputChannel::RecordDigitizer]:"
+				   << " digi collection '" << m_collectionName << "' not found\n";
+	} else {
+		//GateMessage("OutputMgr", 5, " There is SDC collection. \n";);
+		if (nVerboseLevel > 0)
+			G4cout << "[GateToRoot::SingleOutputChannel::RecordDigitizer]: Total Digits: "
+				   << SDC->entries() << Gateendl;
+
+		if (m_outputFlag) {
+			G4int n_digi = SDC->entries();
+			for (G4int iDigi = 0; iDigi < n_digi; iDigi++) {
+				m_buffer.FillGND((*SDC)[iDigi]);
+				m_tree->Fill();
+			}
+		}
+	}
+
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void GateToRoot::CoincidenceOutputChannel::RecordDigitizer() {
     //GateMessage("OutputMgr", 5, " GateToRoot::CoincidenceOutputChannel::RecordDigitizer -- begin\n";);
-    G4cout<<"GateToRoot::CoincidenceOutputChannel::RecordDigitizer() "<<G4endl;
-	G4DigiManager *fDM = G4DigiManager::GetDMpointer();
+   // G4cout<<"GateToRoot::CoincidenceOutputChannel::RecordDigitizer() "<<G4endl;
+	/*G4DigiManager *fDM = G4DigiManager::GetDMpointer();
 
 	 GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
 	 GateCoincidenceSorter* cs = digitizerMng->FindCoincidenceSorter(m_collectionName);
@@ -1249,7 +1311,7 @@ void GateToRoot::CoincidenceOutputChannel::RecordDigitizer() {
 		//m_collectionID=1;
 
 	//G4cout<<"m_collectionName = "<<m_collectionName << " ; ID = "<< m_collectionID <<G4endl;
-    GateCoincidenceDigiCollection *CDC =
+   /* GateCoincidenceDigiCollection *CDC =
             (GateCoincidenceDigiCollection *) (fDM->GetDigiCollection(m_collectionID));
 
     if (!CDC) {
@@ -1274,7 +1336,7 @@ void GateToRoot::CoincidenceOutputChannel::RecordDigitizer() {
             }
         }
     }
-
+*/
     //GateMessage("OutputMgr", 5, " GateToRoot::CoincidenceOutputChannel::RecordDigitizer -- end\n";);
 }
 

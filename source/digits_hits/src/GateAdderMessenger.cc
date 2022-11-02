@@ -24,6 +24,8 @@ GateAdderMessenger::GateAdderMessenger (GateAdder* adder)
 	G4String guidance;
 	G4String cmdName;
 
+	//G4cout<< GetDirectoryName()<<G4endl;
+
     cmdName = GetDirectoryName()+"positionPolicy";
     positionPolicyCmd = new G4UIcmdWithAString(cmdName,this);
     positionPolicyCmd->SetGuidance("How to generate position");

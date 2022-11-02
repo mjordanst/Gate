@@ -52,6 +52,9 @@ See LICENSE.md for further details
 #include "GateActions.hh"
 #include "GateTrack.hh"
 
+//OK GND 2022
+#include "GateDigitizerMng.hh"
+
 class GateToRootMessenger;
 
 class GateVVolume;
@@ -149,15 +152,17 @@ public:
     void GetPHData(ComptonRayleighData &aCRData);
     /* PY Descourt 08/09/2009 */
 
+
     //--------------------------------------------------------------------------
+
     class VOutputChannel {
     public:
         inline VOutputChannel(const G4String &aCollectionName, G4bool outputFlag)
                 : nVerboseLevel(0),
                   m_outputFlag(outputFlag),
                   m_collectionName(aCollectionName),
-                  m_collectionID(-1) {
-        	//G4cout<<"GateToRoot::VOutputChannel constr"<<G4endl;
+                  m_collectionID(-1)
+        {
         }
 
         virtual inline ~VOutputChannel() {}
@@ -176,6 +181,8 @@ public:
         G4bool m_outputFlag;
         G4String m_collectionName;
         G4int m_collectionID;
+
+
     };
 
 
@@ -185,18 +192,23 @@ public:
     public:
         inline SingleOutputChannel(const G4String &aCollectionName, G4bool outputFlag)
                 : VOutputChannel(aCollectionName, outputFlag),
-                  m_tree(0) {
-                  m_buffer.Clear(); }
+                  m_tree(0)
+        {
+       	m_buffer.Clear();
+        }
 
         virtual inline ~SingleOutputChannel() {}
 
-        inline void Clear() { m_buffer.Clear(); }
+        inline void Clear() {
+        	 m_buffer.Clear();
+        }
 
         inline void Book() {
             m_collectionID = -1;
             if (m_outputFlag) {
-                m_tree = new GateSingleTree(m_collectionName);
-                m_tree->Init(m_buffer);
+
+            	m_tree = new GateSingleTree(m_collectionName);
+            	m_tree->Init(m_buffer);
             }
         }
 
@@ -204,7 +216,7 @@ public:
 
         GateRootSingleBuffer m_buffer;
         GateSingleTree *m_tree;
-    };
+     };
 
 
     //--------------------------------------------------------------------------
@@ -236,12 +248,18 @@ public:
 
     //! flag to decide if it writes or not Hits, Singles and Digis to the ROOT file
 
-
-
-
     G4bool GetRootHitFlag() { return m_rootHitFlag; };
-
     void SetRootHitFlag(G4bool flag) { m_rootHitFlag = flag; };
+
+    G4bool GetSDlistSize() { return m_SDlistSize; };
+    void SetSDlistSize(G4int size) {m_SDlistSize = size; };
+
+    G4bool GetRootSinlesFlag() { return m_rootSinglesFlag; };
+    void SetRootSinglesFlag(G4bool flag) { m_rootSinglesFlag = flag; };
+
+
+    G4bool GetRootCoincidencesFlag() { return m_rootCoincidencesFlag; };
+    void SetRootCoincidencesFlag(G4bool flag) { m_rootCoincidencesFlag = flag; };
 
     G4bool GetRootNtupleFlag() { return m_rootNtupleFlag; };
 
@@ -306,12 +324,22 @@ private:
 
     TFile *m_hfile; // the file for histograms, tree ...
 
-    GateHitTree *m_treeHit; // the tree for hit quantities
+    //OK GND 2022
+    //GateHitTree *m_treeHit; // the tree for hit quantities
+    //for multiple SDs
+    std::vector<GateHitTree *> m_treesHit; // the tree for hit quantities
+    //Number of SD is saved in the following variable for not calling at each event for hits GateDigitizerMng::GetInstance()
+    G4int m_SDlistSize;
+
     TH1D *m_total_nb_primaries_hist; //histogram of total_nb_primaries
     TH1D *m_latest_event_ID_hist;
     TDirectory *m_working_root_directory;
+    //OK GND 2022
+    //GateRootHitBuffer m_hitBuffer;
+    std::vector<GateRootHitBuffer> m_hitBuffers; // the tree for hit quantities
 
-    GateRootHitBuffer m_hitBuffer;
+    std::vector<TFile *> m_hfiles; // the file for histograms, tree ...
+
 
 // v. cuplov - optical photons
     GateTrajectoryNavigator *m_trajectoryNavigator;
@@ -335,6 +363,11 @@ private:
 // v. cuplov - optical photons
 
     G4bool m_rootHitFlag;
+
+    //OK GND 2022: the following flags was added when the messengers commends for "SinglesFlag" and "CoinFlag" were added
+   G4bool m_rootSinglesFlag;
+   G4bool m_rootCoincidencesFlag;
+
     G4bool m_rootNtupleFlag;
     G4bool m_saveRndmFlag;
     G4bool m_rootOpticalFlag = false;

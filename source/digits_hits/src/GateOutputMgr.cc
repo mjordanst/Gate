@@ -129,6 +129,7 @@ GateOutputMgr::GateOutputMgr(const G4String name)
 //----------------------------------------------------------------------------------
 GateOutputMgr::~GateOutputMgr()
 {
+
   if (m_acquisitionStarted)
     RecordEndOfAcquisition();
 
@@ -159,7 +160,6 @@ void GateOutputMgr::AddOutputModule(GateVOutputModule* module)
 void GateOutputMgr::RecordBeginOfEvent(const G4Event* event)
 {
   GateMessage("Output", 5, "GateOutputMgr::RecordBeginOfEvent\n";);
-  //G4cout<<"GateOutputMgr::RecordBeginOfEvent"<<G4endl;
 
   for (size_t iMod=0; iMod<m_outputModules.size(); iMod++) {
     if ( m_outputModules[iMod]->IsEnabled() )
@@ -173,7 +173,6 @@ void GateOutputMgr::RecordBeginOfEvent(const G4Event* event)
 void GateOutputMgr::RecordEndOfEvent(const G4Event* event)
 {
   GateMessage("Output", 5, "GateOutputMgr::RecordEndOfEvent\n";);
-  G4cout<<"GateOutputMgr::RecordEndOfEvent"<<G4endl;
 
 #ifdef G4ANALYSIS_USE_ROOT
   if (m_digiMode==kofflineMode)
@@ -334,18 +333,76 @@ void GateOutputMgr::Describe(size_t /*indent*/)
 //----------------------------------------------------------------------------------
 GateHitsCollection* GateOutputMgr::GetHitCollection()
 {
-  GateMessage("Output", 5 , " GateOutputMgr::GetHitCollection \n";);
+	//Obsolete
+	//G4cout<<"GateOutputMgr::GetHitCollection"<<G4endl;
+	//TODO adapt all output modules GetHitCollection -> GetHitCollections
+/*  GateMessage("Output", 5 , " GateOutputMgr::GetHitCollection \n";);
   static G4int crystalCollID=-1;     	  //!< Collection ID for the crystal hits
 
   G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
+  G4SDManager* SDman = G4SDManager::GetSDMpointer();
+
+  for (int i=0; i< SDman->GetCollectionCapacity(); i++)
+    {
+ 	   G4String HCname = SDman->GetHCtable()->GetHCname(i);
+
+ 	  // if ()
+
+ 	   G4cout<<SDman->GetHCtable()->GetSDname(i)<<" "<<SDman->GetHCtable()->GetHCname(i)<< " "<< HCname.contains("phantom")  <<G4endl;
+
+    }
+
   if (crystalCollID==-1)
-  	  crystalCollID = DigiMan->GetHitsCollectionID(GateCrystalSD::GetCrystalCollectionName());
+	  crystalCollID = DigiMan->GetHitsCollectionID("SD_default");
+  	  //OK GND 2022
+  	  //crystalCollID = DigiMan->GetHitsCollectionID(GateCrystalSD::GetCrystalCollectionName());
   GateHitsCollection* CHC = (GateHitsCollection*) (DigiMan->GetHitsCollection(crystalCollID));
   return CHC;
+*/
+
+}
+//----------------------------------------------------------------------------------
+
+//OK GND 2022 : multiple sensitive detectors
+//----------------------------------------------------------------------------------
+std::vector<GateHitsCollection*> GateOutputMgr::GetHitCollections()
+{
+	//G4cout<<"GateOutputMgr::GetHitCollections "<<G4endl;
+	GateMessage("Output", 5 , " GateOutputMgr::GetHitCollections \n";);
+
+	std::vector<GateHitsCollection*> CHC_vector;
+
+  static G4int crystalCollID=-1;     	  //!< Collection ID for the crystal hits
+
+  G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
+  G4SDManager* SDman = G4SDManager::GetSDMpointer();
+
+  for (G4int i=0; i< SDman->GetCollectionCapacity(); i++)
+    {
+ 	   G4String HCname = SDman->GetHCtable()->GetHCname(i);
+
+ 	   if (HCname.contains("phantom"))
+ 		   continue;
+
+ 	  // G4cout<<SDman->GetHCtable()->GetSDname(i)<<" "<<SDman->GetHCtable()->GetHCname(i) <<G4endl;
+
+ 	  // if (crystalCollID==-1)
+ 	//	   crystalCollID = DigiMan->GetHitsCollectionID(SDman->GetHCtable()->GetHCname(i));
+
+ 	  // G4cout<<SDman->GetHCtable()->GetSDname(i)<<" "<<SDman->GetHCtable()->GetHCname(i) <<" " <<DigiMan->GetHitsCollectionID(SDman->GetHCtable()->GetHCname(i))<<G4endl;
+
+ 	   //TODO : save DigiMan->GetHitsCollection(DigiMan->GetHitsCollectionID(SDman->GetHCtable()->GetHCname(i))
+ 	   GateHitsCollection* CHC = (GateHitsCollection*) (DigiMan->GetHitsCollection(DigiMan->GetHitsCollectionID(SDman->GetHCtable()->GetHCname(i))));
+ 	   CHC_vector.push_back(CHC);
+    }
+  return CHC_vector;
 
 
 }
 //----------------------------------------------------------------------------------
+
+
+
 
 
 //----------------------------------------------------------------------------------
@@ -391,7 +448,7 @@ GateCoincidenceDigiCollection* GateOutputMgr::GetCoincidenceDigiCollection(const
 void GateOutputMgr::RegisterNewSingleDigiCollection(const G4String& aCollectionName,G4bool outputFlag)
 {
   GateMessage("Output", 5, " GateOutputMgr::RegisterNewSingleDigiCollection\n";);
-//  G4cout<<" GateOutputMgr::RegisterNewSingleDigiCollection "<<aCollectionName<<Gateendl;
+ // G4cout<<" GateOutputMgr::RegisterNewSingleDigiCollection "<<aCollectionName<<Gateendl;
   for (size_t iMod=0; iMod<m_outputModules.size(); iMod++)
     m_outputModules[iMod]->RegisterNewSingleDigiCollection(aCollectionName,outputFlag);
 }

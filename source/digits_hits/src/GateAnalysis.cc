@@ -117,7 +117,7 @@ void GateAnalysis::RecordBeginOfEvent(const G4Event* )
 //--------------------------------------------------------------------------------------------------
 void GateAnalysis::RecordEndOfEvent(const G4Event* event)
 {
- // if (nVerboseLevel > 2)
+  if (nVerboseLevel > 2)
     G4cout << "GateAnalysis::RecordEndOfEvent "<< Gateendl;
 
   G4TrajectoryContainer* trajectoryContainer = event->GetTrajectoryContainer();
@@ -138,7 +138,13 @@ void GateAnalysis::RecordEndOfEvent(const G4Event* event)
     }
   else
     {
-      GateHitsCollection* CHC = GetOutputMgr()->GetHitCollection();
+      std::vector<GateHitsCollection*> CHC_vector = GetOutputMgr()->GetHitCollections();
+
+      for (long unsigned int i=0; i<CHC_vector.size();i++ )
+      {
+      GateHitsCollection* CHC = CHC_vector[i];
+
+      //G4cout<<"*** "<<i << " "<<CHC->GetName()<<" "<<CHC->GetSize()<<" "<< CHC->GetSDname ()<<G4endl;
 
       G4int NbHits = 0;
       G4int NpHits = 0;
@@ -319,6 +325,7 @@ void GateAnalysis::RecordEndOfEvent(const G4Event* event)
                 }
             } // end loop NpHits
 
+
           TrackingMode theMode =( (GateSteppingAction *)(GateRunManager::GetRunManager()->GetUserSteppingAction() ) )->GetMode();
 
 
@@ -462,19 +469,21 @@ void GateAnalysis::RecordEndOfEvent(const G4Event* event)
                 }
             }
         } // end if (CHC)
+      }
     } // end if (!trajectoryContainer)
 
   //OK GND 2022
   //RunDigitizers is called here otherwise we don't have all attributes filled for aHit
   GateDigitizerMng* digitizerMng=GateDigitizerMng::GetInstance();
+  //digitizerMng->Initialize();
   digitizerMng->RunDigitizers();
 
   //TODO GND 2022 : condition if (there is coincidences in the current system)
   //check on spect
  // if (digitizerMng->m_CoincidenceSortersList)
   //{
-	  digitizerMng->RunCoincidenceSorters();
-	  digitizerMng->RunCoincidenceDigitizers();
+	 // digitizerMng->RunCoincidenceSorters();
+	 // digitizerMng->RunCoincidenceDigitizers();
  // }
 } // end function
 //--------------------------------------------------------------------------------------------------

@@ -52,6 +52,19 @@ GateToRootMessenger::GateToRootMessenger(GateToRoot* gateToRoot)
   RootHitCmd->SetGuidance("Set the flag for Hits ROOT output");
   RootHitCmd->SetGuidance("1. true/false");
 
+  // OK GND 2022 // hardcoded now and moved from CreateNewOutputChannelCommand
+  cmdName = GetDirectoryName()+"setRootSinglesFlag";
+  RootSinglesCmd = new G4UIcmdWithABool(cmdName,this);
+  RootSinglesCmd->SetGuidance("Set the flag for ROOT output of Singles");
+  RootSinglesCmd->SetGuidance("1. true/false");
+
+  cmdName = GetDirectoryName()+"setRootCoincidencesFlag";
+  RootCoincidencesCmd = new G4UIcmdWithABool(cmdName,this);
+  RootCoincidencesCmd->SetGuidance("Set the flag for ROOT output of Singles");
+  RootCoincidencesCmd->SetGuidance("1. true/false");
+  //OK GND 2022
+
+
   cmdName = GetDirectoryName()+"setRootNtupleFlag";
   RootNtupleCmd = new G4UIcmdWithABool(cmdName,this);
   RootNtupleCmd->SetGuidance("Set the flag for Ntuples ROOT output");
@@ -106,9 +119,11 @@ GateToRootMessenger::GateToRootMessenger(GateToRoot* gateToRoot)
 //--------------------------------------------------------------------------
 GateToRootMessenger::~GateToRootMessenger()
 {
-  delete ResetCmd;
+ delete ResetCmd;
 
   delete RootHitCmd;
+  delete RootSinglesCmd;
+  delete RootCoincidencesCmd;
   delete RootNtupleCmd;
   delete RootOpticalCmd;
   delete SetFileNameCmd;
@@ -117,6 +132,7 @@ GateToRootMessenger::~GateToRootMessenger()
   delete SaveRndmCmd;
   for (size_t i = 0; i<OutputChannelCmdList.size() ; ++i)
     delete OutputChannelCmdList[i];
+
 }
 //--------------------------------------------------------------------------
 
@@ -124,13 +140,17 @@ GateToRootMessenger::~GateToRootMessenger()
 //--------------------------------------------------------------------------
 void GateToRootMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 {
- G4cout<<"GateToRootMessenger::SetNewValue"<<G4endl;
+ //G4cout<<"GateToRootMessenger::SetNewValue"<<G4endl;
   if( command == ResetCmd ) {
     m_gateToRoot->Reset();
   } else if (command == SetFileNameCmd) {
     m_gateToRoot->SetFileName(newValue);
   } else if (command == RootHitCmd) {
     m_gateToRoot->SetRootHitFlag(RootHitCmd->GetNewBoolValue(newValue));
+  } else if (command == RootSinglesCmd) {
+        m_gateToRoot->SetRootSinglesFlag(RootSinglesCmd->GetNewBoolValue(newValue));
+  } else if (command == RootCoincidencesCmd) {
+		m_gateToRoot->SetRootCoincidencesFlag(RootCoincidencesCmd->GetNewBoolValue(newValue));
   } else if (command == SaveRndmCmd) {
     m_gateToRoot->SetSaveRndmFlag(SaveRndmCmd->GetNewBoolValue(newValue));
   } else if (command == RootNtupleCmd) {
@@ -191,7 +211,7 @@ void GateToRootMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 //--------------------------------------------------------------------------
 void GateToRootMessenger::CreateNewOutputChannelCommand(GateToRoot::VOutputChannel* anOutputChannel)
 {
-G4cout<<"GateToRootMessenger::CreateNewOutputChannelCommand "<< anOutputChannel->m_collectionName<<G4endl;
+	//G4cout<<"GateToRootMessenger::CreateNewOutputChannelCommand "<< anOutputChannel->m_collectionName<<G4endl;
   GateMessage("OutputMgr", 5, " GateToRootMessenger::CreateNewOutputChannelCommand -- begin \n";);
 
   G4String cmdName;

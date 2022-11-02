@@ -24,15 +24,14 @@
 
 
 // :GateVDigitizerModule(name,digitizer),
-GateAdder::GateAdder(GateDigitizer *digitizer)
-  :GateVDigitizerModule("digitizerMng/SinglesDigitizer/"+digitizer->m_digitizerName+"/adder",digitizer),
+GateAdder::GateAdder(GateDigitizer *digitizer,  GateCrystalSD* SD)
+  :GateVDigitizerModule("GateAdder","digitizerMng/"+digitizer->GetSD()->GetName()+"/SinglesDigitizer/"+digitizer->m_digitizerName+"/adder",digitizer, SD),
    m_positionPolicy(kEnergyCentroid)
 {
-	G4String colName = digitizer->m_digitizerName;
+	G4String colName =  digitizer->GetOutputName();
 	collectionName.push_back(colName);
 	m_Messenger = new GateAdderMessenger(this);
 	m_digitizer=digitizer;
-	G4cout<< m_digitizer->m_digitizerName <<G4endl;
 }
 
 
@@ -45,19 +44,17 @@ GateAdder::~GateAdder()
 void GateAdder::Digitize()
 {
 	if (nVerboseLevel>1)
-		G4cout<<"[GateAdder::Digitize] for "<< m_digitizer->m_digitizerName <<G4endl;
+		G4cout<<"[GateAdder::Digitize] for "<< m_digitizer->GetOutputName() <<G4endl;
 
 	G4String digitizerName = m_digitizer->m_digitizerName;
-	G4String outputCollName = digitizerName;
-
+	G4String outputCollName = m_digitizer-> GetOutputName();
+	//G4cout<<"outputCollName "<<outputCollName<<G4endl;
 	m_OutputDigiCollection = new GateDigiCollection("GateAdder",outputCollName); // to create the Digi Collection
 
 	G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
 
-	InputCollectionID();
-
 	GateDigiCollection* IDC = 0;
-	IDC = (GateDigiCollection*) (DigiMan->GetDigiCollection( InputCollectionID() ));
+	IDC = (GateDigiCollection*) (DigiMan->GetDigiCollection(InputCollectionID() ));
 
 	GateDigi* inputDigi = new GateDigi();
 
@@ -120,9 +117,9 @@ void GateAdder::Digitize()
 		     }
 	  }
      }
- // G4cout<<"Output collection "<<m_OutputDigiCollection->GetSize()<<G4endl;
-  	StoreDigiCollection(m_OutputDigiCollection);
-
+  //G4cout<<"Output collection "<<m_OutputDigiCollection->GetSize()<<G4endl;
+  StoreDigiCollection(m_OutputDigiCollection);
+  	// G4cout<<"Output collection "<<m_OutputDigiCollection->GetSize()<<G4endl;
 }
 
 

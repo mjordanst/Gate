@@ -65,7 +65,8 @@ GateDetectorConstruction::GateDetectorConstruction()
 	 nvarOfIntegratorStepper(8) // The Equation of motion for Electric (or combined Electric/Magnetic)
                                 // field requires 8 integration variables
 {
-	G4cout<<"GateDetectorConstruction::GateDetectorConstruction"<<G4endl;
+	//G4cout<<"GateDetectorConstruction::GateDetectorConstruction"<<G4endl;
+
   GateMessage("Geometry", 1, "GateDetectorConstruction instantiating...\n");
   GateMessage("Geometry", 5, " GateDetectorConstruction constructor -- begin ");
   GateMessage("Geometry", 5, " nGeometryStatus = " << nGeometryStatus << Gateendl;);
@@ -101,16 +102,19 @@ GateDetectorConstruction::GateDetectorConstruction()
   pworld = new GateBox("world", "worldDefaultAir",  pworld_x, pworld_y, pworld_z, true);
   pworld->SetMaterialName("worldDefaultAir");
 
-  G4SDManager* SDman = G4SDManager::GetSDMpointer();
 
-  if(!m_crystalSD) {
+  // OK GND 2022 moved to GateVVolume::AttachCrystalSD()
+  /*if(!m_crystalSD) {
+
 	//OK GND 2022
     G4String crystalSDname = GateCrystalSD::GetCrystalCollectionName();//check GateCrystalSD class for hardcoded value
     //
     m_crystalSD = new GateCrystalSD(crystalSDname);
     SDman->AddNewDetector(m_crystalSD);
-  }
 
+  }
+*/
+  G4SDManager* SDman = G4SDManager::GetSDMpointer();
   if(!m_phantomSD) {
     G4String phantomSDname = "/gate/phantom";
     m_phantomSD = new GatePhantomSD(phantomSDname);
@@ -131,11 +135,13 @@ GateDetectorConstruction::GateDetectorConstruction()
 //---------------------------------------------------------------------------------
 GateDetectorConstruction::~GateDetectorConstruction()
 {
+
   if (pworld) {
     DestroyGeometry();
     delete pworld;
     pworld = 0;
   }
+
   delete pdetectorMessenger;
 }
 //---------------------------------------------------------------------------------
@@ -143,7 +149,7 @@ GateDetectorConstruction::~GateDetectorConstruction()
 //---------------------------------------------------------------------------------
 G4VPhysicalVolume* GateDetectorConstruction::Construct()
 {
- G4cout<<"GateDetectorConstruction::Construct "	<<G4endl;
+ //G4cout<<"GateDetectorConstruction::Construct "	<<G4endl;
 
   GateMessage("Geometry", 3, "Geometry construction starts. \n");
 
@@ -180,6 +186,30 @@ G4VPhysicalVolume* GateDetectorConstruction::Construct()
   return pworldPhysicalVolume;
 }
 //---------------------------------------------------------------------------------
+
+
+//---------------------------------------------------------------------------------
+
+void GateDetectorConstruction::ConstructSDandField()
+{
+	//G4cout<<"GateDetectorConstruction::ConstructSDandField()"<<G4endl;
+	/*m_SDName= TestSensitiveDetector::GetCrystalCollectionName();
+	TestSensitiveDetector *sensDet = new TestSensitiveDetector(m_SDName);
+	//TestSensitiveDetector *sensDet2 = new TestSensitiveDetector("SensitiveDetector2");
+
+	G4SDManager *SDMan=G4SDManager::GetSDMpointer();
+	SDMan->AddNewDetector(sensDet);
+	//SDMan->AddNewDetector(sensDet2);
+
+	logicDetector->SetSensitiveDetector(sensDet);
+	//logicDetector2->SetSensitiveDetector(sensDet2);
+*/
+
+}
+//---------------------------------------------------------------------------------
+
+
+
 
 
 //---------------------------------------------------------------------------------

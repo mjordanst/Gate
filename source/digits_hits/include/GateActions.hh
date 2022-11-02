@@ -63,6 +63,11 @@ private:
   G4int runIDcounter;
   G4bool flagBasicOutput;
   static GateRunAction* prunAction;
+
+  //OK GND 2022
+public: // also used by GateEventAction
+   std::vector<G4int> m_CHCollIDs; //vector of HitCollectionID from the case of multiple SDs
+
 };
 //-----------------------------------------------------------------------------
 
@@ -90,9 +95,6 @@ public :
 private:
   GateEventAction() {}
   GateUserActions* pCallbackMan;
-
-  //OK GND 2022
-  G4int pHitsCollectionID;
 
   G4bool flagBasicOutput;
   static GateEventAction* peventAction;

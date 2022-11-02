@@ -19,7 +19,8 @@
 #include "G4VDigitizerModule.hh"
 #include "GateDigi.hh"
 #include "GateClockDependent.hh"
-
+#include "GateDigitizerInitializationModule.hh"
+#include "GateDigitizer.hh"
 
 #include "globals.hh"
 
@@ -28,8 +29,9 @@ class GateDigitizerInitializationModule : public G4VDigitizerModule
 {
 public:
 
-	GateDigitizerInitializationModule(G4String name);
+	GateDigitizerInitializationModule(GateDigitizer *digitizer);
   ~GateDigitizerInitializationModule();
+
 
   void Digitize();
 
@@ -37,6 +39,7 @@ private:
 
   GateDigiCollection*  OutputDigiCollection;
   G4String m_colName;
+  GateDigitizer* m_digitizer;
 
 };
 

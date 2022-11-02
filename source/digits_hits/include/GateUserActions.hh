@@ -133,7 +133,7 @@ protected:
 
   //OK: GND 2022
   G4int HitsCollectionID;
-  GateDigitizer *digitizer;
+ // GateDigitizer *digitizer;
 
 
 };

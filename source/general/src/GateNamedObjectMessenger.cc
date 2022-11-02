@@ -34,8 +34,6 @@ GateNamedObjectMessenger::GateNamedObjectMessenger(GateNamedObject* itsNamedVolu
   G4String guidance;
   G4String cmdName;
  
-  G4cout<<"GateNamedObjectMessenger constr "<< GetDirectoryName()<<G4endl;
-
   cmdName = GetDirectoryName()+"describe";
   pDescribeCmd = new G4UIcmdWithoutParameter(cmdName,this);
   guidance = G4String("Print-out a description of the object.");

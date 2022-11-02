@@ -80,8 +80,11 @@ void GateVolumeMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
   if( command == pSetMaterCmd )
     GetVolumeCreator()->SetMaterialName(newValue);
   else if( command == pAttachCrystalSDCmd )
+  {
+	//  G4cout<<"Attaching "<<GetVolumeCreator()->GetObjectName() <<G4endl;
     GetVolumeCreator()->AttachCrystalSD();
-  else if( command == pAttachPhantomSDCmd )
+  }
+    else if( command == pAttachPhantomSDCmd )
     GetVolumeCreator()->AttachPhantomSD();
   else if( command == pDumpVoxelizedVolumeCmd )
     GetVolumeCreator()->DumpVoxelizedVolume(pDumpVoxelizedVolumeCmd->GetNew3VectorValue(newValue));

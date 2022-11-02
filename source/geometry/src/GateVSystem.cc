@@ -44,7 +44,7 @@ GateVSystem::GateVSystem(const G4String& itsName,G4bool isWithGantry)
     m_BaseComponent(0),
     m_mainComponentDepth( isWithGantry ? 1 : 0 ) 
 {
-	G4cout<<"GateVSystem::GateVSystem "<<itsName<<G4endl;
+	//G4cout<<"GateVSystem::GateVSystem "<<itsName<<G4endl;
   // Next lines were added for the multi-system approach
   G4String itsOwnName = GateSystemListManager::GetInstance()->GetInsertedSystemsNames()->back();
 

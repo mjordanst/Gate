@@ -29,31 +29,19 @@
 #include "G4UnitsTable.hh"
 
 
-GateVDigitizerModule::GateVDigitizerModule(G4String name, GateDigitizer *digitizer)
+GateVDigitizerModule::GateVDigitizerModule(G4String name, G4String path, GateDigitizer *digitizer,  GateCrystalSD* SD)
   :G4VDigitizerModule(name),
-   GateClockDependent(name),
-   m_digitizer(digitizer)//,
-  // m_DMname(name)
+   GateClockDependent(path),
+   m_digitizer(digitizer),
+   m_SD(SD)
  {
-	//G4cout<<"GateVDigitizerModule::GateVDigitizerModule "<<this->GetName()<<G4endl;
-  //G4String colName =  m_digitizer->m_digitizerName;
-  //collectionName.push_back(colName);
-  //fMessenger = new GateVDigitizerModuleMessenger(this);
 
 }
 
 GateVDigitizerModule::GateVDigitizerModule(G4String name)
   :G4VDigitizerModule(name),
-   GateClockDependent(name)//,
-  // m_DMname(name)
- //  m_digitizerMng(digitizerMng)//,
-  // m_digitizerModuleName(name)
+   GateClockDependent(name)
  {
-	//G4cout<<"GateVDigitizerModule::GateVDigitizerModule"<<G4endl;
-  //G4String colName =  m_digitizer->m_digitizerName;
-  //collectionName.push_back(colName);
-  //fMessenger = new GateVDigitizerModuleMessenger(this);
-
 }
 
 
@@ -77,71 +65,58 @@ void GateVDigitizerModule::Describe(size_t indent)
 G4int GateVDigitizerModule::InputCollectionID()
 {
 	//G4cout<<"GateVDigitizerModule::InputCollectionID"<<G4endl;
-	G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
+	//G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
 
-	G4String outputCollNameTMP = GetName() +"/"+(m_digitizer->m_digitizerName);
+	//TODO: speed up: calls for pointers!
+	GateDigitizerMng* DigiMan = GateDigitizerMng::GetInstance();
+	G4DigiManager* fDM = G4DigiManager::GetDMpointer();
+
+	G4String DigitizerName=m_digitizer->GetName();
+
+	//DigiMan->ShowSummary();
+
+	G4String outputCollNameTMP = GetName() +"/"+DigitizerName+"_"+m_SD->GetName();
 	//G4cout<<outputCollNameTMP<<G4endl;
 	G4int DCID = -1;
 
 	if(DCID<0)
 	{
-		DCID = DigiMan->GetDigiCollectionID(outputCollNameTMP);
+		DCID = fDM->GetDigiCollectionID(outputCollNameTMP);
 	}
+//	G4cout<<"outputCollID "<< DCID<<G4endl;
+
+	G4String InitDMname="GateDigitizerInitializationModule/"+DigitizerName+"_"+m_SD->GetName();
+	G4int InitDMID = fDM->GetDigiCollectionID(InitDMname);
 
 	//check if this module is the first in this digitizer
-	if ( m_digitizer->m_DMlist[0] == this)
+	if ( m_digitizer->m_DMlist[0] == this )
 	{
-		//check if the digitizerMng has a CoincideceSorter
-			if (DigiMan->GetDigiCollectionID("Coincidences")==1)
-			{
-			//G4cout<<"there are coincidences"<<G4endl;
-			//check if the module is called first time in a run /i.e. first after InitializationModule
-				if((DCID-2)==0)
-				{
-					DCID=DCID-2;
-				}
-				else
-						{
-							//find the last ID of input Digitizer
-							G4String inputCollectionName = m_digitizer->GetInputName();
-							GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
-							GateDigitizer* inputDigitizer = digitizerMng->FindDigitizer(inputCollectionName);
-
-							DCID=inputDigitizer->m_outputDigiCollectionID;
-							//G4cout<<inputCollectionName<<DCID<<G4endl;
-						}
-			}
-			//check if the module is called first time in a run /i.e. first after InitializationModule
-			else
-			{
-				if ((DCID-1)==0)
-					{
-					DCID=DCID-1;
-					}
-				else
-						{
-							//find the last ID of input Digitizer
-							G4String inputCollectionName = m_digitizer->GetInputName();
-							GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
-							GateDigitizer* inputDigitizer = digitizerMng->FindDigitizer(inputCollectionName);
-
-							DCID=inputDigitizer->m_outputDigiCollectionID;
-							//G4cout<<inputCollectionName<<DCID<<G4endl;
-						}
-			}
-
-
+		//check if the input collection is from InitDM
+		if (m_digitizer->GetInputName() == m_digitizer->GetOutputName() )
+		{
+			DCID=InitDMID;
+		}
+		else
+		{
+			G4String inputCollectionName = m_digitizer->GetInputName()+"_"+m_digitizer->m_SD->GetName();
+			GateDigitizer* inputDigitizer = DigiMan->FindDigitizer(inputCollectionName);
+			DCID=inputDigitizer->m_outputDigiCollectionID;
+		}
 	}
-	//if not the first get the previous collection ID -> sequential processing
 	else
 	{
+		//sequential
 		DCID=DCID-1;
 	}
+
+
+
 
 	if(DCID<0)
 	{
       G4Exception( "GateVDigitizerModule::InputCollectionID", "InputCollectionID", FatalException, "Something wrong with collection ID. Please, contact olga[dot]kochebina[at]cea.fr. Abort.\n");
 	}
+ //G4cout<<DCID<<G4endl;
 
  return DCID;
 }

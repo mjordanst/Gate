@@ -399,7 +399,6 @@ void GateRootSingleBuffer::Fill(GateDigi* aDigi)
 void GateRootSingleBuffer::FillGND(GateDigi* aDigi)
 {
   size_t d;
-
   runID         =  aDigi->GetRunID();
   eventID       =  aDigi->GetEventID();
   sourceID      =  aDigi->GetSourceID();
@@ -424,6 +423,7 @@ void GateRootSingleBuffer::FillGND(GateDigi* aDigi)
 
   // HDS : septal penetration
   septalNb = aDigi->GetNSeptal();
+
 }
 
 

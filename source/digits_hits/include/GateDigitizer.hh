@@ -20,6 +20,7 @@
 #include "GateModuleListManager.hh"
 #include "GateDigi.hh"
 #include "GateVDigitizerModule.hh"
+#include "GateCrystalSD.hh"
 
 class GateDigitizerMng;
 class G4VDigitizerModule;
@@ -33,15 +34,17 @@ class GateDigitizer : public GateModuleListManager
 {
   public:
     GateDigitizer(GateDigitizerMng* itsDigitizerMng,
-    			    const G4String& itsOutputName);
+    				const G4String& digitizerName,
+    			    GateCrystalSD *SD);
     virtual ~GateDigitizer();
 
-     /*virtual void InsertProcessor(G4VDigitizerModule* newChildProcessor);
+     //virtual void InsertProcessor(G4VDigitizerModule* newChildProcessor);
 
      /*! \brief Virtual method to print-out a description of the object
 
 	\param indent: the print-out indentation (cosmetic parameter)
      */
+
     /* virtual void Describe(size_t indent=0);
 
      virtual void DescribeProcessors(size_t indent=0);
@@ -58,6 +61,14 @@ class GateDigitizer : public GateModuleListManager
        { return m_inputName; }
      void SetInputName(const G4String& anInputName)
        {  m_inputName = anInputName; }
+
+     inline GateCrystalSD* GetSD() const
+            { return m_SD; }
+     void SetSDname(GateCrystalSD* SD)
+            {  m_SD = SD; }
+
+
+
      const G4String& GetOutputName() const
        { return m_outputName; }
 
@@ -73,6 +84,8 @@ class GateDigitizer : public GateModuleListManager
 
      void SetName(const G4String& anInputName)
         {  m_digitizerName = anInputName; }
+     G4String GetName()
+           {  return m_digitizerName; }
 
     const G4String& GetLastDMname() const
     { return m_lastDMname; }
@@ -92,11 +105,15 @@ class GateDigitizer : public GateModuleListManager
       G4String                 m_lastDMname;
 
 
+
      // GateDigiCollection*      m_inputDigiCollection;
 public:
+
       std::vector<G4VDigitizerModule*>    	m_DMlist;	 //!< List of DigitizerModules for this digitizer
+      GateCrystalSD*                m_SD;
       G4String                 m_digitizerName;
       G4int      m_outputDigiCollectionID;
+
 };
 
 #endif
