@@ -29,8 +29,10 @@ public:
   GateVDigitizerModule(G4String DMname);
   virtual ~GateVDigitizerModule();
   
+  //void SetInputDigiCollection();
+
   virtual void Digitize()=0;
-  G4int InputCollectionID();
+  void InputCollectionID();
 
 
 
@@ -61,7 +63,8 @@ protected:
   G4int m_outputDCID;
   G4int	m_InitDMID;
 
-
+  GateDigiCollection* m_IDC;
+  G4int m_DCID;
 };
 
 #endif

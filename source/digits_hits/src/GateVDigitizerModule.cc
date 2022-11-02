@@ -51,7 +51,14 @@ GateVDigitizerModule::~GateVDigitizerModule()
  // delete fMessenger;
 }
 
-
+/*void GateVDigitizerModule::SetInputDigiCollection()
+{
+	G4cout<<"GateVDigitizerModule::SetInputDigiCollection " <<G4endl;
+	G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
+	m_IDC = (GateDigiCollection*) (DigiMan->GetDigiCollection(InputCollectionID() ));
+	G4cout<<"m_IDC "<< m_IDC<<G4endl;
+}
+*/
 
 void GateVDigitizerModule::Describe(size_t indent)
 {
@@ -62,12 +69,10 @@ void GateVDigitizerModule::Describe(size_t indent)
 }
 
 //////////////////
-G4int GateVDigitizerModule::InputCollectionID()
+void GateVDigitizerModule::InputCollectionID()
 {
 	//G4cout<<"GateVDigitizerModule::InputCollectionID"<<G4endl;
-	//G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
 
-	//TODO: speed up: calls for pointers!
 	GateDigitizerMng* DigiMan = GateDigitizerMng::GetInstance();
 	G4DigiManager* fDM = G4DigiManager::GetDMpointer();
 
@@ -83,7 +88,7 @@ G4int GateVDigitizerModule::InputCollectionID()
 	{
 		DCID = fDM->GetDigiCollectionID(outputCollNameTMP);
 	}
-//	G4cout<<"outputCollID "<< DCID<<G4endl;
+	//G4cout<<"outputCollID "<< DCID<<G4endl;
 
 	G4String InitDMname="GateDigitizerInitializationModule/"+DigitizerName+"_"+m_SD->GetName();
 	G4int InitDMID = fDM->GetDigiCollectionID(InitDMname);
@@ -99,8 +104,10 @@ G4int GateVDigitizerModule::InputCollectionID()
 		else
 		{
 			G4String inputCollectionName = m_digitizer->GetInputName()+"_"+m_digitizer->m_SD->GetName();
+			//G4cout<<"inputCollectionName "<<inputCollectionName<<G4endl;
 			GateDigitizer* inputDigitizer = DigiMan->FindDigitizer(inputCollectionName);
 			DCID=inputDigitizer->m_outputDigiCollectionID;
+			//G4cout<<" DCID "<< DCID<<G4endl;
 		}
 	}
 	else
@@ -116,9 +123,10 @@ G4int GateVDigitizerModule::InputCollectionID()
 	{
       G4Exception( "GateVDigitizerModule::InputCollectionID", "InputCollectionID", FatalException, "Something wrong with collection ID. Please, contact olga[dot]kochebina[at]cea.fr. Abort.\n");
 	}
- //G4cout<<DCID<<G4endl;
+// G4cout<<DCID<<G4endl;
 
- return DCID;
+ m_DCID = DCID;
+
 }
 
 

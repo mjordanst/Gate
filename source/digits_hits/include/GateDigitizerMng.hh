@@ -112,7 +112,7 @@ public:
    //	   { return FindElement( MakeElementName(baseName) ) ; }
    //	*/
 
-    void AddNewSD(GateCrystalSD*);
+    void AddNewSD(GateDigitizer*, GateCrystalSD*);
 
    void ShowSummary();
    /// Methods for Singles
@@ -175,6 +175,7 @@ protected:
 
 public:
   G4bool m_isInitialized;
+  G4bool m_isTheFirstEvent;
   std::vector<GateCrystalSD*>    	m_SDlist;	 //!< Vector of Sensitive Detectors
   std::vector<GateDigitizerInitializationModule*>    	m_digitizerIMList;	 //!< Vector of initialisation modules for different SD
   std::vector<GateDigitizer*>    	m_SingleDigitizersList;	 //!< Vector of digitizers

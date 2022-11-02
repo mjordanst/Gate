@@ -94,6 +94,7 @@ void GateRunAction::BeginOfRunAction(const G4Run* aRun)
     GateOutputMgr* outputMgr = GateOutputMgr::GetInstance();
     outputMgr->RecordBeginOfRun(aRun);
   }
+
 #endif
 
   pCallbackMan->BeginOfRunAction(aRun);

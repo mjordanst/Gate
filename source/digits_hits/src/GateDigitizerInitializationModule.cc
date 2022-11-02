@@ -57,7 +57,7 @@ void GateDigitizerInitializationModule::Digitize()
 	G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
 	G4String HCname=m_digitizer->m_SD->GetName()+"Collection" ;
 
-	//TODO : save DigiMan->GetHitsCollection(DigiMan->GetHitsCollectionID(SDman->GetHCtable()->GetHCname(i))
+
 	static G4int HCID=-1;
 	if(HCID<0)
 	{

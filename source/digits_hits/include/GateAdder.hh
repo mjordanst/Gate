@@ -39,7 +39,7 @@ public:
   
   GateAdder(GateDigitizer *digitizer,  GateCrystalSD* SD);
   ~GateAdder();
-  
+
   void Digitize() override;
 
 
@@ -59,6 +59,8 @@ private:
   GateDigi* m_outputDigi;
   GateDigiCollection*  m_OutputDigiCollection;
   GateDigitizer *m_digitizer;
+
+
 
 
 };

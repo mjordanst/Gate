@@ -92,7 +92,7 @@ class GateDigitizer : public GateModuleListManager
     void SetLastDMname(const G4String& anInputName)
       {  m_lastDMname = anInputName; }
 
-    void AddNewModule(G4VDigitizerModule* DM);
+    void AddNewModule(GateVDigitizerModule* DM);
 
     void DescribeMyself();
 
@@ -109,7 +109,7 @@ class GateDigitizer : public GateModuleListManager
      // GateDigiCollection*      m_inputDigiCollection;
 public:
 
-      std::vector<G4VDigitizerModule*>    	m_DMlist;	 //!< List of DigitizerModules for this digitizer
+      std::vector<GateVDigitizerModule*>    	m_DMlist;	 //!< List of DigitizerModules for this digitizer
       GateCrystalSD*                m_SD;
       G4String                 m_digitizerName;
       G4int      m_outputDigiCollectionID;

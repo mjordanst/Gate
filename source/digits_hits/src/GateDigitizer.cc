@@ -70,7 +70,7 @@ GateDigitizer::~GateDigitizer()
 }
 
 
-void GateDigitizer::AddNewModule(G4VDigitizerModule* DM)
+void GateDigitizer::AddNewModule(GateVDigitizerModule* DM)
 {
 	if (nVerboseLevel>1)
 		G4cout << "[GateSinglesDigitizer::AddNewModule]: "<< DM->GetName() <<"\n";

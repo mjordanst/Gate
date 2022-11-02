@@ -82,6 +82,8 @@ GateReadout::~GateReadout()
 }
 
 
+
+
 void GateReadout::SetReadoutParameters()
 {
 
@@ -216,7 +218,7 @@ void GateReadout::Digitize()
   G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
 
   GateDigiCollection* IDC = 0;
-  IDC = (GateDigiCollection*) (DigiMan->GetDigiCollection( InputCollectionID() ));
+  IDC = (GateDigiCollection*) (DigiMan->GetDigiCollection( m_DCID ));
 
   GateDigi* inputDigi = new GateDigi();
 
