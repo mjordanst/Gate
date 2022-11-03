@@ -32,7 +32,7 @@ See LICENSE.md for further details
 GateCylindricalPETSystem::GateCylindricalPETSystem(const G4String& itsName)
 : GateVSystem( itsName , true )
 {
-//	G4cout<<"GateCylindricalPETSystem constr"<< G4endl;
+	//G4cout<<"GateCylindricalPETSystem constr"<< G4endl;
   // Set up a messenger
   m_messenger = new GateClockDependentMessenger(this);
   m_messenger->SetDirectoryGuidance(G4String("Controls the system '") + GetObjectName() + "'" );
@@ -52,11 +52,6 @@ GateCylindricalPETSystem::GateCylindricalPETSystem(const G4String& itsName)
   new GateBoxComponent("layer3",crystalComponent,this);
 
   // Integrate a coincidence sorter into the digitizer
-  /*G4double coincidenceWindow = 10.* ns;
-  GateDigitizerOld* digitizer = GateDigitizerOld::GetInstance();
-  GateCoincidenceSorter* coincidenceSorter = new GateCoincidenceSorter(digitizer,"Coincidences",coincidenceWindow);
-  digitizer->StoreNewCoincidenceSorter(coincidenceSorter);
-  */
   //OK GND 2022
   GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
   GateCoincidenceSorter* coincidenceSorter = new GateCoincidenceSorter(digitizerMng,"Coincidences");

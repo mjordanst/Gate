@@ -114,19 +114,21 @@ const G4String& GateDigitizerMngMessenger::DumpMap()
 
 void GateDigitizerMngMessenger::DoInsertion(const G4String& childTypeName)
 {
-	//G4cout<<"GateDigitizerMngMessenger::DoInsertion "<<childTypeName<<G4endl;
+	G4cout<<"GateDigitizerMngMessenger::DoInsertion "<<childTypeName<<G4endl;
 
 	if (GetNewCollectionName().empty())
     SetNewCollectionName(childTypeName);
 
   AvoidNameConflicts();
 
-  if(m_SDname.empty())
-	  GateError("***ERROR*** Please, choose the sensitive detector name for which you want to insert new digitizer. "
-			  "Command: /gate/digitizerMng/chooseSD"
-			   "ATTENTION: this command can be called only before /insert command");
+
 
   if (childTypeName=="SinglesDigitizer") {
+	  if(m_SDname.empty())
+	  	  GateError("***ERROR*** Please, choose the sensitive detector name for which you want to insert new digitizer. "
+	  			  "Command: /gate/digitizerMng/chooseSD\n"
+	  			   "ATTENTION: this command can be called only before /insert command\n");
+
 	  G4SDManager* SDman = G4SDManager::GetSDMpointer();
 	  GateCrystalSD* SD = (GateCrystalSD*) SDman->FindSensitiveDetector(m_SDname, true);
 	  GetDigitizerMng()->AddNewSinglesDigitizer( new GateDigitizer(GetDigitizerMng(),GetNewCollectionName(),SD) );

@@ -482,7 +482,7 @@ void GateAnalysis::RecordEndOfEvent(const G4Event* event)
   //check on spect
  // if (digitizerMng->m_CoincidenceSortersList)
   //{
-	 // digitizerMng->RunCoincidenceSorters();
+	  digitizerMng->RunCoincidenceSorters();
 	 // digitizerMng->RunCoincidenceDigitizers();
  // }
 } // end function

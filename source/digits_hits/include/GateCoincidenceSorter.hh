@@ -63,7 +63,7 @@ public:
     //! Constructs a new coincidence sorter, attached to a GateDigitizerMng amd to a system
     GateCoincidenceSorter(GateDigitizerMng* itsDigitizerMng,
                           const G4String& itsName,
-                          const G4String& itsInputName="Singles", const bool &IsCCSorter=false);
+                          const bool &IsCCSorter=false);
     //! Destructor
     virtual ~GateCoincidenceSorter() ;
 

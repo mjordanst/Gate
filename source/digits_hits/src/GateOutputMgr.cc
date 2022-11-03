@@ -193,7 +193,7 @@ void GateOutputMgr::RecordEndOfEvent(const G4Event* event)
 //----------------------------------------------------------------------------------
 void GateOutputMgr::RecordBeginOfRun(const G4Run* run)
 {
- //G4cout<<"GateOutputMgr::RecordBeginOfRun"<<G4endl;
+  //G4cout<<"GateOutputMgr::RecordBeginOfRun"<<G4endl;
   GateMessage("Output", 5, "GateOutputMgr::RecordBeginOfRun\n";);
 
   // If the verbosity for the random engine is set, we call the status method
@@ -210,6 +210,9 @@ void GateOutputMgr::RecordBeginOfRun(const G4Run* run)
     if ( m_outputModules[iMod]->IsEnabled() )
       m_outputModules[iMod]->RecordBeginOfRun(run);
   }
+
+  //SetCrystalHitsCollectionsID function is introduced for speeding up: heavy operations that should not be done at each event
+  SetCrystalHitsCollectionsID();
 }
 //----------------------------------------------------------------------------------
 
@@ -235,7 +238,7 @@ void GateOutputMgr::RecordBeginOfAcquisition()
 {
   GateMessage("Output", 5, " GateOutputMgr::RecordBeginOfAcquisition \n";);
 
-  if (nVerboseLevel > 2)
+  //if (nVerboseLevel > 2)
     G4cout << "GateOutputMgr::RecordBeginOfAcquisition\n";
 
 #ifdef G4ANALYSIS_USE_ROOT
@@ -252,6 +255,8 @@ void GateOutputMgr::RecordBeginOfAcquisition()
 
   // Start the timer
   m_timer.Start();
+
+
 
 }
 //----------------------------------------------------------------------------------
@@ -333,9 +338,8 @@ void GateOutputMgr::Describe(size_t /*indent*/)
 //----------------------------------------------------------------------------------
 GateHitsCollection* GateOutputMgr::GetHitCollection()
 {
-	//Obsolete
+	//TODO GND remove obsolete function
 	//G4cout<<"GateOutputMgr::GetHitCollection"<<G4endl;
-	//TODO adapt all output modules GetHitCollection -> GetHitCollections
 /*  GateMessage("Output", 5 , " GateOutputMgr::GetHitCollection \n";);
   static G4int crystalCollID=-1;     	  //!< Collection ID for the crystal hits
 
@@ -372,36 +376,47 @@ std::vector<GateHitsCollection*> GateOutputMgr::GetHitCollections()
 
 	std::vector<GateHitsCollection*> CHC_vector;
 
-  static G4int crystalCollID=-1;     	  //!< Collection ID for the crystal hits
+	G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
 
-  G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
-  G4SDManager* SDman = G4SDManager::GetSDMpointer();
+	for (long unsigned int i=0; i<m_HCIDs.size(); i++)
+	{
+		GateHitsCollection* CHC = (GateHitsCollection*) (DigiMan->GetHitsCollection(m_HCIDs[i]));
+		CHC_vector.push_back(CHC);
+		}
 
-  for (G4int i=0; i< SDman->GetCollectionCapacity(); i++)
-    {
- 	   G4String HCname = SDman->GetHCtable()->GetHCname(i);
-
- 	   if (HCname.contains("phantom"))
- 		   continue;
-
- 	  // G4cout<<SDman->GetHCtable()->GetSDname(i)<<" "<<SDman->GetHCtable()->GetHCname(i) <<G4endl;
-
- 	  // if (crystalCollID==-1)
- 	//	   crystalCollID = DigiMan->GetHitsCollectionID(SDman->GetHCtable()->GetHCname(i));
-
- 	  // G4cout<<SDman->GetHCtable()->GetSDname(i)<<" "<<SDman->GetHCtable()->GetHCname(i) <<" " <<DigiMan->GetHitsCollectionID(SDman->GetHCtable()->GetHCname(i))<<G4endl;
-
- 	   //TODO : save DigiMan->GetHitsCollection(DigiMan->GetHitsCollectionID(SDman->GetHCtable()->GetHCname(i))
- 	   GateHitsCollection* CHC = (GateHitsCollection*) (DigiMan->GetHitsCollection(DigiMan->GetHitsCollectionID(SDman->GetHCtable()->GetHCname(i))));
- 	   CHC_vector.push_back(CHC);
-    }
   return CHC_vector;
-
-
 }
 //----------------------------------------------------------------------------------
 
+void GateOutputMgr::SetCrystalHitsCollectionsID()
+{
+	//This function is introduced for speeding up: heavy operations that should not be done at each event
 
+	//G4cout<<"GateOutputMgr::SetHitsCollectionsID "<<G4endl;
+	GateMessage("Output", 5 , " GateOutputMgr::GetHitCollections \n";);
+
+	std::vector<GateHitsCollection*> CHC_vector;
+
+	G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
+	G4SDManager* SDman = G4SDManager::GetSDMpointer();
+
+	  for (G4int i=0; i< SDman->GetCollectionCapacity(); i++)
+		{
+		   G4String HCname = SDman->GetHCtable()->GetHCname(i);
+
+		   if (G4StrUtil::contains(HCname, "phantom"))
+			   continue;
+
+
+		   G4int ID=DigiMan->GetHitsCollectionID(SDman->GetHCtable()->GetHCname(i));
+		  // G4cout<< i << " "<< ID<< " "<< SDman->GetHCtable()->GetHCname(i)<<G4endl;
+		   m_HCIDs.push_back(ID);
+		}
+
+
+
+
+}
 
 
 

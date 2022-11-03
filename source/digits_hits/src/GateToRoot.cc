@@ -588,8 +588,7 @@ void GateToRoot::RecordEndOfAcquisition() {
         //!    current Root File
         //!  which is not the one we intstantiated if more than one Root File has been written
 
-    	// TODO OK GND 2022
-    	// vector of m_hfiles
+
     	m_hfile = m_treesHit[0]->GetCurrentFile();
 
         if (nVerboseLevel > 0)
@@ -1223,6 +1222,8 @@ void GateToRoot::RegisterNewCoincidenceDigiCollection(const G4String &aCollectio
 //--------------------------------------------------------------------------
 void GateToRoot::SingleOutputChannel::RecordDigitizer() {
 
+	GateMessage("OutputMgr", 5, " GateToRoot::SingleOutputChannel::RecordDigitizer -- begin\n";);
+
 	if (!m_outputFlag) return;
 
     G4DigiManager *fDM = G4DigiManager::GetDMpointer();
@@ -1266,61 +1267,42 @@ void GateToRoot::SingleOutputChannel::RecordDigitizer() {
 		}
 	}
 
+	GateMessage("OutputMgr", 5, " GateToRoot::SingleOutputChannel::RecordDigitizer -- end\n";);
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void GateToRoot::CoincidenceOutputChannel::RecordDigitizer() {
-    //GateMessage("OutputMgr", 5, " GateToRoot::CoincidenceOutputChannel::RecordDigitizer -- begin\n";);
+
+	GateMessage("OutputMgr", 5, " GateToRoot::CoincidenceOutputChannel::RecordDigitizer -- begin\n";);
    // G4cout<<"GateToRoot::CoincidenceOutputChannel::RecordDigitizer() "<<G4endl;
-	/*G4DigiManager *fDM = G4DigiManager::GetDMpointer();
+	G4DigiManager *fDM = G4DigiManager::GetDMpointer();
 
 	 GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
 	 GateCoincidenceSorter* cs = digitizerMng->FindCoincidenceSorter(m_collectionName);
-	 //digitizerMng->List();
+	 //digitizerMng->ShowSummary();
 
 
 	 G4String DCname=cs->GetName()+"/"+m_collectionName;
-	 //	 G4cout<<DCname<<G4endl;
+	 //G4cout<<DCname<<G4endl;
 	 G4int lastDCID=fDM->GetDigiCollectionID(DCname);
 
-		//G4cout<<"lastDCID = "<<lastDCID<<G4endl;
-	    if (m_collectionID < 0)
+	 //G4cout<<"lastDCID = "<<lastDCID<<G4endl;
+	 if (m_collectionID < 0)
 	    	m_collectionID = lastDCID;
-	    //fDM->List();
 
-	//OK GND 2022
-	//G4cout<<"m_collectionName "<<m_collectionName<<G4endl;
-	//OK GND 2022 TODO correct collectionID to record coincidences
-		/*if (m_collectionID < 0)
-			{
-			//if (no coinDigitizers)
-			//	{
-				G4String DCname="GateCoincidenceSorter/Coincidences";
-				m_collectionID=fDM->GetDigiCollectionID(DCname);
-		/*		}
-			else
-				{
-				GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
-				GateCoinDigitizer* digitizer = digitizerMng->FindCoincidenceDigitizer(m_collectionName);
-				m_collectionID=digitizer->m_outputDigiCollectionID;
-				}
-				*/
-			//}
-
-		//m_collectionID=1;
 
 	//G4cout<<"m_collectionName = "<<m_collectionName << " ; ID = "<< m_collectionID <<G4endl;
-   /* GateCoincidenceDigiCollection *CDC =
+    GateCoincidenceDigiCollection *CDC =
             (GateCoincidenceDigiCollection *) (fDM->GetDigiCollection(m_collectionID));
 
     if (!CDC) {
-        //GateMessage("OutputMgr", 5, " There is no CDC collection.\n";);
+        GateMessage("OutputMgr", 5, " There is no CDC collection.\n";);
         if (nVerboseLevel > 0)
             G4cout << "[GateToRoot::CoincidenceOutputChannel::RecordDigitizer]:"
                    << " digi collection '" << m_collectionName << "' not found\n";
     } else {
-        //GateMessage("OutputMgr", 5, " There is CDC collection. \n";);
+        GateMessage("OutputMgr", 5, " There is CDC collection. \n";);
         // Digi loop
         if (nVerboseLevel > 0)
             G4cout << "[GateToRoot::CoincidenceOutputChannel::RecordDigitizer]: Total Digits: "
@@ -1336,8 +1318,8 @@ void GateToRoot::CoincidenceOutputChannel::RecordDigitizer() {
             }
         }
     }
-*/
-    //GateMessage("OutputMgr", 5, " GateToRoot::CoincidenceOutputChannel::RecordDigitizer -- end\n";);
+
+    GateMessage("OutputMgr", 5, " GateToRoot::CoincidenceOutputChannel::RecordDigitizer -- end\n";);
 }
 
 void GateToRoot::CloseTracksRootFile() {

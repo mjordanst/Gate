@@ -28,7 +28,7 @@ GateEcatSystem::GateEcatSystem(const G4String& itsName)
 {
 	//TODO : Switch from GateVSystem to GateScannerSystem for PET systems and add
 	//in the coincidence sorter constructurs there ??
-	G4cout<<"GateEcatSystem constr"<<G4endl;
+	//G4cout<<"GateEcatSystem constr"<<G4endl;
   // Set up a messenger
   m_messenger = new GateClockDependentMessenger(this);
   m_messenger->SetDirectoryGuidance(G4String("Controls the system '") + GetObjectName() + "'" );

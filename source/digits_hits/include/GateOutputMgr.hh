@@ -111,6 +111,7 @@ public:
   //! Return the current crystal-hit collection (if any)
   GateHitsCollection*  	  GetHitCollection();
   std::vector<GateHitsCollection*> GetHitCollections();
+  void SetCrystalHitsCollectionsID();
 
   //! Return the current phantom-hit collection (if nay)
   GatePhantomHitsCollection*  	  GetPhantomHitCollection();
@@ -168,6 +169,8 @@ protected :
   G4bool   m_saveVoxelTuple;
 
   G4Timer m_timer;      	  //!< Timer
+
+  std::vector<G4int> m_HCIDs;
 
 };
 

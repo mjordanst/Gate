@@ -79,7 +79,7 @@ GateRunAction::GateRunAction(GateUserActions * cbm)
 void GateRunAction::BeginOfRunAction(const G4Run* aRun)
 {
   GateMessage("Core", 1, "Begin Of Run " << aRun->GetRunID() << Gateendl);
- G4cout<<"GateACTIONS ------ GateRunAction::BeginOfRunAction " <<G4endl;
+ // G4cout<<"GateACTIONS ------ GateRunAction::BeginOfRunAction " <<G4endl;
 
   //#ifdef GATE_BasicROOT_Output
   //if(GateApplicationMgr::GetInstance()->GetOutputMode()){

@@ -30,12 +30,11 @@ G4int GateCoincidenceSorter::gm_coincSectNum=0;
 // Constructs a new coincidence sorter, attached to a GateDigitizerOld and to a system
 GateCoincidenceSorter::GateCoincidenceSorter(GateDigitizerMng* itsDigitizerMng,
                                              const G4String& itsOutputName,
-                                             const G4String& itsInputName, const bool& IsCCSorter)
+                                             const bool& IsCCSorter)
  	: GateVDigitizerModule("GateCoincidenceSorter"),
     m_digitizerMng(itsDigitizerMng),
     m_system(0),
     m_outputName(itsOutputName),
-    m_inputName(itsInputName),
     m_coincidenceWindow(10.* ns),
     m_coincidenceWindowJitter(0.),
     m_offset(0.),
@@ -50,7 +49,7 @@ GateCoincidenceSorter::GateCoincidenceSorter(GateDigitizerMng* itsDigitizerMng,
     m_triggerOnlyByAbsorber(0),
     m_eventIDCoinc(0)
 {
-	//G4cout<<"GateCoincidenceSorter constr"<< this->GetName()<<G4endl;
+	//G4cout<<"GateCoincidenceSorter constr"<< this->GetName()<< " "<< m_inputName<<G4endl;
 
   // Create the messenger
   m_messenger = new GateCoincidenceSorterMessenger(this);
@@ -159,6 +158,7 @@ void GateCoincidenceSorter::SetAcceptancePolicy4CC(const G4String &policy)
 void GateCoincidenceSorter::Digitize()
 {
 	//G4cout<<"GateCoincidenceSorter::Digitize "<< GetOutputName() <<G4endl;
+	//G4cout<< "m_inputName "<< m_inputName<<G4endl;
   GateDigi* digi;
   std::list<GateDigi*>::iterator buf_iter;                // presort buffer iterator
 
@@ -352,10 +352,11 @@ void GateCoincidenceSorter::Digitize()
            	if (nVerboseLevel)
            	    G4cout  << "[GateCoincidenceDigiMaker::Digitize]: ignoring multiple coincidence --> no digits created\n";
            } else {
-        	//   G4cout<<"Output collection "<< m_OutputCoincidenceDigiCollection->GetName()<<" : " << m_OutputCoincidenceDigiCollection->GetSize ()<<G4endl;
+        	//  G4cout<<"Output collection "<< m_OutputCoincidenceDigiCollection->GetName()<<" : " << m_OutputCoincidenceDigiCollection->GetSize ()<<G4endl;
         	   StoreDigiCollection(m_OutputCoincidenceDigiCollection);
            }
   	 }
+
 
 
 }

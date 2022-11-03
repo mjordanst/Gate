@@ -60,6 +60,8 @@ GateDigitizerMng::~GateDigitizerMng()
 
 void GateDigitizerMng::Initialize()
 {
+	//This function is introduced for speeding up: heavy operations that should not be done at each event
+
 	//G4cout<<"GateDigitizerMng::Initialize() "<< G4endl;
 
 	G4DigiManager *fDM = G4DigiManager::GetDMpointer();
@@ -82,6 +84,28 @@ void GateDigitizerMng::Initialize()
 				//G4cout<<"coll ID "<< m_collectionID<< " for "<<m_SingleDigitizersList[i_D]->GetName()<< " "<< m_SingleDigitizersList[i_D]->m_outputDigiCollectionID<<G4endl;
 
 			}
+
+	//TODO: check if we have coincidecnes, i.e. that it is PET and not SPECT or the loop will not enter and it is ok
+	//set default input collections for coincidence sorters
+	for (long unsigned int i = 0; i<m_CoincidenceSortersList.size(); i++)
+		{
+		if ( m_CoincidenceSortersList[i]->GetInputName().empty() )
+			{
+				if (m_SingleDigitizersList.size()>1)
+					GateError("***ERROR*** The input collection name is ambiguous as you have several SinglesDigitizers! \n Please, use /setInputName for your CoincidenceSorter to choose the correct one.\n");
+
+				if (m_SDlist.size()==1)
+				{
+					//G4cout<<"Setting default Input name"<<  m_SDlist[0]->GetName()<<G4endl;
+					m_CoincidenceSortersList[i]->SetInputName("Singles_"+m_SDlist[0]->GetName());
+				}
+				else
+					GateError("***ERROR*** The input collection name is ambiguous as you attached several Sensitive Detectors! \n Please, use /setInputName for your CoincidenceSorter to choose the correct one.\n");
+			}
+		}
+
+
+
 
 }
 
@@ -199,7 +223,9 @@ void GateDigitizerMng::AddNewCoincidenceSorter(GateCoincidenceSorter* coincidenc
 
 	 m_CoincidenceSortersList.push_back ( coincidenceSorter );
 
-	  //mhadi_add[
+	/*
+	 * TODO GND: adapt for multiple SD
+	 *  //mhadi_add[
 	  //! Next lines are for the multi-system approach
 	  for (size_t i=0; i<m_SingleDigitizersList.size() ; ++i)
 	    {
@@ -212,7 +238,7 @@ void GateDigitizerMng::AddNewCoincidenceSorter(GateCoincidenceSorter* coincidenc
 	        }
 	    }
 	  //mhadi_add]
-
+*/
 
 }
 //-----------------------------------------------------------------
@@ -359,8 +385,8 @@ void GateDigitizerMng::RunCoincidenceSorters()
 
 			m_CoincidenceSortersList[i]->Digitize();
 
-			m_collectionID++;
-			m_CoincidenceSortersList[i]->m_outputDigiCollectionID=m_collectionID;
+			//m_collectionID++;
+			//m_CoincidenceSortersList[i]->m_outputDigiCollectionID=m_collectionID;
 		}
 			//Save the name of the last digitizer module for current digitizer
 
