@@ -175,13 +175,13 @@ GateVSystem* GateDigitizerMng::FindSystem(G4String& systemName)
 // Integrates a new pulse-processor chain
 void GateDigitizerMng::AddNewSD(GateDigitizer* digitizer, GateCrystalSD* newSD)
 {
-	GateDigitizerInitializationModule * myDM;
-	myDM = new GateDigitizerInitializationModule(digitizer);
+  //	GateDigitizerInitializationModule * myDM;
+  //	myDM = new GateDigitizerInitializationModule(digitizer);
   //Add digitizer to the list
 	m_SDlist.push_back(newSD);
 
-	m_digitizerIMList.push_back(myDM);
-	G4DigiManager::GetDMpointer()->AddNewModule(myDM);
+	//	m_digitizerIMList.push_back(myDM);
+	//	G4DigiManager::GetDMpointer()->AddNewModule(myDM);
   //TODO add here multisystem??
   /*//! Next lines are for the multi-system approach
   if(m_systemList && m_systemList->size() == 1)
@@ -196,7 +196,12 @@ void GateDigitizerMng::AddNewSD(GateDigitizer* digitizer, GateCrystalSD* newSD)
 // Integrates a new pulse-processor chain
 void GateDigitizerMng::AddNewSinglesDigitizer(GateDigitizer* digitizer)
 {
+  GateDigitizerInitializationModule * myDM;
+  myDM = new GateDigitizerInitializationModule(digitizer);
+  m_digitizerIMList.push_back(myDM);
+  G4DigiManager::GetDMpointer()->AddNewModule(myDM);
 
+  
   G4String outputName = digitizer->GetOutputName() ;
   if (nVerboseLevel>1)
     G4cout << "[GateDigitizerMng::AddNewSinglesDigitizer]: Storing new digitizer '" << digitizer->GetObjectName() << "'"
