@@ -181,6 +181,9 @@ public:
   std::vector<GateDigitizer*>    	m_SingleDigitizersList;	 //!< Vector of digitizers
   std::vector<GateCoincidenceSorter*>    	m_CoincidenceSortersList;	 //!< Vector of coincidence sorters
 
+  G4bool m_recordSingles;
+  G4bool m_recordCoincidences;
+
 
 };
 #endif

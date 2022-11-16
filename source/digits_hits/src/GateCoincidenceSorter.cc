@@ -57,7 +57,9 @@ GateCoincidenceSorter::GateCoincidenceSorter(GateDigitizerMng* itsDigitizerMng,
 
   coincID_CC=0;
   //OK GND 2022
-  GateOutputMgr::GetInstance()->RegisterNewCoincidenceDigiCollection(m_outputName,true );
+ // GateOutputMgr::GetInstance()->RegisterNewCoincidenceDigiCollection(m_outputName,true );
+  //TODO OK GND: switch on coins!
+  GateOutputMgr::GetInstance()->RegisterNewCoincidenceDigiCollection(m_outputName,false );
 
   G4String colName = itsOutputName;
   collectionName.push_back(colName);

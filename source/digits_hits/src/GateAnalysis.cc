@@ -475,16 +475,12 @@ void GateAnalysis::RecordEndOfEvent(const G4Event* event)
   //OK GND 2022
   //RunDigitizers is called here otherwise we don't have all attributes filled for aHit
   GateDigitizerMng* digitizerMng=GateDigitizerMng::GetInstance();
-  //digitizerMng->Initialize();
-  digitizerMng->RunDigitizers();
+  if (digitizerMng->m_recordSingles|| digitizerMng->m_recordCoincidences)
+	  digitizerMng->RunDigitizers();
 
-  //TODO GND 2022 : condition if (there is coincidences in the current system)
-  //check on spect
- // if (digitizerMng->m_CoincidenceSortersList)
-  //{
+  if (digitizerMng->m_recordSingles|| digitizerMng->m_recordCoincidences)
 	  digitizerMng->RunCoincidenceSorters();
-	 // digitizerMng->RunCoincidenceDigitizers();
- // }
+
 } // end function
 //--------------------------------------------------------------------------------------------------
 

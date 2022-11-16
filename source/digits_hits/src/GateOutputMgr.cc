@@ -61,7 +61,7 @@ DigiMode   GateOutputMgr::m_digiMode= kruntimeMode;
   - GateToDigi
   - GateToASCII
   - GateToRoot
-  - GateToRootPlotter
+  - GateToRootPlotter -> TODO GND 2022???
   - GateToLMF
   - GateToBinary
 

@@ -194,7 +194,7 @@ inline void GateEventAction::EndOfEventAction(const G4Event* anEvent)
 
  // G4cout<<"GateACTIONS ------ GateEventAction::EndOfEventAction " << anEvent->GetEventID() <<G4endl;
   //OK GND 2022 TODO
-  //I would like to RunDigitizers here but some aHit attronites are filled in OutputMng/GateAnalysis->RecordEndOfEvent
+  //I would like to RunDigitizers here but some aHit attributes are filled in OutputMng/GateAnalysis->RecordEndOfEvent
   //GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
   // 	  digitizerMng->RunDigitizers();
 
@@ -224,7 +224,7 @@ inline void GateEventAction::EndOfEventAction(const G4Event* anEvent)
 
   for (long unsigned int i=0; i<RunAction->m_CHCollIDs.size(); i++)
    {
-	  // TODO: OK GND 2022, test that in traking mode it still works
+	  // TODO: OK GND 2022, test that in tracking mode it still works
 	   if ( theMode == TrackingMode::kTracker )
     {
 	  //OK GND 2022

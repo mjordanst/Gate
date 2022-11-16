@@ -43,7 +43,7 @@ GateDigitizer::GateDigitizer( GateDigitizerMng* itsDigitizerMng,
 	m_messenger = new GateDigitizerMessenger(this);
 
   //Prepare OutputMng for this digitizer
-  	GateOutputMgr::GetInstance()->RegisterNewSingleDigiCollection(m_digitizerName+"_"+SD->GetName(),true);
+  	GateOutputMgr::GetInstance()->RegisterNewSingleDigiCollection(m_digitizerName+"_"+SD->GetName(),false); //-> do not save Singles if not set by user
 
   	if(!itsDigitizerMng->m_isInitialized)
   	{

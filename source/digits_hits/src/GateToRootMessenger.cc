@@ -52,16 +52,11 @@ GateToRootMessenger::GateToRootMessenger(GateToRoot* gateToRoot)
   RootHitCmd->SetGuidance("Set the flag for Hits ROOT output");
   RootHitCmd->SetGuidance("1. true/false");
 
-  // OK GND 2022 // hardcoded now and moved from CreateNewOutputChannelCommand
+  // OK GND 2022
   cmdName = GetDirectoryName()+"setRootSinglesFlag";
   RootSinglesCmd = new G4UIcmdWithABool(cmdName,this);
-  RootSinglesCmd->SetGuidance("Set the flag for ROOT output of Singles");
+  RootSinglesCmd->SetGuidance("To get error if you use old command");
   RootSinglesCmd->SetGuidance("1. true/false");
-
-  cmdName = GetDirectoryName()+"setRootCoincidencesFlag";
-  RootCoincidencesCmd = new G4UIcmdWithABool(cmdName,this);
-  RootCoincidencesCmd->SetGuidance("Set the flag for ROOT output of Singles");
-  RootCoincidencesCmd->SetGuidance("1. true/false");
   //OK GND 2022
 
 
@@ -123,7 +118,6 @@ GateToRootMessenger::~GateToRootMessenger()
 
   delete RootHitCmd;
   delete RootSinglesCmd;
-  delete RootCoincidencesCmd;
   delete RootNtupleCmd;
   delete RootOpticalCmd;
   delete SetFileNameCmd;
@@ -148,9 +142,8 @@ void GateToRootMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
   } else if (command == RootHitCmd) {
     m_gateToRoot->SetRootHitFlag(RootHitCmd->GetNewBoolValue(newValue));
   } else if (command == RootSinglesCmd) {
-        m_gateToRoot->SetRootSinglesFlag(RootSinglesCmd->GetNewBoolValue(newValue));
-  } else if (command == RootCoincidencesCmd) {
-		m_gateToRoot->SetRootCoincidencesFlag(RootCoincidencesCmd->GetNewBoolValue(newValue));
+      GateError("Error: setRootSinglesFlag command is obsolete. Please use: setRootSingles_<SDname>Flag, "
+    		  "where <SDname> = name that you use in command /gate/<SDname>/attachCrystalSD");
   } else if (command == SaveRndmCmd) {
     m_gateToRoot->SetSaveRndmFlag(SaveRndmCmd->GetNewBoolValue(newValue));
   } else if (command == RootNtupleCmd) {
@@ -211,7 +204,7 @@ void GateToRootMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 //--------------------------------------------------------------------------
 void GateToRootMessenger::CreateNewOutputChannelCommand(GateToRoot::VOutputChannel* anOutputChannel)
 {
-	//G4cout<<"GateToRootMessenger::CreateNewOutputChannelCommand "<< anOutputChannel->m_collectionName<<G4endl;
+	G4cout<<"GateToRootMessenger::CreateNewOutputChannelCommand "<< anOutputChannel->m_collectionName<<G4endl;
   GateMessage("OutputMgr", 5, " GateToRootMessenger::CreateNewOutputChannelCommand -- begin \n";);
 
   G4String cmdName;
@@ -244,9 +237,23 @@ G4bool GateToRootMessenger::IsAnOutputChannelCmd(G4UIcommand* command)
 //--------------------------------------------------------------------------
 void GateToRootMessenger::ExecuteOutputChannelCmd(G4UIcommand* command, G4String newValue)
 {
+	GateDigitizerMng* digitizerMng=GateDigitizerMng::GetInstance();
+
   for (size_t i = 0; i<OutputChannelCmdList.size() ; ++i){
     if ( command == OutputChannelCmdList[i] ) {
       m_outputChannelList[i]->SetOutputFlag( OutputChannelCmdList[i]->GetNewBoolValue(newValue) );
+      //OK GND 2022 //TODO adapt for other outputs
+      if (G4StrUtil::contains(m_outputChannelList[i]->m_collectionName, "Singles"))
+      	  {
+    	   if(OutputChannelCmdList[i]->GetNewBoolValue(newValue))
+    		   digitizerMng->m_recordSingles=OutputChannelCmdList[i]->GetNewBoolValue(newValue);
+      	  }
+      if (G4StrUtil::contains(m_outputChannelList[i]->m_collectionName, "Coincidences"))
+      	  {
+    	  	  if(OutputChannelCmdList[i]->GetNewBoolValue(newValue))
+    	  		  digitizerMng->m_recordCoincidences=OutputChannelCmdList[i]->GetNewBoolValue(newValue);
+      	  }
+
       break;
     }
     }

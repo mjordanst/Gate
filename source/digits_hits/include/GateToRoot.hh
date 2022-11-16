@@ -162,8 +162,7 @@ public:
                   m_outputFlag(outputFlag),
                   m_collectionName(aCollectionName),
                   m_collectionID(-1)
-        {
-        }
+        {}
 
         virtual inline ~VOutputChannel() {}
 
@@ -253,13 +252,6 @@ public:
 
     G4bool GetSDlistSize() { return m_SDlistSize; };
     void SetSDlistSize(G4int size) {m_SDlistSize = size; };
-
-    G4bool GetRootSinlesFlag() { return m_rootSinglesFlag; };
-    void SetRootSinglesFlag(G4bool flag) { m_rootSinglesFlag = flag; };
-
-
-    G4bool GetRootCoincidencesFlag() { return m_rootCoincidencesFlag; };
-    void SetRootCoincidencesFlag(G4bool flag) { m_rootCoincidencesFlag = flag; };
 
     G4bool GetRootNtupleFlag() { return m_rootNtupleFlag; };
 
@@ -363,10 +355,6 @@ private:
 // v. cuplov - optical photons
 
     G4bool m_rootHitFlag;
-
-    //OK GND 2022: the following flags was added when the messengers commends for "SinglesFlag" and "CoinFlag" were added
-   G4bool m_rootSinglesFlag;
-   G4bool m_rootCoincidencesFlag;
 
     G4bool m_rootNtupleFlag;
     G4bool m_saveRndmFlag;

@@ -46,7 +46,9 @@ GateDigitizerMng::GateDigitizerMng()
 	  m_systemList(0),
 	  m_collectionID(0),
 	  m_isInitialized(1),
-	  m_isTheFirstEvent(1)
+	  m_isTheFirstEvent(1),
+	  m_recordSingles(0),
+	  m_recordCoincidences(0)
 {
 	//	G4cout<<"GateDigitizerMng:: constructor "<<  nVerboseLevel<<G4endl;
 	fMessenger = new GateDigitizerMngMessenger(this);
@@ -307,7 +309,7 @@ void GateDigitizerMng::RunDigitizers()
 
 
 
-	if (nVerboseLevel>1)
+	//if (nVerboseLevel>1)
 	    G4cout << "[GateDigitizerMng::RunDigitizers]: starting\n";
 
 	//G4DigiManager *fDM = G4DigiManager::GetDMpointer();

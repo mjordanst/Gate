@@ -100,8 +100,7 @@ ComptonRayleighData &ComptonRayleighData::operator=(const ComptonRayleighData &a
 //--------------------------------------------------------------------------
 GateToRoot::GateToRoot(const G4String &name, GateOutputMgr *outputMgr, DigiMode digiMode)
         : GateVOutputModule(name, outputMgr, digiMode), m_hfile(0), m_treesHit(0),
-		  m_rootHitFlag(digiMode == kruntimeMode),  m_rootSinglesFlag(true), m_rootCoincidencesFlag(true), m_rootNtupleFlag(true), m_saveRndmFlag(true),
-         // m_rootHitFlag(digiMode == kruntimeMode), m_rootNtupleFlag(true), m_saveRndmFlag(true),
+		  m_rootHitFlag(digiMode == kruntimeMode),  m_rootNtupleFlag(true), m_saveRndmFlag(true),
 		  m_fileName(" ") // All default output file from all output modules are set to " ".
         // They are then checked in GateApplicationMgr::StartDAQ, using
         // the VOutputModule pure virtual method GiveNameOfFile()
@@ -110,7 +109,7 @@ GateToRoot::GateToRoot(const G4String &name, GateOutputMgr *outputMgr, DigiMode 
       if (digiMode==kofflineMode)
       m_fileName="digigate";
     */
-	//G4cout<<"GateToRoot:constr"<<Gateendl;
+	G4cout<<"GateToRoot:constr "<< name<<Gateendl;
     m_isEnabled = false; // Keep this flag false: all output are disabled by default
     nVerboseLevel = 0;
 
@@ -148,7 +147,9 @@ GateToRoot::~GateToRoot() {
     delete m_rootMessenger;
     if (nVerboseLevel > 0) G4cout << "GateToRoot deleting...\n";
     for (size_t i = 0; i < m_outputChannelList.size(); ++i)
+    	{//G4cout<<"GateToRoot:deleting "<< m_outputChannelList[i]-> m_collectionName<<" "<< m_collectionID<<G4endl;
         delete m_outputChannelList[i];
+    	}
 
     // v. cuplov - optical photons
     delete m_trajectoryNavigator;
@@ -234,8 +235,6 @@ void GateToRoot::Book() {
     pet_data->Branch("stop_time_sec", &mTimeStop);
 
     //OK GND 2022
-    //m_treeHit = new GateHitTree(GateHitConvertor::GetOutputAlias());
-    //m_treeHit->Init(m_hitBuffer)
     GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
 
    // G4cout<<"GateToRoot SD size "<<digitizerMng->m_SDlist.size()<<G4endl;
@@ -311,11 +310,6 @@ void GateToRoot::RecordBeginOfAcquisition() {
 		{
 			GateRootHitBuffer hitBuffer;
 			m_hitBuffers.push_back(hitBuffer);
-
-			/*GateRootSingleBuffer singleBuffer;
-			//ingleOutputChannel::m_buffers.push_back(singleBuffer);
-			m_SingleBuffers.push_back(singleBuffer);
-		*/
 		}
 
 

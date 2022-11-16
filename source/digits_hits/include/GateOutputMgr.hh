@@ -146,10 +146,10 @@ protected :
 
   //! Verbose level
   G4int                      nVerboseLevel;
-
+public: //OK GND 2022 moved to public to have access in GateAnalysis::RecordEndOfEvent to not run Digitizer if there is no output requires Singles
   //! List of the output modules
   std::vector<GateVOutputModule*>   m_outputModules;
-
+protected:
   //! messenger for the Mgr specific commands
   GateOutputMgrMessenger*    m_messenger;
 

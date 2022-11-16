@@ -168,11 +168,6 @@ void GateUserActions::EndOfEventAction(const G4Event* evt)
  }
  theListOfTrackIDInfo.clear();
 
- //OK: GND 2022
- //GateDigitizer* digitizer=GateDigitizer::GetInstance();
- //digitizer->RunDigitizer();
- //
-
 }
 //-----------------------------------------------------------------------------
 
