@@ -25,7 +25,7 @@
 #include "globals.hh"
 
 
-class GateDigitizerInitializationModule : public G4VDigitizerModule
+class GateDigitizerInitializationModule : public GateVDigitizerModule
 {
 public:
 
@@ -33,13 +33,17 @@ public:
   ~GateDigitizerInitializationModule();
 
 
-  void Digitize();
+  void Digitize() override;
+
+  void DescribeMyself(size_t );
 
 private:
 
   GateDigiCollection*  OutputDigiCollection;
   G4String m_colName;
   GateDigitizer* m_digitizer;
+  G4bool m_FirstEvent;
+  G4int m_HCID;
 
 };
 

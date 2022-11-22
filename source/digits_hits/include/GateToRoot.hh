@@ -191,16 +191,11 @@ public:
     public:
         inline SingleOutputChannel(const G4String &aCollectionName, G4bool outputFlag)
                 : VOutputChannel(aCollectionName, outputFlag),
-                  m_tree(0)
-        {
-       	m_buffer.Clear();
-        }
+                  m_tree(0) { m_buffer.Clear(); }
 
         virtual inline ~SingleOutputChannel() {}
 
-        inline void Clear() {
-        	 m_buffer.Clear();
-        }
+        inline void Clear() { m_buffer.Clear(); }
 
         inline void Book() {
             m_collectionID = -1;

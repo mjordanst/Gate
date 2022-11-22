@@ -26,11 +26,13 @@
 #include "G4SDManager.hh"
 #include "G4DigiManager.hh"
 #include "G4ios.hh"
-
+//:G4VDigitizerModule("GateDigitizerInitializationModule"),
 
 GateDigitizerInitializationModule::GateDigitizerInitializationModule(GateDigitizer *digitizer)
-  :G4VDigitizerModule("GateDigitizerInitializationModule"),
-   m_digitizer(digitizer)
+  :GateVDigitizerModule("DigiInit","digitizerMng/"+digitizer->GetSD()->GetName()+"/SinglesDigitizer/"+digitizer->m_digitizerName+"/adder",digitizer, digitizer->GetSD()),
+   m_digitizer(digitizer),
+   m_FirstEvent(true),
+   m_HCID(-1)
 {
 	//G4cout<<" GateDigitizerInitializationModule constr "<<G4endl;
 	//G4String insertionBaseName=GatePreDigitizer::GetInstance()->GetNewInsertionBaseName();
@@ -38,39 +40,45 @@ GateDigitizerInitializationModule::GateDigitizerInitializationModule(GateDigitiz
 	//The name is Singles is hardcoded in this class, as it is just a transformation from Hits -> Digi and HitsColleciton to DigiColleciton.
 	//This class is called only ones in the beginning of the simulation.
 	//The output of this class is used by other DigiModules to create different DigiCollections
-	G4String colName = digitizer->GetOutputName();//+ m_SD->GetName(); //
+	G4String colName = digitizer->GetOutputName();//+"_"+GetName(); //digitizer->GetOutputName()+ m_SD->GetName(); //
 	collectionName.push_back(colName);
 }
 
 
 GateDigitizerInitializationModule::~GateDigitizerInitializationModule()
 {
+	delete  m_digitizer;
 }
 
 
 void GateDigitizerInitializationModule::Digitize()
 {
 
-	//G4cout<<"DigitizerInitialization::Digitize()" << m_digitizer->GetOutputName() <<G4endl;
-	OutputDigiCollection = new GateDigiCollection ("GateDigitizerInitializationModule",  m_digitizer->GetOutputName() ); // to create the Digi Collection
+	//G4cout<<"DigitizerInitialization::Digitize() " << m_digitizer->GetOutputName() <<G4endl;
+	OutputDigiCollection = new GateDigiCollection (GetName(),  m_digitizer->GetOutputName() ); // to create the Digi Collection
 
 	G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
 	G4String HCname=m_digitizer->m_SD->GetName()+"Collection" ;
 
+	//G4cout<<"HCName "<< HCname<<G4endl;
 
-	static G4int HCID=-1;
-	if(HCID<0)
+
+	if (m_FirstEvent)
 	{
-		HCID= DigiMan->GetHitsCollectionID(HCname);
+		m_HCID= DigiMan->GetHitsCollectionID(HCname);
+		m_FirstEvent=false;
 	}
-	GateHitsCollection* inHC = (GateHitsCollection*) (DigiMan->GetHitsCollection(HCID));// DigiMan->GetHitsCollectionID(HCname)));
+
+//	G4int HCID= DigiMan->GetHitsCollectionID(HCname);
+
+	GateHitsCollection* inHC = (GateHitsCollection*) (DigiMan->GetHitsCollection(m_HCID));// DigiMan->GetHitsCollectionID(HCname)));
 
 
 	if (inHC)
     {
       G4int n_hit = inHC->entries();
       //G4cout<<"n_hit = "<<n_hit<<G4endl;
-	// G4cout<<"inHC "  << inHC->GetSDname ()<<" " <<  inHC-> GetName ()<<" "<<  inHC->entries() <<G4endl;
+	 //G4cout<<"inHC "  << inHC->GetSDname ()<<" " <<  inHC-> GetName ()<<" "<<  inHC->entries() <<G4endl;
 	 //G4int j=0;
       //G4cout<< (*inHC)[j]->GetEdep()  <<G4endl;
 	 for (G4int i=0;i<n_hit;i++)
@@ -148,7 +156,10 @@ void GateDigitizerInitializationModule::Digitize()
 
 }
 
-
+void GateDigitizerInitializationModule::DescribeMyself(size_t )
+{
+  ;
+}
 
 
 

@@ -11,6 +11,9 @@ See LICENSE.md for further details
 //#include "GateOutputModuleMessenger.hh"
 #include "GateTools.hh"
 
+#include "G4DigiManager.hh"
+#include "GateDigitizerMng.hh"
+
 GateVOutputModule::GateVOutputModule(const G4String& name, GateOutputMgr* outputMgr,DigiMode digiMode)
   : m_outputMgr(outputMgr),
     m_name(name),
@@ -37,3 +40,51 @@ void GateVOutputModule::Describe(size_t indent)
 {
   G4cout << Gateendl << GateTools::Indent(indent) << "Output module: '" << m_name << "'\n";
 }
+
+
+G4int GateVOutputModule::GetCollectionID(G4String collectionName)
+{
+	G4DigiManager *fDM = G4DigiManager::GetDMpointer();
+	//G4cout<<"GateVOutputModule::UpdateCollectionName "<< collectionName <<G4endl;
+	GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
+
+	std::string const &str = collectionName;
+	std::vector<std::string> out;
+	const char delim ='_';
+
+	size_t start;
+	size_t end = 0;
+
+	while ((start = collectionName.find_first_not_of(delim, end)) != std::string::npos)
+	{
+		end = str.find(delim, start);
+		out.push_back(str.substr(start, end - start));
+	}
+	G4int collectionID;
+
+	if ( G4StrUtil::contains(collectionName, "Singles"))
+	{
+		if (out.size()==2)
+		{
+		GateDigitizer* digitizer = digitizerMng->FindDigitizer(collectionName);
+		G4int lastDCID=digitizer->m_outputDigiCollectionID;
+		collectionID = lastDCID;
+		}
+		else
+		{
+			G4String modifiedCollectionName=out[2]+"/"+out[0]+"_"+out[1];
+			collectionID = fDM->GetDigiCollectionID(modifiedCollectionName);
+		   }
+	}
+	else
+	{
+		collectionID = fDM->GetDigiCollectionID(collectionName);
+
+	}
+		  // std::cout << m_collectionName << std::endl;
+
+	return collectionID;
+
+}
+
+

@@ -243,6 +243,7 @@ void GateToRootMessenger::ExecuteOutputChannelCmd(G4UIcommand* command, G4String
     if ( command == OutputChannelCmdList[i] ) {
       m_outputChannelList[i]->SetOutputFlag( OutputChannelCmdList[i]->GetNewBoolValue(newValue) );
       //OK GND 2022 //TODO adapt for other outputs
+      //Setting flat in the digitizerMng
       if (G4StrUtil::contains(m_outputChannelList[i]->m_collectionName, "Singles"))
       	  {
     	   if(OutputChannelCmdList[i]->GetNewBoolValue(newValue))

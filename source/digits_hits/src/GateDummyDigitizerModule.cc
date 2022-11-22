@@ -60,6 +60,7 @@ GateDummyDigitizerModule::GateDummyDigitizerModule(GateDigitizer *digitizer, Gat
 GateDummyDigitizerModule::~GateDummyDigitizerModule()
 {
   delete m_Messenger;
+
 }
 
 

@@ -28,13 +28,40 @@
 #include "G4ios.hh"
 #include "G4UnitsTable.hh"
 
+#include "GateOutputMgr.hh"
 
 GateVDigitizerModule::GateVDigitizerModule(G4String name, G4String path, GateDigitizer *digitizer,  GateCrystalSD* SD)
   :G4VDigitizerModule(name),
    GateClockDependent(path),
    m_digitizer(digitizer),
    m_SD(SD)
- {
+{
+	G4cout<<"GateVDigitizerModule::GateVDigitizerModule "<<G4endl;
+	/*G4String collectionName = itsInputName;
+
+	  if ( collectionName.substr(0,10) == "digitizer/" )
+	    collectionName = collectionName.substr(10);
+
+
+	  G4String::size_type pos;
+	  do {
+	    pos = collectionName.find_first_of('/');
+	    if (pos != G4String::npos) {
+	      collectionName.erase(pos,1);
+	      if ( pos < collectionName.length() )
+	        collectionName.at(pos) = toupper( collectionName.at(pos) ) ;
+	    }
+	  } while ( pos != G4String::npos);
+
+	  m_collectionName = collectionName;
+
+
+
+	    digitizer->InsertDigiMakerModule( new GateSingleDigiMaker(digitizer, itsName,false) );
+	 */
+	G4cout<< "GateVDigitizerModule::GateVDigitizerModule " << digitizer->GetName()+"_"+ SD->GetName()+name <<G4endl;
+	//GateOutputMgr::GetInstance()->RegisterNewSingleDigiCollection(name+"/"+digitizer->GetName()+"_"+ SD->GetName(), false);
+	GateOutputMgr::GetInstance()->RegisterNewSingleDigiCollection(digitizer->GetName()+"_"+ SD->GetName()+"_"+name, false);
 
 }
 
@@ -42,7 +69,12 @@ GateVDigitizerModule::GateVDigitizerModule(G4String name)
   :G4VDigitizerModule(name),
    GateClockDependent(name)
  {
-}
+
+	//GateOutputMgr::GetInstance()->RegisterNewSingleDigiCollection(digitizer->GetName()+"_"+ SD->GetName()+"_"+name, false );
+
+ }
+
+
 
 
 
@@ -90,7 +122,8 @@ void GateVDigitizerModule::InputCollectionID()
 	}
 	//G4cout<<"outputCollID "<< DCID<<G4endl;
 
-	G4String InitDMname="GateDigitizerInitializationModule/"+DigitizerName+"_"+m_SD->GetName();
+	//G4String InitDMname="GateDigitizerInitializationModule/"+DigitizerName+"_"+m_SD->GetName();
+	G4String InitDMname="DigiInit/"+DigitizerName+"_"+m_SD->GetName();
 	G4int InitDMID = fDM->GetDigiCollectionID(InitDMname);
 
 	//check if this module is the first in this digitizer

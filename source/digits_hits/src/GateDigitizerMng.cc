@@ -65,6 +65,7 @@ void GateDigitizerMng::Initialize()
 	//This function is introduced for speeding up: heavy operations that should not be done at each event
 
 	//G4cout<<"GateDigitizerMng::Initialize() "<< G4endl;
+	//ShowSummary();
 
 	G4DigiManager *fDM = G4DigiManager::GetDMpointer();
 	for (long unsigned int i_D = 0; i_D<m_SingleDigitizersList.size(); i_D++)
@@ -77,35 +78,41 @@ void GateDigitizerMng::Initialize()
 				GateDigitizer *digitizer=m_SingleDigitizersList[i_D];//
 				G4String DigitizerName=digitizer->GetName();
 
+				if(m_SingleDigitizersList[i_D]->m_DMlist.size()>0)
+				{
 				GateVDigitizerModule * DM = (GateVDigitizerModule*)m_SingleDigitizersList[i_D]->m_DMlist[m_SingleDigitizersList[i_D]->m_DMlist.size()-1];
 				G4String name=DM->GetName()+"/"+DigitizerName+"_"+digitizer->m_SD->GetName();
 				G4int collectionID  = fDM->GetDigiCollectionID(name);
 
 				m_SingleDigitizersList[i_D]->m_outputDigiCollectionID=collectionID;
-
+				m_SingleDigitizersList[i_D]->m_lastDMname=name;
+				}
 				//G4cout<<"coll ID "<< m_collectionID<< " for "<<m_SingleDigitizersList[i_D]->GetName()<< " "<< m_SingleDigitizersList[i_D]->m_outputDigiCollectionID<<G4endl;
 
 			}
 
 	//TODO: check if we have coincidecnes, i.e. that it is PET and not SPECT or the loop will not enter and it is ok
 	//set default input collections for coincidence sorters
-	for (long unsigned int i = 0; i<m_CoincidenceSortersList.size(); i++)
-		{
-		if ( m_CoincidenceSortersList[i]->GetInputName().empty() )
+
+	if (m_recordCoincidences)
+	{
+		for (long unsigned int i = 0; i<m_CoincidenceSortersList.size(); i++)
 			{
-				if (m_SingleDigitizersList.size()>1)
-					GateError("***ERROR*** The input collection name is ambiguous as you have several SinglesDigitizers! \n Please, use /setInputName for your CoincidenceSorter to choose the correct one.\n");
-
-				if (m_SDlist.size()==1)
+			if ( m_CoincidenceSortersList[i]->GetInputName().empty() )
 				{
-					//G4cout<<"Setting default Input name"<<  m_SDlist[0]->GetName()<<G4endl;
-					m_CoincidenceSortersList[i]->SetInputName("Singles_"+m_SDlist[0]->GetName());
-				}
-				else
-					GateError("***ERROR*** The input collection name is ambiguous as you attached several Sensitive Detectors! \n Please, use /setInputName for your CoincidenceSorter to choose the correct one.\n");
-			}
-		}
+					if (m_SingleDigitizersList.size()>1)
+						GateError("***ERROR*** The input collection name is ambiguous as you have several SinglesDigitizers! \n Please, use /setInputName for your CoincidenceSorter to choose the correct one.\n");
 
+					if (m_SDlist.size()==1)
+					{
+						//G4cout<<"Setting default Input name"<<  m_SDlist[0]->GetName()<<G4endl;
+						m_CoincidenceSortersList[i]->SetInputName("Singles_"+m_SDlist[0]->GetName());
+					}
+					else
+						GateError("***ERROR*** The input collection name is ambiguous as you attached several Sensitive Detectors! \n Please, use /setInputName for your CoincidenceSorter to choose the correct one.\n");
+				}
+			}
+	}
 
 
 
@@ -198,8 +205,7 @@ void GateDigitizerMng::AddNewSD(GateDigitizer* digitizer, GateCrystalSD* newSD)
 // Integrates a new pulse-processor chain
 void GateDigitizerMng::AddNewSinglesDigitizer(GateDigitizer* digitizer)
 {
-  GateDigitizerInitializationModule * myDM;
-  myDM = new GateDigitizerInitializationModule(digitizer);
+  GateDigitizerInitializationModule * myDM = new GateDigitizerInitializationModule(digitizer);
   m_digitizerIMList.push_back(myDM);
   G4DigiManager::GetDMpointer()->AddNewModule(myDM);
 
@@ -312,7 +318,7 @@ void GateDigitizerMng::RunDigitizers()
 	//if (nVerboseLevel>1)
 	    G4cout << "[GateDigitizerMng::RunDigitizers]: starting\n";
 
-	//G4DigiManager *fDM = G4DigiManager::GetDMpointer();
+
 
 
 
@@ -339,6 +345,7 @@ void GateDigitizerMng::RunDigitizers()
 		m_collectionID=m_digitizerIMList.size();
 	 */
 
+	G4DigiManager *fDM = G4DigiManager::GetDMpointer();
 	//G4cout<< "m_collectionID = "<< m_collectionID<<G4endl;
 	if (nVerboseLevel>1)
 	   G4cout << "[GateDigitizerMng::RunDigitizers]: launching SingleDigitizers. N = " << m_SingleDigitizersList.size() << "\n";
@@ -356,14 +363,18 @@ void GateDigitizerMng::RunDigitizers()
 
 				m_SingleDigitizersList[i_D]->m_DMlist[i_DM]->Digitize();
 			}
-			/*//Save the ID of the last digitizer module for current digitizer
-			GateDigitizer *digitizer=m_SingleDigitizersList[i_D];//
+			//Save the ID of the last digitizer module for current digitizer
+
+			/*GateDigitizer *digitizer=m_SingleDigitizersList[i_D];//
 			G4String DigitizerName=digitizer->GetName();
 
 			GateVDigitizerModule * DM = (GateVDigitizerModule*)m_SingleDigitizersList[i_D]->m_DMlist[m_SingleDigitizersList[i_D]->m_DMlist.size()-1];
  			G4String name=DM->GetName()+"/"+DigitizerName+"_"+digitizer->m_SD->GetName();
 			m_collectionID  = fDM->GetDigiCollectionID(name);
-
+			GateDigiCollection* testDigiCollection = new GateDigiCollection(); // "",outputCollName);
+			testDigiCollection = (GateDigiCollection*) fDM->GetDigiCollection(m_collectionID);
+			// StoreDigiCollection(testDigiCollection);
+			/*
 			m_SingleDigitizersList[i_D]->m_outputDigiCollectionID=m_collectionID;
 
 			//G4cout<<"coll ID "<< m_collectionID<< " for "<<m_SingleDigitizersList[i_D]->GetName()<< " "<< m_SingleDigitizersList[i_D]->m_outputDigiCollectionID<<G4endl;
@@ -375,6 +386,9 @@ void GateDigitizerMng::RunDigitizers()
 void GateDigitizerMng::RunCoincidenceSorters()
 {
 	if ( !IsEnabled() )
+		return;
+
+	if (!m_recordCoincidences)
 		return;
 
 	if (nVerboseLevel>1)

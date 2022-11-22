@@ -87,6 +87,9 @@ public:
   inline virtual void Enable(G4bool val)
   { m_isEnabled = val; }
 
+  //OK GND 2022
+  virtual G4int GetCollectionID(G4String);
+
 
 protected:
 

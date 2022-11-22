@@ -619,6 +619,7 @@ void GateToRoot::RecordBeginOfRun(const G4Run *) {
     if (nVerboseLevel > 2)
         G4cout << "GateToRoot::RecordBeginOfRun\n";
     //  Book();
+
 }
 //--------------------------------------------------------------------------
 
@@ -661,7 +662,10 @@ void GateToRoot::RecordBeginOfEvent(const G4Event *evt) {
         }
 
     for (size_t i = 0; i < m_outputChannelList.size(); ++i)
+    	{
         m_outputChannelList[i]->Clear();
+      //  m_outputChannelList[i]->m_collectionID=GetCollectionID(m_collectionName);
+    	}
 
     /*PY Descourt 08/09/2009 */
 
@@ -852,6 +856,11 @@ void GateToRoot::RecordEndOfEvent(const G4Event *event) {
     }
 
    }
+    for (size_t i = 0; i < m_outputChannelList.size(); ++i)
+      	{
+         // m_outputChannelList[i]->m_collectionID=GetCollectionID(m_collectionName);
+      	}
+
     RecordDigitizer(event);
 
     // v. cuplov - optical photons
@@ -979,32 +988,12 @@ void GateToRoot::RecordDigitizer(const G4Event *) {
    if (nVerboseLevel > 2)
         G4cout << "GateToRoot::RecordDigitizer\n";
 
-       /* //
-          G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
-          	  	static G4int HCID1=-1;
-
-          	  	  if (HCID1==-1)
-          	  	  	  HCID1 = DigiMan->GetHitsCollectionID(GateCrystalSD::GetCrystalCollectionName());
-
-          	  	  G4cout<<HCID1<<G4endl;
-          	  	GateHitsCollection* CHC1 = 0;
-          	  	CHC1 = (GateHitsCollection*) (DigiMan->GetHitsCollection(HCID1));
-      //
-          if (CHC)
-                  {
-                    auto NbHits = CHC1->entries();
-          for (G4int iHit=0;iHit<NbHits;iHit++)
-                      {
-          G4cout<<"Hit in Analysis: "<< (*CHC)[iHit]->GetEventID()<< " "<< (*CHC)[iHit]->GetEdep()<<G4endl;
-                      }
-                  }
-
- */
     // Digitizer information
-        //G4cout<<"size outputChannelList "<<m_outputChannelList.size()<<Gateendl;
+    //G4cout<<"size outputChannelList "<<m_outputChannelList.size()<<Gateendl;
     for (size_t i = 0; i < m_outputChannelList.size(); i++)
     {
-    	//G4cout<< i << " "<<m_outputChannelList[i]->m_collectionName<<G4endl;
+    	if(m_outputChannelList[i]->m_collectionID<0)
+    	m_outputChannelList[i]->m_collectionID=GetCollectionID(m_outputChannelList[i]->m_collectionName);
     	m_outputChannelList[i]->RecordDigitizer();
     }
 
@@ -1221,26 +1210,87 @@ void GateToRoot::SingleOutputChannel::RecordDigitizer() {
 	if (!m_outputFlag) return;
 
     G4DigiManager *fDM = G4DigiManager::GetDMpointer();
-   // G4cout<<"GateToRoot::SingleOutputChannel::RecordDigitizer() "<<G4endl;
-   //OK GND 2022
-    GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
+    //G4cout<<"GateToRoot::SingleOutputChannel::RecordDigitizer() "<< m_collectionName <<" "<< m_collectionID <<G4endl;
+   // GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
+   // std::istream& G4StrUtil::readline(line, m_collectionName);
+    //void tokenize(std::string const &str, const char delim,
+    //            std::vector<std::string> &out)
+   // {
+  /*  std::string const &str = m_collectionName;
+    std::vector<std::string> out;
+    //std::vector<std::string> &out;
+    const char delim ='_';
 
-    //G4cout<<" m_collectionName "<<m_collectionName<<G4endl;
-	GateDigitizer* digitizer = digitizerMng->FindDigitizer(m_collectionName);
+    size_t start;
+    size_t end = 0;
+
+    while ((start = m_collectionName.find_first_not_of(delim, end)) != std::string::npos)
+    	{
+    	end = str.find(delim, start);
+    	out.push_back(str.substr(start, end - start));
+    	}
+
+   //for (auto &s: out) {
+	   if (out.size()==2)
+	   {
+		   m_collectionName=m_collectionName;
+		   GateDigitizer* digitizer = digitizerMng->FindDigitizer(m_collectionName);
+		   G4int lastDCID=digitizer->m_outputDigiCollectionID;
+		   if (m_collectionID < 0)
+		      	m_collectionID = lastDCID;// fDM->GetDigiCollectionID(digitizer->m_lastDMname); //lastDCID;
+	   }
+	   else
+	   {
+		   m_collectionName=out[2]+"/"+out[0]+"_"+out[1];
+		   if (m_collectionID < 0)
+			   m_collectionID = fDM->GetDigiCollectionID(m_collectionName); //lastDCID
+
+	   }
+	   std::cout << m_collectionName << std::endl;
+  // }
+
+    //}
+*/
+    //OK GND 2022
+    //GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
+   // G4cout<<"m_collectionName "<< m_collectionName <<G4endl;
+
+    //G4cout<<" GateToRoot::SingleOutputChannel::RecordDigitizer() m_collectionName "<<m_collectionName<<G4endl;
+	//GateDigitizer* digitizer = digitizerMng->FindDigitizer(m_collectionName);
 	//digitizerMng->ShowSummary();
 
 	//G4cout<<"digitizer "<< digitizer->GetName()+"_"+digitizer->m_SD->GetName()<<G4endl;
-	G4int lastDCID=digitizer->m_outputDigiCollectionID;
+	//G4cout<<"m_collectionName "<< m_collectionName <<G4endl;
+
+
+/*
+	G4String collectionName = m_collectionName;
+
+	G4String tmp= digitizer->GetName()+"_"+digitizer->m_SD->GetName();
+		  if ( collectionName.substr(0,tmp.length()) == tmp )
+		    collectionName = collectionName.substr(tmp.length());
+
+		  G4cout<<"CollectionName "<<collectionName<<G4endl;
+
+
+
+
+	//G4int lastDCID=digitizer->m_outputDigiCollectionID;
 
 	//G4cout<<"lastDCID = "<<lastDCID<<G4endl;
-    if (m_collectionID < 0)
-    	m_collectionID = lastDCID;
-
+	//G4cout<<digitizer->m_lastDMname<<G4endl;
+	//G4String collName= digitizer->m_lastDMname;
+	//G4cout<<"collName "<< collName<<G4endl;
+  */
+	/*if (m_collectionID < 0)
+    	m_collectionID = fDM->GetDigiCollectionID(digitizer->m_lastDMname); //lastDCID;
+    G4cout<<"GateToRoot::SingleOutputChannel::RecordDigitizer "<< m_collectionName<<" "<<m_collectionID<<" "<<Gateendl;
+*/
     const GateDigiCollection *SDC =
                 (GateDigiCollection *) (fDM->GetDigiCollection(m_collectionID));
 
 
-   //G4cout<<"GateToRoot::SingleOutputChannel::RecordDigitizer "<< m_collectionName<<" "<<m_collectionID<<" "<<Gateendl;
+
 	if (!SDC) {
 		//GateMessage("OutputMgr", 5, " There is no SDC collection\n";);
 		if (nVerboseLevel > 0)

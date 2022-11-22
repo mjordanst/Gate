@@ -76,10 +76,7 @@ HitsCollectionID(-1)
 
   GateMessage("Core", 4,"GateUserActions Constructor end.\n");
 
-  //OK GND 2022
-  /*digitizer = new GateDigitizer();
-  digitizer->Initialize();
-*/
+
 
 }
 //-----------------------------------------------------------------------------
@@ -91,7 +88,6 @@ GateUserActions::~GateUserActions()
   delete pUserActions;
   GateDebugMessageInc("Core", 4, "GateUserActions Destructor.\n");
 
-  //delete digitizer;
 }
 //-----------------------------------------------------------------------------
 

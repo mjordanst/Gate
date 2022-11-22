@@ -277,7 +277,7 @@ void GateReadout::Digitize()
 	  for (G4int i=0;i<n_digi;i++)
 	  {
 		  inputDigi=(*IDC)[i];
-
+		  G4cout<<"inHC "  << IDC->GetName ()<<" "<<  IDC->entries() <<G4endl;
 		  /*G4cout << "[GateReadout::Digitize]: input hit  \n"
 		  		                 <<  *inputDigi << G4endl;
 		  G4cout << "[GateReadout::Digitize]: first entrance "

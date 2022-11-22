@@ -163,8 +163,6 @@ public:
 
 private :
 
-  virtual void ConstructSDandField();
-
   GateBox* pworld;
   G4VPhysicalVolume* pworldPhysicalVolume;
 

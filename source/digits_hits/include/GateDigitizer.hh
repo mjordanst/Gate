@@ -102,7 +102,8 @@ class GateDigitizer : public GateModuleListManager
       G4String				   m_outputName;
       G4String                 m_inputName;
 
-      G4String                 m_lastDMname;
+
+      //GateVDigitizerModule* m_lastDM;
 
 
 
@@ -113,7 +114,7 @@ public:
       GateCrystalSD*                m_SD;
       G4String                 m_digitizerName;
       G4int      m_outputDigiCollectionID;
-
+      G4String                 m_lastDMname;
 };
 
 #endif

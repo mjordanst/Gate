@@ -63,7 +63,6 @@ class GateDigitizerMessenger: public GateListMessenger
   private:
 
     G4UIcmdWithAString*         SetInputNameCmd;        //!< The UI command "set input name"
-    G4UIcmdWithAString* 		SetChooseSDCmd;         //!< The UI command "set choose Sensitive Detector"
     GateDigitizer* m_digitizer;
 };
 

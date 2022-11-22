@@ -189,30 +189,6 @@ G4VPhysicalVolume* GateDetectorConstruction::Construct()
 
 
 //---------------------------------------------------------------------------------
-
-void GateDetectorConstruction::ConstructSDandField()
-{
-	//G4cout<<"GateDetectorConstruction::ConstructSDandField()"<<G4endl;
-	/*m_SDName= TestSensitiveDetector::GetCrystalCollectionName();
-	TestSensitiveDetector *sensDet = new TestSensitiveDetector(m_SDName);
-	//TestSensitiveDetector *sensDet2 = new TestSensitiveDetector("SensitiveDetector2");
-
-	G4SDManager *SDMan=G4SDManager::GetSDMpointer();
-	SDMan->AddNewDetector(sensDet);
-	//SDMan->AddNewDetector(sensDet2);
-
-	logicDetector->SetSensitiveDetector(sensDet);
-	//logicDetector2->SetSensitiveDetector(sensDet2);
-*/
-
-}
-//---------------------------------------------------------------------------------
-
-
-
-
-
-//---------------------------------------------------------------------------------
 // Adds a Material Database
 void GateDetectorConstruction::AddFileToMaterialDatabase(const G4String& f)
 {
