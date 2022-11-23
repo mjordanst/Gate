@@ -37,7 +37,7 @@ class GateAdder : public GateVDigitizerModule
 {
 public:
   
-  GateAdder(GateDigitizer *digitizer,  GateCrystalSD* SD);
+  GateAdder(GateDigitizer *digitizer);
   ~GateAdder();
 
   void Digitize() override;

@@ -168,7 +168,7 @@ const G4String &GateToRoot::GiveNameOfFile() {
 //--------------------------------------------------------------------------
 void GateToRoot::Book() {
 
-	G4cout<<"GateToRoot::Book"<<G4endl;
+	//G4cout<<"GateToRoot::Book"<<G4endl;
 
     if (nVerboseLevel > 2)
         G4cout << "GateToRoot::Book\n";
@@ -248,6 +248,7 @@ void GateToRoot::Book() {
 		//		m_treesHit.push_back(treeHit)
 		treeHit->Init(m_hitBuffers[i]);
 		m_treesHit.push_back(treeHit);
+		//G4cout<<"Filled"<<G4endl;
 	}
 
     // v. cuplov - optical photons
@@ -757,7 +758,7 @@ void GateToRoot::RecordEndOfEvent(const G4Event *event) {
         // Hits loop
 
         G4int NbHits = CHC->entries();
-        //G4cout<<"NbHits "<< NbHits<< " in "<< i<<G4endl;
+       // G4cout<<"NbHits "<< NbHits<< " in "<< i<< " " << CHC->GetName() <<" "<<CHC->GetSDname()<<G4endl;
         for (G4int iHit = 0; iHit < NbHits; iHit++) {
 
             GateHit *aHit = (*CHC)[iHit];
@@ -767,7 +768,7 @@ void GateToRoot::RecordEndOfEvent(const G4Event *event) {
             if (nVerboseLevel > 2)
                 G4cout
                         << "GateToRoot::RecordEndOfEvent : HitsCollection: processName : <" << processName
-                        << ">    Particls PDG code : " << PDGEncoding << Gateendl;
+                        << ">    Particles PDG code : " << PDGEncoding << Gateendl;
 
             if (aHit->GoodForAnalysis()) {
             	 m_hitBuffers[i].Fill(aHit);
@@ -1206,86 +1207,15 @@ void GateToRoot::RegisterNewCoincidenceDigiCollection(const G4String &aCollectio
 void GateToRoot::SingleOutputChannel::RecordDigitizer() {
 
 	GateMessage("OutputMgr", 5, " GateToRoot::SingleOutputChannel::RecordDigitizer -- begin\n";);
+    //G4cout<<"GateToRoot::SingleOutputChannel::RecordDigitizer() "<< m_collectionName <<" "<< m_collectionID<<" "<<m_outputFlag <<G4endl;
+	 //GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
+
 
 	if (!m_outputFlag) return;
+//	digitizerMng->ShowSummary();
+//	G4cout<<"m_collectionID "<< m_collectionID<<G4endl;
 
     G4DigiManager *fDM = G4DigiManager::GetDMpointer();
-    //G4cout<<"GateToRoot::SingleOutputChannel::RecordDigitizer() "<< m_collectionName <<" "<< m_collectionID <<G4endl;
-   // GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
-   // std::istream& G4StrUtil::readline(line, m_collectionName);
-    //void tokenize(std::string const &str, const char delim,
-    //            std::vector<std::string> &out)
-   // {
-  /*  std::string const &str = m_collectionName;
-    std::vector<std::string> out;
-    //std::vector<std::string> &out;
-    const char delim ='_';
-
-    size_t start;
-    size_t end = 0;
-
-    while ((start = m_collectionName.find_first_not_of(delim, end)) != std::string::npos)
-    	{
-    	end = str.find(delim, start);
-    	out.push_back(str.substr(start, end - start));
-    	}
-
-   //for (auto &s: out) {
-	   if (out.size()==2)
-	   {
-		   m_collectionName=m_collectionName;
-		   GateDigitizer* digitizer = digitizerMng->FindDigitizer(m_collectionName);
-		   G4int lastDCID=digitizer->m_outputDigiCollectionID;
-		   if (m_collectionID < 0)
-		      	m_collectionID = lastDCID;// fDM->GetDigiCollectionID(digitizer->m_lastDMname); //lastDCID;
-	   }
-	   else
-	   {
-		   m_collectionName=out[2]+"/"+out[0]+"_"+out[1];
-		   if (m_collectionID < 0)
-			   m_collectionID = fDM->GetDigiCollectionID(m_collectionName); //lastDCID
-
-	   }
-	   std::cout << m_collectionName << std::endl;
-  // }
-
-    //}
-*/
-    //OK GND 2022
-    //GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
-   // G4cout<<"m_collectionName "<< m_collectionName <<G4endl;
-
-    //G4cout<<" GateToRoot::SingleOutputChannel::RecordDigitizer() m_collectionName "<<m_collectionName<<G4endl;
-	//GateDigitizer* digitizer = digitizerMng->FindDigitizer(m_collectionName);
-	//digitizerMng->ShowSummary();
-
-	//G4cout<<"digitizer "<< digitizer->GetName()+"_"+digitizer->m_SD->GetName()<<G4endl;
-	//G4cout<<"m_collectionName "<< m_collectionName <<G4endl;
-
-
-/*
-	G4String collectionName = m_collectionName;
-
-	G4String tmp= digitizer->GetName()+"_"+digitizer->m_SD->GetName();
-		  if ( collectionName.substr(0,tmp.length()) == tmp )
-		    collectionName = collectionName.substr(tmp.length());
-
-		  G4cout<<"CollectionName "<<collectionName<<G4endl;
-
-
-
-
-	//G4int lastDCID=digitizer->m_outputDigiCollectionID;
-
-	//G4cout<<"lastDCID = "<<lastDCID<<G4endl;
-	//G4cout<<digitizer->m_lastDMname<<G4endl;
-	//G4String collName= digitizer->m_lastDMname;
-	//G4cout<<"collName "<< collName<<G4endl;
-  */
-	/*if (m_collectionID < 0)
-    	m_collectionID = fDM->GetDigiCollectionID(digitizer->m_lastDMname); //lastDCID;
-    G4cout<<"GateToRoot::SingleOutputChannel::RecordDigitizer "<< m_collectionName<<" "<<m_collectionID<<" "<<Gateendl;
-*/
     const GateDigiCollection *SDC =
                 (GateDigiCollection *) (fDM->GetDigiCollection(m_collectionID));
 

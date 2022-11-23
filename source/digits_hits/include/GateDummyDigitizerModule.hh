@@ -40,7 +40,7 @@ class GateDummyDigitizerModule : public GateVDigitizerModule
 {
 public:
   
-  GateDummyDigitizerModule(GateDigitizer *digitizer, GateCrystalSD *SD);
+  GateDummyDigitizerModule(GateDigitizer *digitizer);
   ~GateDummyDigitizerModule();
   
   void Digitize() override;

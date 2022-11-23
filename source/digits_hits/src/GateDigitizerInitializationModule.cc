@@ -30,9 +30,10 @@
 
 GateDigitizerInitializationModule::GateDigitizerInitializationModule(GateDigitizer *digitizer)
   :GateVDigitizerModule("DigiInit","digitizerMng/"+digitizer->GetSD()->GetName()+"/SinglesDigitizer/"+digitizer->m_digitizerName+"/adder",digitizer, digitizer->GetSD()),
-   m_digitizer(digitizer),
    m_FirstEvent(true),
-   m_HCID(-1)
+   m_HCID(-1),
+   m_outputDigiCollection(0),
+   m_digitizer(digitizer)
 {
 	//G4cout<<" GateDigitizerInitializationModule constr "<<G4endl;
 	//G4String insertionBaseName=GatePreDigitizer::GetInstance()->GetNewInsertionBaseName();
@@ -55,7 +56,7 @@ void GateDigitizerInitializationModule::Digitize()
 {
 
 	//G4cout<<"DigitizerInitialization::Digitize() " << m_digitizer->GetOutputName() <<G4endl;
-	OutputDigiCollection = new GateDigiCollection (GetName(),  m_digitizer->GetOutputName() ); // to create the Digi Collection
+	m_outputDigiCollection = new GateDigiCollection (GetName(),  m_digitizer->GetOutputName() ); // to create the Digi Collection
 
 	G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
 	G4String HCname=m_digitizer->m_SD->GetName()+"Collection" ;
@@ -142,7 +143,7 @@ void GateDigitizerInitializationModule::Digitize()
     		  	       << "\tcreated new Digi:\n"
     		  	       << *Digi << Gateendl;
 */
-    		  OutputDigiCollection->insert(Digi);
+    		  m_outputDigiCollection->insert(Digi);
 
     	  }
 
@@ -150,9 +151,9 @@ void GateDigitizerInitializationModule::Digitize()
 
 		}
    }
-	//G4cout<<"n digi = "<<	OutputDigiCollection->GetSize () <<G4endl;
-  StoreDigiCollection(OutputDigiCollection);
- // G4cout<<"outputDigiColleciton = "<<	OutputDigiCollection->GetName () <<G4endl;
+	//G4cout<<"n digi = "<<	m_outputDigiCollection->GetSize () <<G4endl;
+  StoreDigiCollection(m_outputDigiCollection);
+ // G4cout<<"outputDigiColleciton = "<<	m_outputDigiCollection->GetName () <<G4endl;
 
 }
 

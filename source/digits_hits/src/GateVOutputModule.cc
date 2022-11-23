@@ -47,6 +47,7 @@ G4int GateVOutputModule::GetCollectionID(G4String collectionName)
 	G4DigiManager *fDM = G4DigiManager::GetDMpointer();
 	//G4cout<<"GateVOutputModule::UpdateCollectionName "<< collectionName <<G4endl;
 	GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
+	//digitizerMng->ShowSummary();
 
 	std::string const &str = collectionName;
 	std::vector<std::string> out;

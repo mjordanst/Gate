@@ -204,7 +204,7 @@ void GateToRootMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 //--------------------------------------------------------------------------
 void GateToRootMessenger::CreateNewOutputChannelCommand(GateToRoot::VOutputChannel* anOutputChannel)
 {
-	G4cout<<"GateToRootMessenger::CreateNewOutputChannelCommand "<< anOutputChannel->m_collectionName<<G4endl;
+	//G4cout<<"GateToRootMessenger::CreateNewOutputChannelCommand "<< anOutputChannel->m_collectionName<<G4endl;
   GateMessage("OutputMgr", 5, " GateToRootMessenger::CreateNewOutputChannelCommand -- begin \n";);
 
   G4String cmdName;
@@ -238,12 +238,14 @@ G4bool GateToRootMessenger::IsAnOutputChannelCmd(G4UIcommand* command)
 void GateToRootMessenger::ExecuteOutputChannelCmd(G4UIcommand* command, G4String newValue)
 {
 	GateDigitizerMng* digitizerMng=GateDigitizerMng::GetInstance();
+	//  G4cout<<"GateToRootMessenger::ExecuteOutputChannelCmd "<< G4endl;
 
   for (size_t i = 0; i<OutputChannelCmdList.size() ; ++i){
     if ( command == OutputChannelCmdList[i] ) {
       m_outputChannelList[i]->SetOutputFlag( OutputChannelCmdList[i]->GetNewBoolValue(newValue) );
       //OK GND 2022 //TODO adapt for other outputs
-      //Setting flat in the digitizerMng
+
+      //Setting flag in the digitizerMng
       if (G4StrUtil::contains(m_outputChannelList[i]->m_collectionName, "Singles"))
       	  {
     	   if(OutputChannelCmdList[i]->GetNewBoolValue(newValue))

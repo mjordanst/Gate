@@ -65,7 +65,7 @@ class GateReadout : public GateVDigitizerModule
 {
 public:
 
-  GateReadout(GateDigitizer *digitizer, GateCrystalSD *SD);
+  GateReadout(GateDigitizer *digitizer);
   ~GateReadout();
   
   void Digitize() override;
@@ -110,11 +110,6 @@ protected:
   G4String   m_parameter;
 
 private:
-  GateDigi* m_outputDigi;
-
-  GateDigiCollection*  m_OutputDigiCollection;
-
-  GateDigitizer *m_digitizer;
 
   //! The default is the one parameter that defines how a Readout works:
   //! pulses will be summed up if their volume IDs are identical up to this depth.
@@ -145,6 +140,11 @@ private:
   G4int numberOfHigherLevels ;  //!< number of geometric level higher than the one chosen by the user
   G4int numberOfLowerLevels ;  //!< number of geometric level higher than the one chosen by the user
   GateReadoutMessenger *m_messenger;	  //!< Messenger for this
+
+  GateDigi* m_outputDigi;
+  GateDigiCollection*  m_OutputDigiCollection;
+  GateDigitizer *m_digitizer;
+
 
 };
 

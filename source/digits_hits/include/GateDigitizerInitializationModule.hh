@@ -39,11 +39,14 @@ public:
 
 private:
 
-  GateDigiCollection*  OutputDigiCollection;
   G4String m_colName;
-  GateDigitizer* m_digitizer;
   G4bool m_FirstEvent;
   G4int m_HCID;
+
+  GateDigiCollection*  m_outputDigiCollection;
+  GateDigitizer* m_digitizer;
+
+
 
 };
 

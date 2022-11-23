@@ -6,6 +6,7 @@ of the GNU Lesser General  Public Licence (LGPL)
 See LICENSE.md for further details
 ----------------------*/
 
+//GND:ClassToRemove
 
 #ifndef GateUpholder_h
 #define GateUpholder_h 1

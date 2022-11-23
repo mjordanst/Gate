@@ -104,7 +104,7 @@ protected:
   //! Flag telling whether the object is enabled (active) or disabled (off)
   G4bool 		     m_isEnabled;
 
-  G4bool 		     m_recordSingles;
+  //G4bool 		     m_recordSingles;
 };
 //---------------------------------------------------------------------------
 

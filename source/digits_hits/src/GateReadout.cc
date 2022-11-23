@@ -51,11 +51,14 @@
 #include "GateVSystem.hh"
 
 
-GateReadout::GateReadout(GateDigitizer *digitizer, GateCrystalSD *SD)
-  :GateVDigitizerModule("GateReadout","digitizerMng/"+digitizer->GetSD()->GetName()+"/SinglesDigitizer/"+digitizer->m_digitizerName+"/readout",digitizer, SD),
+GateReadout::GateReadout(GateDigitizer *digitizer)
+  :GateVDigitizerModule("Readout","digitizerMng/"+digitizer->GetSD()->GetName()+"/SinglesDigitizer/"+digitizer->m_digitizerName+"/readout",digitizer,digitizer->GetSD()),
    m_depth(0),
    m_policy("TakeEnergyWinner"),
-   m_IsFirstEntrance(1)
+   m_IsFirstEntrance(1),
+   m_outputDigi(0),
+   m_OutputDigiCollection(0),
+   m_digitizer(digitizer)
  {
 
 	// S. Stute: These variables are used for the energy centroid strategy
@@ -72,7 +75,6 @@ GateReadout::GateReadout(GateDigitizer *digitizer, GateCrystalSD *SD)
 	G4String colName = digitizer->GetOutputName();
 	collectionName.push_back(colName);
 	m_messenger = new GateReadoutMessenger(this);
-	m_digitizer=digitizer;
 }
 
 
@@ -213,7 +215,7 @@ void GateReadout::Digitize()
   G4String digitizerName = m_digitizer->m_digitizerName;
   G4String outputCollName = m_digitizer-> GetOutputName();
   //G4cout<<"outputCollName "<<outputCollName<<G4endl;
-  m_OutputDigiCollection = new GateDigiCollection("GateReadout",outputCollName); // to create the Digi Collection
+  m_OutputDigiCollection = new GateDigiCollection(GetName(),outputCollName); // to create the Digi Collection
 
   G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
 
@@ -277,7 +279,7 @@ void GateReadout::Digitize()
 	  for (G4int i=0;i<n_digi;i++)
 	  {
 		  inputDigi=(*IDC)[i];
-		  G4cout<<"inHC "  << IDC->GetName ()<<" "<<  IDC->entries() <<G4endl;
+		  //G4cout<<"inHC "  << IDC->GetName ()<<" "<<  IDC->entries() <<G4endl;
 		  /*G4cout << "[GateReadout::Digitize]: input hit  \n"
 		  		                 <<  *inputDigi << G4endl;
 		  G4cout << "[GateReadout::Digitize]: first entrance "

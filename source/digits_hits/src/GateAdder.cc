@@ -24,14 +24,16 @@
 
 
 // :GateVDigitizerModule(name,digitizer),
-GateAdder::GateAdder(GateDigitizer *digitizer,  GateCrystalSD* SD)
+GateAdder::GateAdder(GateDigitizer *digitizer)
   :GateVDigitizerModule("Adder","digitizerMng/"+digitizer->GetSD()->GetName()+"/SinglesDigitizer/"+digitizer->m_digitizerName+"/adder",digitizer, digitizer->GetSD()),
-   m_positionPolicy(kEnergyCentroid)
+   m_positionPolicy(kEnergyCentroid),
+   m_outputDigi(0),
+   m_OutputDigiCollection(0),
+   m_digitizer(digitizer)
 {
 	G4String colName = digitizer->GetOutputName();//+"_"+GetName();
 	collectionName.push_back(colName);
 	m_Messenger = new GateAdderMessenger(this);
-	m_digitizer=digitizer;
 }
 
 
@@ -49,7 +51,7 @@ void GateAdder::Digitize()
 	G4String digitizerName = m_digitizer->m_digitizerName;
 	G4String outputCollName = m_digitizer-> GetOutputName();
 	//G4cout<<"outputCollName "<<outputCollName<<G4endl;
-	m_OutputDigiCollection = new GateDigiCollection("Adder",outputCollName); // to create the Digi Collection
+	m_OutputDigiCollection = new GateDigiCollection(GetName(),outputCollName); // to create the Digi Collection
 
 	G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
 

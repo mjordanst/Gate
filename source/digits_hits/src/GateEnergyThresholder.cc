@@ -6,7 +6,7 @@ of the GNU Lesser General  Public Licence (LGPL)
 See LICENSE.md for further details
 ----------------------*/
 
-
+//GND:ClassToRemove
 #include "GateEnergyThresholder.hh"
 
 #include "G4UnitsTable.hh"

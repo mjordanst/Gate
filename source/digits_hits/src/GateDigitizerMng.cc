@@ -315,7 +315,7 @@ void GateDigitizerMng::RunDigitizers()
 
 
 
-	//if (nVerboseLevel>1)
+	if (nVerboseLevel>1)
 	    G4cout << "[GateDigitizerMng::RunDigitizers]: starting\n";
 
 

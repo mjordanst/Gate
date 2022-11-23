@@ -46,14 +46,16 @@
 
 
 
-GateDummyDigitizerModule::GateDummyDigitizerModule(GateDigitizer *digitizer, GateCrystalSD *SD)
-  :GateVDigitizerModule("GateDummyDigitizerModule","digitizerMng/SinglesDigitizer/"+digitizer->m_digitizerName+"/dummy",digitizer, SD),
-   m_parameter("dummy")
+GateDummyDigitizerModule::GateDummyDigitizerModule(GateDigitizer *digitizer)
+  :GateVDigitizerModule("Dummy","digitizerMng/"+digitizer->GetSD()->GetName()+"/SinglesDigitizer/"+digitizer->m_digitizerName+"/dummy",digitizer,digitizer->GetSD()),
+   m_parameter("dummy"),
+   m_outputDigi(0),
+   m_OutputDigiCollection(0),
+   m_digitizer(digitizer)
  {
-	G4String colName = digitizer->m_digitizerName;
+	G4String colName = digitizer->GetOutputName() ;
 	collectionName.push_back(colName);
 	m_Messenger = new GateDummyDigitizerModuleMessenger(this);
-	m_digitizer=digitizer;
 }
 
 
@@ -68,9 +70,9 @@ void GateDummyDigitizerModule::Digitize()
 {
 
 	G4String digitizerName = m_digitizer->m_digitizerName;
-	G4String outputCollName = digitizerName;
+	G4String outputCollName = m_digitizer-> GetOutputName();
 
-	m_OutputDigiCollection = new GateDigiCollection("GateDummyDigitizerModule",outputCollName); // to create the Digi Collection
+	m_OutputDigiCollection = new GateDigiCollection(GetName(),outputCollName); // to create the Digi Collection
 
 	G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
 

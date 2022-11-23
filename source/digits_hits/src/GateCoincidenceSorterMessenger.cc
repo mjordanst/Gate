@@ -65,7 +65,7 @@ GateCoincidenceSorterMessenger::GateCoincidenceSorterMessenger(GateCoincidenceSo
   setPresortBufferSizeCmd->SetParameterName("size",false);
   setPresortBufferSizeCmd->SetRange("size>=32");
 
-  cmdName = DirectoryName+"setInputName";
+  cmdName = DirectoryName+"setInputCollection";
   SetInputNameCmd = new G4UIcmdWithAString(cmdName,this);
   SetInputNameCmd->SetGuidance("Set the name of the input digi channel");
   SetInputNameCmd->SetParameterName("Name",false);

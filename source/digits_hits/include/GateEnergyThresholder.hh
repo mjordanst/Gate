@@ -1,5 +1,5 @@
 
-
+//GND:ClassToRemove
 
 #ifndef GateEnergyThresholder_h
 #define GateEnergyThresholder_h 1

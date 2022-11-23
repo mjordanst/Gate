@@ -475,6 +475,14 @@ void GateAnalysis::RecordEndOfEvent(const G4Event* event)
   //OK GND 2022
   //RunDigitizers is called here otherwise we don't have all attributes filled for aHit
   GateDigitizerMng* digitizerMng=GateDigitizerMng::GetInstance();
+ /* GateOutputMgr* outputMgr = GateOutputMgr::GetInstance();
+   for (int i=0; i<outputMgr->m_outputModules.size(); i++ )
+   {
+	   G4cout<<outputMgr->m_outputModules[i]->GetName()<<" : "<< IsEnabled()  <<G4endl;
+   }
+  G4cout<<"digitizerMng->m_recordSingles " <<digitizerMng->m_recordSingles<< " "<< digitizerMng->m_recordCoincidences<<G4endl;
+*/
+
   if (digitizerMng->m_recordSingles|| digitizerMng->m_recordCoincidences)
 	  digitizerMng->RunDigitizers();
 
