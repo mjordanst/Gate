@@ -119,6 +119,12 @@ void GateAdder::Digitize()
 		     }
 	  }
      }
+  else
+    {
+  	  if (nVerboseLevel>1)
+  	  	G4cout << "[GateAdder::Digitize]: input digi collection is null -> nothing to do\n\n";
+  	    return;
+    }
   //G4cout<<"Output collection "<<m_OutputDigiCollection->GetSize()<<G4endl;
   StoreDigiCollection(m_OutputDigiCollection);
   	// G4cout<<"Output collection "<<m_OutputDigiCollection->GetSize()<<G4endl;

@@ -1,4 +1,5 @@
 
+//GND:ClassToRemove
 
 #include "GateLocalEnergyThresholder.hh"
 

@@ -8,6 +8,10 @@ See LICENSE.md for further details
 
 // OK GND 2022
 	/*! This a messenger for EnergyFraming digitizer module
+	 *
+	 * TODO GND 202
+	 * Implement let law option for CC from old GateEnergyThresholder
+	/*
 	 */
 
 #include "GateEnergyFramingMessenger.hh"

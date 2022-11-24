@@ -40,14 +40,7 @@ GateVDigitizerModule::GateVDigitizerModule(G4String name, G4String path, GateDig
 	//GateOutputMgr::GetInstance()->RegisterNewSingleDigiCollection(name+"/"+digitizer->GetName()+"_"+ SD->GetName(), false);
 	GateOutputMgr::GetInstance()->RegisterNewSingleDigiCollection(digitizer->GetName()+"_"+ SD->GetName()+"_"+name, false);
 
-	//G4cout<<name<<G4endl;
-	//exit();
-	//TODO GND 2022 move from DigitizerMessenger
-	/*if(name != "DigiInit")
-	{
-		 m_digitizer->AddNewModule(this);
-		 G4DigiManager::GetDMpointer()->AddNewModule(this);
-	}*/
+
 
 
 

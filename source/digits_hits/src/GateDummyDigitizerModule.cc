@@ -76,7 +76,6 @@ void GateDummyDigitizerModule::Digitize()
 
 	G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
 
-	G4String outputCollNameTMP="GateDummyDigitizerModule/"+outputCollName;
 
 
 	GateDigiCollection* IDC = 0;
@@ -148,13 +147,19 @@ void GateDummyDigitizerModule::Digitize()
 
 
 		if (nVerboseLevel==1) {
-			G4cout << "[GateDummyDigitizerModule::ProcessPulseList]: returning output pulse-list with " << OutputDigiCollectionVector->size() << " entries\n";
+			G4cout << "[GateDummyDigitizerModule::Digitize]: returning output pulse-list with " << OutputDigiCollectionVector->size() << " entries\n";
 			for (iter=OutputDigiCollectionVector->begin(); iter!= OutputDigiCollectionVector->end() ; ++iter)
 				G4cout << **iter << Gateendl;
 			G4cout << Gateendl;
 		}
 	/// *** End of the part from ProcessPulseList
 	  }
+    }
+  else
+    {
+  	  if (nVerboseLevel>1)
+  	  	G4cout << "[GateDummyDigitizerModule::Digitize]: input digi collection is null -> nothing to do\n\n";
+  	    return;
     }
   StoreDigiCollection(m_OutputDigiCollection);
 
@@ -188,7 +193,7 @@ void GateDummyDigitizerModule::DummyMethod2(GateDigi *right)
 }
 
 
-void GateDummyDigitizerModule::DescribeMyself(size_t )
+void GateDummyDigitizerModule::DescribeMyself(size_t indent )
 {
   ;
 }

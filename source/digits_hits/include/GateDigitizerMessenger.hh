@@ -53,12 +53,16 @@ class GateDigitizerMessenger: public GateListMessenger
     //! Dumps the list of modules that the user can insert into the chain
     virtual const G4String& DumpMap();
 
-    //! Inserts a new module into the pulse-processor chain
+    //! Inserts a new module into the digitizer
     virtual void DoInsertion(const G4String& typeName);
+
+
 
     //! Returns the pulse-processor chain managed by this messenger
    // virtual GateDigitizer* GetDigitizer()
    //   {   	return (GateDigitizer*) GetListManager(); }
+
+
 
   private:
 

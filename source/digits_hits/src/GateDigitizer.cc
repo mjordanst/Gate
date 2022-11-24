@@ -75,6 +75,7 @@ void GateDigitizer::AddNewModule(GateVDigitizerModule* DM)
 		G4cout << "[GateSinglesDigitizer::AddNewModule]: "<< DM->GetName() <<"\n";
 
 	m_DMlist.push_back(DM);
+	G4DigiManager::GetDMpointer()->AddNewModule(DM);
 
 }
 

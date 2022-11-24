@@ -25,6 +25,7 @@ See LICENSE.md for further details
 #include "GateAdder.hh"
 #include "GateReadout.hh"
 #include "GateEnergyFraming.hh"
+#include "GateTimeResolution.hh"
 /*
 
 #include "GatePileup.hh"
@@ -116,7 +117,7 @@ void GateDigitizerMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 const G4String& GateDigitizerMessenger::DumpMap()
 {
  //  static G4String theList = "readout pileup thresholder energyThresholder localEnergyThresholder DoImodel upholder blurring localBlurring localTimeDelay localEfficiency energyEfficiency noise discretizer buffer transferEfficiency crosstalk lightYield quantumEfficiency intrinsicResolutionBlurring sigmoidalThresholder calibration spblurring sp3Dlocalblurring adder adderLocal adderCompton adderComptPhotIdeal adderComptPhotIdealLocal localClustering  clustering deadtime crystalblurring timeResolution localTimeResolution opticaladder systemFilter gridDiscretization  localMultipleRejection";
-   static G4String theList = "readout adder energyFraming";
+   static G4String theList = "readout adder energyFraming timeResolution";
 
    return theList;
 }
@@ -141,20 +142,22 @@ void GateDigitizerMessenger::DoInsertion(const G4String& childTypeName)
     {
   	  newDM = new GateAdder(m_digitizer);
   	  m_digitizer->AddNewModule(newDM);
-  	  G4DigiManager::GetDMpointer()->AddNewModule(newDM);
     }
   else if (childTypeName=="readout")
   {
 	  newDM = new GateReadout(m_digitizer);
 	  m_digitizer->AddNewModule(newDM);
-	  G4DigiManager::GetDMpointer()->AddNewModule(newDM);
   }
   else if (childTypeName=="energyFraming")
   {
 	  newDM = new GateEnergyFraming(m_digitizer);
 	  m_digitizer->AddNewModule(newDM);
-	  G4DigiManager::GetDMpointer()->AddNewModule(newDM);
   }
+  else if (childTypeName=="timeResolution")
+    {
+  	  newDM = new GateTimeResolution(m_digitizer);
+  	  m_digitizer->AddNewModule(newDM);
+    }
    // newDM = new GateReadout(m_digitizer,newInsertionName);
 /*  else if (childTypeName=="pileup")
     newDM = new GatePileup(m_digitizer,newInsertionName);
@@ -197,13 +200,13 @@ void GateDigitizerMessenger::DoInsertion(const G4String& childTypeName)
     newDM = new GateSpblurring(m_digitizer,newInsertionName,0.1);
   else if (childTypeName=="sp3Dlocalblurring")
     newDM = new GateCC3DlocalSpblurring(m_digitizer,newInsertionName);
-  */else if (childTypeName=="adder")
+  else if (childTypeName=="adder")
   {
 	  newDM = new GateAdder(m_digitizer);
-	  m_digitizer->AddNewModule(newDM);
-	  G4DigiManager::GetDMpointer()->AddNewModule(newDM);
+	 // m_digitizer->AddNewModule(newDM);
+	 // G4DigiManager::GetDMpointer()->AddNewModule(newDM);
   }
-  /*  else if (childTypeName=="adderLocal")
+    else if (childTypeName=="adderLocal")
     newDM = new GatePulseAdderLocal(m_digitizer,newInsertionName);
   else if (childTypeName=="adderCompton")
     newDM = new GatePulseAdderCompton(m_digitizer,newInsertionName);
@@ -256,8 +259,6 @@ G4bool GateDigitizerMessenger::CheckNameConflict(const G4String& name)
   // Check whether an object with the same name already exists in the list
   return ( GetListManager()->FindElement( GetListManager()->GetObjectName() + "/" + name ) != 0 ) ;
 }
-
-
 
 
 

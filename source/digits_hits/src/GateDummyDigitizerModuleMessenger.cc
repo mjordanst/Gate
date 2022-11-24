@@ -43,15 +43,15 @@ GateDummyDigitizerModuleMessenger::~GateDummyDigitizerModuleMessenger()
 }
 
 
-void GateDummyDigitizerModuleMessenger::SetNewValue(G4UIcommand * aCommand,G4String aString)
+void GateDummyDigitizerModuleMessenger::SetNewValue(G4UIcommand * aCommand,G4String newValue)
 {
 	if (aCommand ==dummyCmd)
 	      {
-			m_DummyDigitizerModule->SetDummyParameter(aString);
+			m_DummyDigitizerModule->SetDummyParameter(newValue);
 	      }
 	    else
 	    {
-	    	GateClockDependentMessenger::SetNewValue(aCommand,aString);
+	    	GateClockDependentMessenger::SetNewValue(aCommand,newValue);
 	    }
 }
 

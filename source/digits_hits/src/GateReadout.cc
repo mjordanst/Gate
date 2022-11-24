@@ -340,7 +340,7 @@ void GateReadout::Digitize()
 		        }
 		        else
 		        {
-		          G4Exception( "GateReadout::ProcessOnedigi", "ProcessOnedigi", FatalException, "Unknown Readout policy, this is an internal error. Abort.\n");
+		          G4Exception( "GateReadout::Digitize", "Digitize", FatalException, "Unknown Readout policy, this is an internal error. Abort.\n");
 		        }
 		      }
 		      // Case: there is no output digi with same blockID
@@ -401,7 +401,7 @@ void GateReadout::Digitize()
 				  << *m_outputDigi << Gateendl << Gateendl ;
 
 		m_OutputDigiCollection->insert(m_outputDigi);
-	   }
+	  }
 
 	  // Free temporary variables used by the centroid policy
 	  if (m_policy=="TakeEnergyCentroid")
