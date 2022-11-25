@@ -1,4 +1,4 @@
-
+//GND:ClassToRemove
 
 #include "GateLocalTimeResolutionMessenger.hh"
 #include "GateLocalTimeResolution.hh"

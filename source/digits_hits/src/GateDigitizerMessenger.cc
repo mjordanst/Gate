@@ -26,6 +26,8 @@ See LICENSE.md for further details
 #include "GateReadout.hh"
 #include "GateEnergyFraming.hh"
 #include "GateTimeResolution.hh"
+#include "GateEnergyResolution.hh"
+
 /*
 
 #include "GatePileup.hh"
@@ -117,7 +119,7 @@ void GateDigitizerMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 const G4String& GateDigitizerMessenger::DumpMap()
 {
  //  static G4String theList = "readout pileup thresholder energyThresholder localEnergyThresholder DoImodel upholder blurring localBlurring localTimeDelay localEfficiency energyEfficiency noise discretizer buffer transferEfficiency crosstalk lightYield quantumEfficiency intrinsicResolutionBlurring sigmoidalThresholder calibration spblurring sp3Dlocalblurring adder adderLocal adderCompton adderComptPhotIdeal adderComptPhotIdealLocal localClustering  clustering deadtime crystalblurring timeResolution localTimeResolution opticaladder systemFilter gridDiscretization  localMultipleRejection";
-   static G4String theList = "readout adder energyFraming timeResolution";
+   static G4String theList = "readout adder energyFraming timeResolution energyResolution";
 
    return theList;
 }
@@ -156,6 +158,11 @@ void GateDigitizerMessenger::DoInsertion(const G4String& childTypeName)
   else if (childTypeName=="timeResolution")
     {
   	  newDM = new GateTimeResolution(m_digitizer);
+  	  m_digitizer->AddNewModule(newDM);
+    }
+  else if (childTypeName=="energyResolution")
+    {
+  	  newDM = new GateEnergyResolution(m_digitizer);
   	  m_digitizer->AddNewModule(newDM);
     }
    // newDM = new GateReadout(m_digitizer,newInsertionName);
