@@ -68,6 +68,7 @@ GateReadout::GateReadout(GateDigitizer *digitizer)
 	m_nbCrystalsXY = -1;
 	m_crystalDepth = -1;
 	m_systemDepth  = -1;
+	m_depth=-1;
 	m_system = NULL;
 	m_crystalComponent = NULL;
 	m_IsForcedDepthCentroid = false;
@@ -109,7 +110,7 @@ void GateReadout::SetReadoutParameters()
 
 		 	 GateVSystem* m_system = this->GetDigitizer()->GetSystem();
 		 	 if (m_system==NULL) G4Exception( "GateReadout::SetReadoutParameters", "SetReadoutParameters", FatalException,
-	  	  	                                   "Failed to get the system corresponding to that processor chain. Abort.\n");
+	  	  	                                   "Failed to get the system corresponding to that digitizer. Abort.\n");
 
 		 	 m_systemDepth = m_system->GetTreeDepth();
 
@@ -389,7 +390,7 @@ void GateReadout::Digitize()
 			  // Compute final crystal id
 			  G4int crystal_id = crys_posZ * m_nbCrystalsXY + crys_posY * m_nbCrystalsX + crys_posX;
 			  // We change the level of the volumeID and the outputVolumeID corresponding to the crystal with the new crystal ID
-			  ChangeVolumeIDAndOutputVolumeIDValue(m_crystalDepth,crystal_id);
+			  m_outputDigi->ChangeVolumeIDAndOutputVolumeIDValue(m_crystalDepth,crystal_id);
 			  // Change coordinates (we choose here to place the coordinates at the center of the chosen crystal)
 			  //SetGlobalPos(m_system->ComputeObjectCenter(volID));
 			  ResetGlobalPos(m_system);
@@ -430,7 +431,7 @@ void GateReadout::Digitize()
 
 }
 
-
+/*
 void GateReadout::ChangeVolumeIDAndOutputVolumeIDValue(size_t depth, G4int copyNo)
 {
     if (depth==0) return;
@@ -469,7 +470,7 @@ void GateReadout::ChangeVolumeIDAndOutputVolumeIDValue(size_t depth, G4int copyN
     // Finally change the outputVolumeID accordingly
     m_outputDigi->m_outputVolumeID[depth] = copyNo;
 }
-
+*/
 // Reset the global position of the pulse with respect to its volumeID that has been changed previously
 void GateReadout::ResetGlobalPos(GateVSystem* system)
 {

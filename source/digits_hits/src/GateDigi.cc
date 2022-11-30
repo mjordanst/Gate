@@ -129,6 +129,60 @@ std::vector<G4bool> GateDigi::GetSingleASCIIMask()
 }
 
 
+// Change a volume selector inside the volumeID. Meaning we replace at this depth the volume by the given copyNo.
+// The given copyNo is intended to reflect the crystal_id inside the crystal component, not obviously the daughter
+// id which can be different if the level above the crystal has daughters declared before the crystal.
+// Currently, this method is used in the readout digitizer module for the energy centroid policy where we compute
+// a new crystal_id inside the crystal component.
+// This method also update the associated outputVolumeID
+void GateDigi::ChangeVolumeIDAndOutputVolumeIDValue(size_t depth, G4int copyNo)
+{
+	//G4cout<<"GateDigi::ChangeVolumeIDAndOutputVolumeIDValue"<<G4endl;
+    if (depth==0) return;
+    // Note: The given depth corresponds to the crystal component inside the system.
+    //       So in the outputVolumeID this really corresponds to the crystal.
+    //       But in the volumeID, this actually corresponds to the level above.
+
+    // Get the old crystal_id of the pulse at the crystal level
+    G4int old_crystal_id = m_outputVolumeID[depth];
+    // Get the id of this crystal corresponding to the actual daughter number.
+    // (it won't be the same if the level above the crystal has daughters declared before the crystal component)
+    G4int old_crystal_daughter_id = m_volumeID[depth+1].GetDaughterID();
+    // The daughter id is thus higher or equal to the crystal id.
+    // We can thus deduce the shift to be applied to the given copyNo in parameter
+    G4int shift_id = old_crystal_daughter_id - old_crystal_id;
+    // Get physical volume above the given depth which corresponds to the crystal depth inside the system.
+    // But for the the volumeID, we must add 1 as the world is the first volume in the vector.
+    G4VPhysicalVolume* phys_vol = m_volumeID[depth].GetVolume();
+    // Get physical volume of the wanted copy
+    //phys_vol = phys_vol->GetLogicalVolume()->GetDaughter(copyNo+shift_id);
+    //G4cout<<"phys_vol "<< phys_vol->GetName() <<G4endl;
+    if(phys_vol->GetLogicalVolume()->GetNoDaughters()!=0)
+       {
+       	phys_vol = phys_vol->GetLogicalVolume()->GetDaughter(copyNo+shift_id);
+       }
+       else
+       {
+       	GateError("Error: not all required geometry levels and sublevels for this system are defined. "
+       			  			  "(Ex.: for cylindricalPET, the required levels are: rsector, module, submodule, crystal). Please, add them to your geometry macro for correct execution of the Readout module");
+       }
+
+    // Create a volume selector with this volume
+    //G4cout<<"depth "<< depth <<" "<< copyNo <<" "<<shift_id << G4endl;
+    //G4cout<<"phys_vol "<< phys_vol->GetName() <<G4endl;
+
+    GateVolumeSelector* volSelector = new GateVolumeSelector(phys_vol);
+    // Copy the content of this selector into the given depth
+    //G4cout<<"m_volumeID size "<< m_volumeID.size()<<G4endl;
+    //G4cout<<"depth+1 "<< depth+1<<G4endl;
+    m_volumeID[depth+1] = *volSelector;
+    // Delete the temporary volume selector
+    delete volSelector;
+    // Finally change the outputVolumeID accordingly
+    m_outputVolumeID[depth] = copyNo;
+}
+
+
 
 
 

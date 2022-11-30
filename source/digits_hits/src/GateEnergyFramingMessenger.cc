@@ -10,8 +10,16 @@ See LICENSE.md for further details
 	/*! This a messenger for EnergyFraming digitizer module
 	 *
 	 * TODO GND 202
-	 * Implement let law option for CC from old GateEnergyThresholder
-	/*
+	 * Implement let law option for CC from old GateEnergyThresholder:
+	*
+	 * if ( law == "solidAngleWeighted" ) {
+        return new GateSolidAngleWeightedEnergyLaw(GetEnergyThresholder()->GetObjectName()+ G4String("/solidAngleWeighted"));
+
+    } else if ( law == "depositedEnergy" ) {
+        return new GateDepositedEnergyLaw(GetEnergyThresholder()->GetObjectName() + G4String("/depositedEnergy"));
+    } else {
+	 *
+	 *
 	 */
 
 #include "GateEnergyFramingMessenger.hh"

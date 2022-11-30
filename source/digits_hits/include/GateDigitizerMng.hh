@@ -112,7 +112,7 @@ public:
    //	   { return FindElement( MakeElementName(baseName) ) ; }
    //	*/
 
-    void AddNewSD(GateDigitizer*, GateCrystalSD*);
+    void AddNewSD(GateCrystalSD*);
 
    void ShowSummary();
    /// Methods for Singles

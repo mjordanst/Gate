@@ -86,7 +86,7 @@ void GateEnergyResolution::Digitize()
 {
 	if( m_resoMin!=0 && m_resoMax!=0 && m_reso!=0)
 	{
-		GateError("***ERROR*** Resolution is ambiguous: you can set /resolution OR range for resolutions with /resolutionMin and /resolutionMax!");
+		GateError("***ERROR*** Energy Resolution is ambiguous: you can set /fwhm OR range for resolutions with /fwhmMin and /fwhmMax!");
 	}
 
 	G4String digitizerName = m_digitizer->m_digitizerName;
@@ -122,7 +122,7 @@ void GateEnergyResolution::Digitize()
 		  if (m_slope == 0 )
 			  //Apply InverseSquareBlurringLaw
 		  {
-			  G4cout<<"InverseSquareBlurringLaw"<<G4endl;
+			  //G4cout<<"InverseSquareBlurringLaw"<<G4endl;
 			  resolution = m_reso * sqrt(m_eref)/ sqrt(energy);
 
 		  }

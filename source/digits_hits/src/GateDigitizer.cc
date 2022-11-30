@@ -36,6 +36,7 @@ GateDigitizer::GateDigitizer( GateDigitizerMng* itsDigitizerMng,
   : GateModuleListManager(itsDigitizerMng,itsDigitizerMng->GetObjectName() + "/"+ SD->GetName() +"/SinglesDigitizer/" + digitizerUsersName ,"SinglesDigitizer"),
 	m_outputName(digitizerUsersName+"_"+SD->GetName()),
     m_inputName(digitizerUsersName+"_"+SD->GetName()),
+	m_recordFlag(false),
 	m_SD(SD),
 	m_digitizerName(digitizerUsersName)
 {
@@ -43,7 +44,7 @@ GateDigitizer::GateDigitizer( GateDigitizerMng* itsDigitizerMng,
 	m_messenger = new GateDigitizerMessenger(this);
 
   //Prepare OutputMng for this digitizer
-  	GateOutputMgr::GetInstance()->RegisterNewSingleDigiCollection(m_digitizerName+"_"+SD->GetName(),true);
+  	GateOutputMgr::GetInstance()->RegisterNewSingleDigiCollection(m_digitizerName+"_"+SD->GetName(),false);
   	if(!itsDigitizerMng->m_isInitialized)
   	{
 

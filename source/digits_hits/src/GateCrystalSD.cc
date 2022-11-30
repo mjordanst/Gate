@@ -60,7 +60,7 @@ GateCrystalSD::GateCrystalSD(const G4String& name)
 	digitizerMng->AddNewSinglesDigitizer(digitizer);
 	//digitizerMng->AddNewSinglesDigitizer( new GateDigitizer(digitizerMng,"Singles",this));
 
-	digitizerMng->AddNewSD(digitizer,this);
+	digitizerMng->AddNewSD(this);
 	//In order to get unique HCID each time when we create a new SD
 	// one can take GetCollectionCapacity of G4SDManager
 	// by default there is always phantomSD attached

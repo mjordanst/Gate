@@ -994,7 +994,7 @@ void GateToRoot::RecordDigitizer(const G4Event *) {
     for (size_t i = 0; i < m_outputChannelList.size(); i++)
     {
     	if(m_outputChannelList[i]->m_collectionID<0)
-    	m_outputChannelList[i]->m_collectionID=GetCollectionID(m_outputChannelList[i]->m_collectionName);
+    		m_outputChannelList[i]->m_collectionID=GetCollectionID(m_outputChannelList[i]->m_collectionName);
     	m_outputChannelList[i]->RecordDigitizer();
     }
 

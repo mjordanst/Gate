@@ -100,14 +100,11 @@ public:
   void SetReadoutParameters();
 
   //! Modify one value inside the VolumeID and outputVolumeID vectors
-  void ChangeVolumeIDAndOutputVolumeIDValue(size_t depth, G4int value);
+  //void ChangeVolumeIDAndOutputVolumeIDValue(size_t depth, G4int value);
   //! Reset the local position to be 0
   inline void ResetLocalPos() {m_outputDigi->m_localPos[0]=0.;m_outputDigi->m_localPos[1]=0.;m_outputDigi->m_localPos[2]=0.;}
   void ResetGlobalPos(GateVSystem* system);
 
-protected:
-  //*******implement your parameters here
-  G4String   m_parameter;
 
 private:
 

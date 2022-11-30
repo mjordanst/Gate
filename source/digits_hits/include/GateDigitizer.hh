@@ -102,13 +102,13 @@ class GateDigitizer : public GateModuleListManager
       G4String				   m_outputName;
       G4String                 m_inputName;
 
-
       //GateVDigitizerModule* m_lastDM;
 
 
 
      // GateDigiCollection*      m_inputDigiCollection;
 public:
+      G4bool                m_recordFlag;
 
       std::vector<GateVDigitizerModule*>    	m_DMlist;	 //!< List of DigitizerModules for this digitizer
       GateCrystalSD*                m_SD;

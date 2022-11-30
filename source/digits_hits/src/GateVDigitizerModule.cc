@@ -91,7 +91,7 @@ void GateVDigitizerModule::InputCollectionID()
 
 	G4String DigitizerName=m_digitizer->GetName();
 
-	DigiMan->ShowSummary();
+//	DigiMan->ShowSummary();
 
 	G4String outputCollNameTMP = GetName() +"/"+DigitizerName+"_"+m_SD->GetName();
 	//G4cout<<outputCollNameTMP<<G4endl;

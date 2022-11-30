@@ -20,6 +20,8 @@
 #include "GateDigitizerMngMessenger.hh"
 #include "GateDigitizerInitializationModule.hh"
 #include "GateHit.hh"
+#include "GateOutputMgr.hh"
+#include "GateToRoot.hh"
 
 
 #include "G4SystemOfUnits.hh"
@@ -70,22 +72,34 @@ void GateDigitizerMng::Initialize()
 	G4DigiManager *fDM = G4DigiManager::GetDMpointer();
 	for (long unsigned int i_D = 0; i_D<m_SingleDigitizersList.size(); i_D++)
 			{
-		for (long unsigned int i_DM = 0; i_DM<m_SingleDigitizersList[i_D]->m_DMlist.size(); i_DM++)
+
+			for (long unsigned int i_DM = 0; i_DM<m_SingleDigitizersList[i_D]->m_DMlist.size(); i_DM++)
 				{
 			       m_SingleDigitizersList[i_D]->m_DMlist[i_DM]->InputCollectionID();
 				}
-				//Save the ID of the last digitizer module for current digitizer
-				GateDigitizer *digitizer=m_SingleDigitizersList[i_D];//
-				G4String DigitizerName=digitizer->GetName();
 
-				if(m_SingleDigitizersList[i_D]->m_DMlist.size()>0)
-				{
+			//Save the ID of the last digitizer module for current digitizer
+			GateDigitizer *digitizer=m_SingleDigitizersList[i_D];//
+			G4String DigitizerName=digitizer->GetName();
+
+			if(m_SingleDigitizersList[i_D]->m_DMlist.size()>0)
+			{
 				GateVDigitizerModule * DM = (GateVDigitizerModule*)m_SingleDigitizersList[i_D]->m_DMlist[m_SingleDigitizersList[i_D]->m_DMlist.size()-1];
 				G4String name=DM->GetName()+"/"+DigitizerName+"_"+digitizer->m_SD->GetName();
 				G4int collectionID  = fDM->GetDigiCollectionID(name);
 
 				m_SingleDigitizersList[i_D]->m_outputDigiCollectionID=collectionID;
 				m_SingleDigitizersList[i_D]->m_lastDMname=name;
+			}
+
+			if (m_recordSingles)
+				{
+					if(!m_SingleDigitizersList[i_D]->m_recordFlag)
+					{
+						G4cout << " <!> *** WARNING *** <!> SinglesDigitizer "<< m_SingleDigitizersList[i_D]->GetName() <<" is set. "
+						"However the output flag is not set to 1 for it, so it will not be written down" <<G4endl ;
+						G4cout<<"If you wan to write it down, please, use the command: /gate/output/root/setRoot"<<m_SingleDigitizersList[i_D]->GetName()<<"_"<< m_SingleDigitizersList[i_D]->GetSD()->GetName()<<"Flag 1, or similar one if you use other output module"<<G4endl;
+					}
 				}
 				//G4cout<<"coll ID "<< m_collectionID<< " for "<<m_SingleDigitizersList[i_D]->GetName()<< " "<< m_SingleDigitizersList[i_D]->m_outputDigiCollectionID<<G4endl;
 
@@ -182,7 +196,7 @@ GateVSystem* GateDigitizerMng::FindSystem(G4String& systemName)
 
 //-----------------------------------------------------------------
 // Integrates a new pulse-processor chain
-void GateDigitizerMng::AddNewSD(GateDigitizer* digitizer, GateCrystalSD* newSD)
+void GateDigitizerMng::AddNewSD(GateCrystalSD* newSD)
 {
   //	GateDigitizerInitializationModule * myDM;
   //	myDM = new GateDigitizerInitializationModule(digitizer);

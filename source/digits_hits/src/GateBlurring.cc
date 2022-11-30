@@ -14,6 +14,7 @@ See LICENSE.md for further details
 #include "GateConstants.hh"
 #include "Randomize.hh"
 
+//GND:ClassToRemove
 
 GateBlurring::GateBlurring(GatePulseProcessorChain* itsChain,
       	      	      	      	 const G4String& itsName)

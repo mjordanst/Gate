@@ -54,8 +54,8 @@ public:
 
 
 public:
-  	  inline void  SetMother(const void* mother)      	      { m_mother = mother; }
-      inline const void* GetMother()   const                  { return m_mother; }
+  	  //inline void  SetMother(const void* mother)      	      { m_mother = mother; }
+      //inline const void* GetMother()   const                  { return m_mother; }
 
       inline void  SetRunID(G4int j)                  	      { m_runID = j; }
       inline G4int GetRunID()  const                       	      { return m_runID; }
@@ -184,6 +184,8 @@ public:
        static std::vector<G4bool> GetSingleASCIIMask();
        static G4bool GetSingleASCIIMask(G4int index);
 
+       //! S. Stute: Modify one value inside the VolumeID and outputVolumeID vectors
+        void ChangeVolumeIDAndOutputVolumeIDValue(size_t depth, G4int value);
 	protected:
        static std::vector<G4bool> m_singleASCIIMask;
        static G4bool                m_singleASCIIMaskDefault;
@@ -237,7 +239,7 @@ public:
 
 
   //! Pointer to the original crystal hit if known
-  const void* m_mother;
+  //const void* m_mother;
 };
 
 
