@@ -21,7 +21,7 @@
 
 #include "G4UnitsTable.hh"
 
-#include "GateDigitizerMng.hh"
+#include "GateDigitizerMgr.hh"
 #include "G4VDigitizerModule.hh"
 #include "GateTools.hh"
 #include "GateHitConvertor.hh"
@@ -30,7 +30,7 @@
 #include "GateOutputMgr.hh"
 #include "GateDigitizerInitializationModule.hh"
 
-GateDigitizer::GateDigitizer( GateDigitizerMng* itsDigitizerMng,
+GateDigitizer::GateDigitizer( GateDigitizerMgr* itsDigitizerMng,
 										  const G4String& digitizerUsersName,
     			                          GateCrystalSD* SD)
   : GateModuleListManager(itsDigitizerMng,itsDigitizerMng->GetObjectName() + "/"+ SD->GetName() +"/SinglesDigitizer/" + digitizerUsersName ,"SinglesDigitizer"),

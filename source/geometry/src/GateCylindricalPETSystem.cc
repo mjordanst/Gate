@@ -24,7 +24,7 @@ See LICENSE.md for further details
 #include "GateToLMF.hh"
 #endif
 
-#include "GateDigitizerMng.hh"
+#include "GateDigitizerMgr.hh"
 
 #include "GateCylindricalPETSystemMessenger.hh"
 
@@ -53,7 +53,7 @@ GateCylindricalPETSystem::GateCylindricalPETSystem(const G4String& itsName)
 
   // Integrate a coincidence sorter into the digitizer
   //OK GND 2022
-  GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
+  GateDigitizerMgr* digitizerMng = GateDigitizerMgr::GetInstance();
   GateCoincidenceSorter* coincidenceSorter = new GateCoincidenceSorter(digitizerMng,"Coincidences");
   digitizerMng->AddNewCoincidenceSorter(coincidenceSorter);
   

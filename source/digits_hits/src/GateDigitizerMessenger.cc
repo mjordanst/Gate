@@ -21,7 +21,7 @@ See LICENSE.md for further details
 
 #include "GateVDigitizerModule.hh"
 #include "GateDigitizer.hh"
-#include "GateDigitizerMng.hh"
+#include "GateDigitizerMgr.hh"
 #include "GateAdder.hh"
 #include "GateReadout.hh"
 #include "GateEnergyFraming.hh"

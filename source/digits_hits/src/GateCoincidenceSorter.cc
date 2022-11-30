@@ -19,7 +19,7 @@ See LICENSE.md for further details
 #include "GateCoincidenceSorterMessenger.hh"
 
 #include "GateTools.hh"
-#include "GateDigitizerMng.hh"
+#include "GateDigitizerMgr.hh"
 #include "GateVSystem.hh"
 //#include "GateCoincidenceDigiMaker.hh"
 #include "GateOutputMgr.hh"
@@ -28,7 +28,7 @@ See LICENSE.md for further details
 //------------------------------------------------------------------------------------------------------
 G4int GateCoincidenceSorter::gm_coincSectNum=0;
 // Constructs a new coincidence sorter, attached to a GateDigitizerOld and to a system
-GateCoincidenceSorter::GateCoincidenceSorter(GateDigitizerMng* itsDigitizerMng,
+GateCoincidenceSorter::GateCoincidenceSorter(GateDigitizerMgr* itsDigitizerMng,
                                              const G4String& itsOutputName,
                                              const bool& IsCCSorter)
  	: GateVDigitizerModule("GateCoincidenceSorter"),
@@ -173,7 +173,7 @@ void GateCoincidenceSorter::Digitize()
 
 
   //Input digi collection
-  GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
+  GateDigitizerMgr* digitizerMng = GateDigitizerMgr::GetInstance();
   GateDigitizer* inputDigitizer = digitizerMng->FindDigitizer(m_inputName);//m_collectionName);
 
   G4int inputCollID=inputDigitizer->m_outputDigiCollectionID;

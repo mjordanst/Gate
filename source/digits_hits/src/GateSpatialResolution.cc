@@ -28,7 +28,7 @@
 #include "GateSpatialResolutionMessenger.hh"
 #include "GateDigi.hh"
 
-#include "GateDigitizerMng.hh"
+#include "GateDigitizerMgr.hh"
 #include "GateObjectStore.hh"
 #include "GateConstants.hh"
 
@@ -51,6 +51,9 @@ GateSpatialResolution::GateSpatialResolution(GateDigitizer *digitizer)
    m_fwhmZ(0),
    m_IsConfined(false),
    m_GPnew(0,0,0),
+   m_PV(0),
+   m_Navigator(0),
+   m_Touchable(0),
    m_systemDepth(-1),
    m_outputDigi(0),
    m_OutputDigiCollection(0),

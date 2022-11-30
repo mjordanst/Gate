@@ -30,7 +30,7 @@
 
 //OK GND 2022
 #include "GateDigitizer.hh"
-#include "GateDigitizerMng.hh"
+#include "GateDigitizerMgr.hh"
 //#include "GateDigitizerInitializationModule.hh"
 
 #include "GateObjectStore.hh"
@@ -53,7 +53,7 @@ GateCrystalSD::GateCrystalSD(const G4String& name)
 	collectionName.insert(collName);
 //	collectionID = -1;
 
-	GateDigitizerMng* digitizerMng=GateDigitizerMng::GetInstance();
+	GateDigitizerMgr* digitizerMng=GateDigitizerMgr::GetInstance();
 	//digitizerMng->AddNewSD(this);
 
 	GateDigitizer* digitizer = new GateDigitizer(digitizerMng,"Singles",this);
@@ -316,7 +316,7 @@ G4int GateCrystalSD::PrepareCreatorAttachment(GateVVolume* aCreator)
 void GateCrystalSD::AddSystem(GateVSystem* aSystem)
 {
    m_systemList->push_back(aSystem);
-   GateDigitizerMng::GetInstance()->AddSystem(aSystem);
+   GateDigitizerMgr::GetInstance()->AddSystem(aSystem);
 }
 //------------------------------------------------------------------------------
 

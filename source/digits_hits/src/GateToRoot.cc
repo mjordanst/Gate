@@ -69,7 +69,7 @@
 // v. cuplov - optical photons
 
 //OK GND2022
-#include "GateDigitizerMng.hh"
+#include "GateDigitizerMgr.hh"
 //OK GND2022
 
 ComptonRayleighData::ComptonRayleighData() { ; }
@@ -235,7 +235,7 @@ void GateToRoot::Book() {
     pet_data->Branch("stop_time_sec", &mTimeStop);
 
     //OK GND 2022
-    GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
+    GateDigitizerMgr* digitizerMng = GateDigitizerMgr::GetInstance();
 
    // G4cout<<"GateToRoot SD size "<<digitizerMng->m_SDlist.size()<<G4endl;
 	for (long unsigned int i=0; i< digitizerMng->m_SDlist.size();i++)
@@ -305,7 +305,7 @@ void GateToRoot::RecordBeginOfAcquisition() {
         G4cout << "GateToRoot::RecordBeginOfAcquisition\n";
 
 	//OK GND 2022 multiSD
-	   GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
+	   GateDigitizerMgr* digitizerMng = GateDigitizerMgr::GetInstance();
 	   SetSDlistSize(digitizerMng->m_SDlist.size() );
 	   for (G4int i=0; i<GetSDlistSize();i++)
 		{
@@ -656,7 +656,7 @@ void GateToRoot::RecordBeginOfEvent(const G4Event *evt) {
         G4cout << "GateToRoot::RecordBeginOfEvent\n";
 
     //OK GND 2022
-       // GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
+       // GateDigitizerMgr* digitizerMng = GateDigitizerMgr::GetInstance();
         for (G4int i=0; i< GetSDlistSize() ;i++)
         {
    		  m_hitBuffers[i].Clear();
@@ -1208,7 +1208,7 @@ void GateToRoot::SingleOutputChannel::RecordDigitizer() {
 
 	GateMessage("OutputMgr", 5, " GateToRoot::SingleOutputChannel::RecordDigitizer -- begin\n";);
     //G4cout<<"GateToRoot::SingleOutputChannel::RecordDigitizer() "<< m_collectionName <<" "<< m_collectionID<<" "<<m_outputFlag <<G4endl;
-	 //GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
+	 //GateDigitizerMgr* digitizerMng = GateDigitizerMgr::GetInstance();
 
 
 	if (!m_outputFlag) return;
@@ -1252,7 +1252,7 @@ void GateToRoot::CoincidenceOutputChannel::RecordDigitizer() {
    // G4cout<<"GateToRoot::CoincidenceOutputChannel::RecordDigitizer() "<<G4endl;
 	G4DigiManager *fDM = G4DigiManager::GetDMpointer();
 
-	 GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
+	 GateDigitizerMgr* digitizerMng = GateDigitizerMgr::GetInstance();
 	 GateCoincidenceSorter* cs = digitizerMng->FindCoincidenceSorter(m_collectionName);
 	 //digitizerMng->ShowSummary();
 

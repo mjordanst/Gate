@@ -34,7 +34,7 @@
 #include "GateEnergyResolutionMessenger.hh"
 #include "GateDigi.hh"
 
-#include "GateDigitizerMng.hh"
+#include "GateDigitizerMgr.hh"
 #include "GateConstants.hh"
 
 

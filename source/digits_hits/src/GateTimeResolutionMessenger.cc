@@ -14,7 +14,7 @@ See LICENSE.md for further details
 
 #include "GateTimeResolutionMessenger.hh"
 #include "GateTimeResolution.hh"
-#include "GateDigitizerMng.hh"
+#include "GateDigitizerMgr.hh"
 
 #include "G4SystemOfUnits.hh"
 #include "G4UIcmdWithADoubleAndUnit.hh"

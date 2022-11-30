@@ -53,7 +53,7 @@
 #include "GateCrystalSD.hh"
 //#include "GateDigitizer.hh"
 
-#include "GateDigitizerMng.hh"
+#include "GateDigitizerMgr.hh"
 
 GateRunAction* GateRunAction::prunAction=0;
 GateEventAction* GateEventAction::peventAction=0;
@@ -66,9 +66,9 @@ GateRunAction::GateRunAction(GateUserActions * cbm)
 	SetRunAction(this); runIDcounter = 0;
 
 	//OK GND 2022. moved from Gate.cc
-	//Very first initialization of GateDigitizerMng
+	//Very first initialization of GateDigitizerMgr
 #ifdef G4ANALYSIS_USE_GENERAL
-	GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
+	GateDigitizerMgr* digitizerMng = GateDigitizerMgr::GetInstance();
 	//digitizerMng->Enable(false);
 #endif
 }
@@ -195,7 +195,7 @@ inline void GateEventAction::EndOfEventAction(const G4Event* anEvent)
  // G4cout<<"GateACTIONS ------ GateEventAction::EndOfEventAction " << anEvent->GetEventID() <<G4endl;
   //OK GND 2022 TODO
   //I would like to RunDigitizers here but some aHit attributes are filled in OutputMng/GateAnalysis->RecordEndOfEvent
-  //GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
+  //GateDigitizerMgr* digitizerMng = GateDigitizerMgr::GetInstance();
   // 	  digitizerMng->RunDigitizers();
 
 #ifdef G4ANALYSIS_USE_GENERAL

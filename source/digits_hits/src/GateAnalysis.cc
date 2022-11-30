@@ -35,7 +35,7 @@
 #include "GateVVolume.hh"
 #include "GateActions.hh"
 #include "GateToRoot.hh"
-#include "GateDigitizerMng.hh"
+#include "GateDigitizerMgr.hh"
 //--------------------------------------------------------------------------------------------------
 GateAnalysis::GateAnalysis(const G4String& name, GateOutputMgr* outputMgr,DigiMode digiMode)
   : GateVOutputModule(name,outputMgr,digiMode)
@@ -474,7 +474,7 @@ void GateAnalysis::RecordEndOfEvent(const G4Event* event)
 
   //OK GND 2022
   //RunDigitizers is called here otherwise we don't have all attributes filled for aHit
-  GateDigitizerMng* digitizerMng=GateDigitizerMng::GetInstance();
+  GateDigitizerMgr* digitizerMng=GateDigitizerMgr::GetInstance();
  /* GateOutputMgr* outputMgr = GateOutputMgr::GetInstance();
    for (int i=0; i<outputMgr->m_outputModules.size(); i++ )
    {

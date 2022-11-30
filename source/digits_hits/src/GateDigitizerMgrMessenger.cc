@@ -6,7 +6,7 @@
   See LICENSE.md for further details
   ----------------------*/
 
-#include "GateDigitizerMngMessenger.hh"
+#include "GateDigitizerMgrMessenger.hh"
 
 #include "G4UIdirectory.hh"
 #include "G4UIcmdWithoutParameter.hh"
@@ -21,10 +21,10 @@
 #include "GateCoincidenceSorter.hh"
 
 // Constructor
-GateDigitizerMngMessenger::GateDigitizerMngMessenger(GateDigitizerMng* itsDigitizerMng)
+GateDigitizerMgrMessenger::GateDigitizerMgrMessenger(GateDigitizerMgr* itsDigitizerMng)
 : GateClockDependentMessenger(itsDigitizerMng)
 {
-  //G4cout << " DEBUT Constructor GateDigitizerMngMessenger \n";
+  //G4cout << " DEBUT Constructor GateDigitizerMgrMessenger \n";
 
   const G4String& elementTypeName = itsDigitizerMng->GetElementTypeName();
 
@@ -66,13 +66,13 @@ GateDigitizerMngMessenger::GateDigitizerMngMessenger(GateDigitizerMng* itsDigiti
 
   pInsertCmd->SetCandidates(DumpMap());
 
-//  G4cout << " FIN Constructor GateDigitizerMngMessenger \n";
+//  G4cout << " FIN Constructor GateDigitizerMgrMessenger \n";
 }
 
 
 
 // Destructor
-GateDigitizerMngMessenger::~GateDigitizerMngMessenger()
+GateDigitizerMgrMessenger::~GateDigitizerMgrMessenger()
 {
   delete ListCmd;
   delete ListChoicesCmd;
@@ -84,7 +84,7 @@ GateDigitizerMngMessenger::~GateDigitizerMngMessenger()
 
 
 // UI command interpreter method
-void GateDigitizerMngMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
+void GateDigitizerMgrMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 {
   if( command==DefineNameCmd )
     { m_newCollectionName = newValue; }
@@ -103,7 +103,7 @@ void GateDigitizerMngMessenger::SetNewValue(G4UIcommand* command,G4String newVal
 
 
 
-const G4String& GateDigitizerMngMessenger::DumpMap()
+const G4String& GateDigitizerMgrMessenger::DumpMap()
 {
   static G4String theList = "SinglesDigitizer CoincidenceSorter coincidenceChain";
   return theList;
@@ -112,9 +112,9 @@ const G4String& GateDigitizerMngMessenger::DumpMap()
 
 
 
-void GateDigitizerMngMessenger::DoInsertion(const G4String& childTypeName)
+void GateDigitizerMgrMessenger::DoInsertion(const G4String& childTypeName)
 {
-	G4cout<<"GateDigitizerMngMessenger::DoInsertion "<<childTypeName<<G4endl;
+	G4cout<<"GateDigitizerMgrMessenger::DoInsertion "<<childTypeName<<G4endl;
 
 	if (GetNewCollectionName().empty())
     SetNewCollectionName(childTypeName);
@@ -152,7 +152,7 @@ void GateDigitizerMngMessenger::DoInsertion(const G4String& childTypeName)
 
 //  Check whether there may be a name conflict between a new
 //  attachment and an already existing one
-G4bool GateDigitizerMngMessenger::CheckNameConflict(const G4String& newName)
+G4bool GateDigitizerMgrMessenger::CheckNameConflict(const G4String& newName)
 {
   // Check whether an object with the same name already exists in the list
   return (GetDigitizerMng()->FindElement(newName) != 0 ) ;
@@ -163,7 +163,7 @@ G4bool GateDigitizerMngMessenger::CheckNameConflict(const G4String& newName)
 /*  Check for a potential name conflict between a new attachment and an already existing one.
     If such a conflict is found, a new, conflict-free, name is generated
 */
-void GateDigitizerMngMessenger::AvoidNameConflicts()
+void GateDigitizerMgrMessenger::AvoidNameConflicts()
 {
 	//	G4cout<<" AvoidNameConflicts "<<G4endl;
   // Look for a potential name-conflict

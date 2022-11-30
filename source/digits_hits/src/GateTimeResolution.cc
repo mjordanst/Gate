@@ -20,7 +20,7 @@
 #include "GateTimeResolutionMessenger.hh"
 #include "GateDigi.hh"
 
-#include "GateDigitizerMng.hh"
+#include "GateDigitizerMgr.hh"
 #include "GateConstants.hh"
 
 #include "G4SystemOfUnits.hh"

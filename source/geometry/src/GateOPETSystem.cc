@@ -22,7 +22,7 @@
 #ifdef GATE_USE_LMF
 #include "GateToLMF.hh"
 #endif
-#include "GateDigitizerMng.hh"
+#include "GateDigitizerMgr.hh"
 
 // Constructor
 GateOPETSystem::GateOPETSystem(const G4String& itsName)
@@ -55,7 +55,7 @@ GateOPETSystem::GateOPETSystem(const G4String& itsName)
   digitizer->StoreNewCoincidenceSorter(coincidenceSorter);
     */
   //OK GND 2022
-  GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
+  GateDigitizerMgr* digitizerMng = GateDigitizerMgr::GetInstance();
   GateCoincidenceSorter* coincidenceSorter = new GateCoincidenceSorter(digitizerMng,"Coincidences");
   digitizerMng->AddNewCoincidenceSorter(coincidenceSorter);
 #ifdef GATE_USE_LMF

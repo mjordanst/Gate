@@ -7,7 +7,7 @@
   ----------------------*/
 
 /*!
-  \class  GateDigitizerMng
+  \class  GateDigitizerMgr
 
 	GateDigitizerOld highly inspired
 	BaseName -> DigitizerName/CollectionName
@@ -22,8 +22,8 @@
 	Digitizer is a List/Chain of a DigiModules in order to get a specific uses SinglesDigiCollection
 */
 
-#ifndef GateDigitizerMng_h
-#define GateDigitizerMng_h 1
+#ifndef GateDigitizerMgr_h
+#define GateDigitizerMgr_h 1
 
 #include "globals.hh"
 #include "GateClockDependent.hh"
@@ -36,7 +36,7 @@
 #include "GateDigitizerInitializationModule.hh"
 
 
-class GateDigitizerMngMessenger;
+class GateDigitizerMgrMessenger;
 class GateVSystem;
 
 
@@ -80,16 +80,16 @@ class GateVSystem;
  *
  */
 
-class GateDigitizerMng : public GateClockDependent, public G4DigiManager
+class GateDigitizerMgr : public GateClockDependent, public G4DigiManager
 {
 public:
-	static GateDigitizerMng* GetInstance();
+	static GateDigitizerMgr* GetInstance();
 
 protected:
-	GateDigitizerMng();
+	GateDigitizerMgr();
 
 public:
-  ~GateDigitizerMng();
+  ~GateDigitizerMgr();
   void Initialize();
 
   void GetDigiCollection();
@@ -160,9 +160,9 @@ public:
 private:
 
 
-  GateDigitizerMngMessenger *fMessenger;
+  GateDigitizerMgrMessenger *fMessenger;
 
-  static GateDigitizerMng*  theDigitizerMng;
+  static GateDigitizerMgr*  theDigitizerMng;
 
 protected:
   G4String 					m_elementTypeName;	 //!< Type-name for DigitizerMng --> used only for cout and help messengers

@@ -14,7 +14,7 @@ See LICENSE.md for further details
 
 #include "GateEnergyResolutionMessenger.hh"
 #include "GateEnergyResolution.hh"
-#include "GateDigitizerMng.hh"
+#include "GateDigitizerMgr.hh"
 
 #include "G4SystemOfUnits.hh"
 #include "G4UIcmdWithADouble.hh"

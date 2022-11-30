@@ -12,7 +12,7 @@ See LICENSE.md for further details
 #include "GateTools.hh"
 
 #include "G4DigiManager.hh"
-#include "GateDigitizerMng.hh"
+#include "GateDigitizerMgr.hh"
 
 GateVOutputModule::GateVOutputModule(const G4String& name, GateOutputMgr* outputMgr,DigiMode digiMode)
   : m_outputMgr(outputMgr),
@@ -46,7 +46,7 @@ G4int GateVOutputModule::GetCollectionID(G4String collectionName)
 {
 	G4DigiManager *fDM = G4DigiManager::GetDMpointer();
 	//G4cout<<"GateVOutputModule::UpdateCollectionName "<< collectionName <<G4endl;
-	GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
+	GateDigitizerMgr* digitizerMng = GateDigitizerMgr::GetInstance();
 	//digitizerMng->ShowSummary();
 
 	std::string const &str = collectionName;

@@ -22,7 +22,7 @@ See LICENSE.md for further details
 #include "GateDetectorConstruction.hh"
 //#include "GateDigitizerOld.hh"
 #include "GateOutputMgr.hh"
-#include "GateDigitizerMng.hh"
+#include "GateDigitizerMgr.hh"
 
 
 //---------------------------------------------------------------------------
@@ -36,7 +36,7 @@ GateToDigi::GateToDigi(const G4String& name, GateOutputMgr* outputMgr,
   nVerboseLevel = 0;
   m_digiMessenger = new GateOutputModuleMessenger(this);
 
-  //m_digitizerMng =    GateDigitizerMng::GetInstance();
+  //m_digitizerMng =    GateDigitizerMgr::GetInstance();
 
 }
 //---------------------------------------------------------------------------

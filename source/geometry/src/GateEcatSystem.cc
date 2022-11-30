@@ -15,7 +15,7 @@
 #include "GateCoincidenceSorter.hh"
 #include "GateToSinogram.hh"
 #include "GateSinoToEcat7.hh"
-#include "GateDigitizerMng.hh"
+#include "GateDigitizerMgr.hh"
 #include "GateOutputMgr.hh"
 
 #include "G4UnitsTable.hh"
@@ -46,7 +46,7 @@ GateEcatSystem::GateEcatSystem(const G4String& itsName)
   GateCoincidenceSorter* coincidenceSorter = new GateCoincidenceSorter(digitizer,"Coincidences",coincidenceWindow);
   digitizer->StoreNewCoincidenceSorter(coincidenceSorter);
 */
-  GateDigitizerMng* digitizerMng = GateDigitizerMng::GetInstance();
+  GateDigitizerMgr* digitizerMng = GateDigitizerMgr::GetInstance();
   GateCoincidenceSorter* coincidenceSorter = new GateCoincidenceSorter(digitizerMng,"Coincidences");
   digitizerMng->AddNewCoincidenceSorter(coincidenceSorter);
 

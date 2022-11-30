@@ -7,17 +7,17 @@ See LICENSE.md for further details
 ----------------------*/
 
 
-#ifndef GateDigitizerMngMessenger_h
-#define GateDigitizerMngMessenger_h 1
+#ifndef GateDigitizerMgrMessenger_h
+#define GateDigitizerMgrMessenger_h 1
 
-#include "GateDigitizerMng.hh"
+#include "GateDigitizerMgr.hh"
 #include "GateDigitizer.hh"
 
 #include "G4UImessenger.hh"
 #include "globals.hh"
 #include "GateClockDependentMessenger.hh"
 
-class GateDigitizerMng;
+class GateDigitizerMgr;
 class G4UIdirectory;
 class G4UIcmdWithAString;
 class G4UIcmdWithoutParameter;
@@ -33,11 +33,11 @@ class G4UIcmdWith3VectorAndUnit;
 
 //InsertionBase --> Collection
 
-class GateDigitizerMngMessenger: public GateClockDependentMessenger
+class GateDigitizerMgrMessenger: public GateClockDependentMessenger
 {
 public:
-  GateDigitizerMngMessenger(GateDigitizerMng*);
-  ~GateDigitizerMngMessenger();
+  GateDigitizerMgrMessenger(GateDigitizerMgr*);
+  ~GateDigitizerMgrMessenger();
 
   void SetNewValue(G4UIcommand*, G4String);
 
@@ -70,8 +70,8 @@ private:
   virtual void DoInsertion(const G4String& typeName);
 
   //! Get the chain list
-  inline GateDigitizerMng* GetDigitizerMng()
-    { return (GateDigitizerMng*) GetClockDependent(); }
+  inline GateDigitizerMgr* GetDigitizerMng()
+    { return (GateDigitizerMgr*) GetClockDependent(); }
 
 private:
 

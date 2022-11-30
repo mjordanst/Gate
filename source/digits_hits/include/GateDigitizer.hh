@@ -22,7 +22,7 @@
 #include "GateVDigitizerModule.hh"
 #include "GateCrystalSD.hh"
 
-class GateDigitizerMng;
+class GateDigitizerMgr;
 class G4VDigitizerModule;
 class GateDigitizerMessenger;
 class GatePulseList;
@@ -33,7 +33,7 @@ class GateVDigitizerModule;
 class GateDigitizer : public GateModuleListManager
 {
   public:
-    GateDigitizer(GateDigitizerMng* itsDigitizerMng,
+    GateDigitizer(GateDigitizerMgr* itsDigitizerMng,
     				const G4String& digitizerName,
     			    GateCrystalSD *SD);
     virtual ~GateDigitizer();

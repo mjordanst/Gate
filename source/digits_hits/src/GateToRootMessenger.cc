@@ -237,7 +237,7 @@ G4bool GateToRootMessenger::IsAnOutputChannelCmd(G4UIcommand* command)
 //--------------------------------------------------------------------------
 void GateToRootMessenger::ExecuteOutputChannelCmd(G4UIcommand* command, G4String newValue)
 {
-	GateDigitizerMng* digitizerMng=GateDigitizerMng::GetInstance();
+	GateDigitizerMgr* digitizerMng=GateDigitizerMgr::GetInstance();
 	//  G4cout<<"GateToRootMessenger::ExecuteOutputChannelCmd "<< G4endl;
 
   for (size_t i = 0; i<OutputChannelCmdList.size() ; ++i){

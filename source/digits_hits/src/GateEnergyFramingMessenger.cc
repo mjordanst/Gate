@@ -24,7 +24,7 @@ See LICENSE.md for further details
 
 #include "GateEnergyFramingMessenger.hh"
 #include "GateEnergyFraming.hh"
-#include "GateDigitizerMng.hh"
+#include "GateDigitizerMgr.hh"
 
 #include "G4SystemOfUnits.hh"
 #include "G4UIdirectory.hh"

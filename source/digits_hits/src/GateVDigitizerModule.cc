@@ -18,7 +18,7 @@
 #include "GateVDigitizerModule.hh"
 #include "GateDigi.hh"
 
-#include "GateDigitizerMng.hh"
+#include "GateDigitizerMgr.hh"
 
 #include "G4SystemOfUnits.hh"
 #include "G4EventManager.hh"
@@ -86,7 +86,7 @@ void GateVDigitizerModule::InputCollectionID()
 {
 	//G4cout<<"GateVDigitizerModule::InputCollectionID"<<G4endl;
 
-	GateDigitizerMng* DigiMan = GateDigitizerMng::GetInstance();
+	GateDigitizerMgr* DigiMan = GateDigitizerMgr::GetInstance();
 	G4DigiManager* fDM = G4DigiManager::GetDMpointer();
 
 	G4String DigitizerName=m_digitizer->GetName();

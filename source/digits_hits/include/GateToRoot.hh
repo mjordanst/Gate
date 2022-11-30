@@ -53,7 +53,7 @@ See LICENSE.md for further details
 #include "GateTrack.hh"
 
 //OK GND 2022
-#include "GateDigitizerMng.hh"
+#include "GateDigitizerMgr.hh"
 
 class GateToRootMessenger;
 
@@ -315,7 +315,7 @@ private:
     //GateHitTree *m_treeHit; // the tree for hit quantities
     //for multiple SDs
     std::vector<GateHitTree *> m_treesHit; // the tree for hit quantities
-    //Number of SD is saved in the following variable for not calling at each event for hits GateDigitizerMng::GetInstance()
+    //Number of SD is saved in the following variable for not calling at each event for hits GateDigitizerMgr::GetInstance()
     G4int m_SDlistSize;
 
     TH1D *m_total_nb_primaries_hist; //histogram of total_nb_primaries

@@ -10,7 +10,7 @@ See LICENSE.md for further details
 
 #include "GateAdderMessenger.hh"
 #include "GateAdder.hh"
-#include "GateDigitizerMng.hh"
+#include "GateDigitizerMgr.hh"
 
 #include "G4SystemOfUnits.hh"
 #include "G4UIcmdWithAString.hh"

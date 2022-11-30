@@ -34,7 +34,7 @@
 #include "GateDummyDigitizerModuleMessenger.hh"
 #include "GateDigi.hh"
 
-#include "GateDigitizerMng.hh"
+#include "GateDigitizerMgr.hh"
 
 #include "G4SystemOfUnits.hh"
 #include "G4EventManager.hh"
