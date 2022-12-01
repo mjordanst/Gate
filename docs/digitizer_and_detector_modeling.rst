@@ -135,7 +135,54 @@ Example::
    /gate/digitizerMng/crystal/SinglesDigitizer/Singles/insert    adder 
    /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/adder/positionPolicy energyWeightedCentroid
 
+Readout
+~~~~~~~
 
+With the exception of a detector system where each crystal is read by an individual photo-detector, the readout segmentation is often different from the basic geometrical structures of the detector. The readout geometry is an artificial geometry that is usually associated with a group of sensitive detectors. There are two ways of modelling this readout process : either a winner-takes-all approach that will somewhat model APD-like readout, or a energy-centroid approach that will be closer to the block-PMT readout. Using the winner-takes-all policy, the grouping has to be determined by the user through a variable named *depth* corresponding to the component in the volume hierarchy at which pulses are summed together. There is also *setReadoutVolume* option to choose the level of readout by the name of your system element. Using this variable, the *digis* are summed if their volume ID's are identical to this level of depth. Using the energy-centroid policy, the depth of the grouping is forced to occur at the 'crystal' level whatever the system used, so the depth variable is ignored. This means that the pulses in a same level just above the crystal level are summed together.
+
+The readout module regroups pulses per block (group of *sensitive detectors*). For both policy, the resulting pulse in the block has the total energy of all pulses summed together. For the winner-takes-all policy, the position of the pulse is the one with the maximum energy. For the energy-centroid policy, the position is determined by weighting the crystal indices of each pulse by the deposited energy in order to get the energy centroid position. In this case, only the crystal index is determined, and the actual cartesian coordinates of the resulting pulse are reset to the center of this crystal. If a sub-level of the crystal is used (different layers), then the final sub-level is determined by the one having the maximum energy deposited (so a winner-takes-all approach for these sub-levels of the crystal is used)::
+
+   /gate/digitizerMng/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/insert readout
+   /gate/digitizerMng/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/readout/setPolicy myPolicy
+   /gate/digitizerMng/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/readout/setDepth X
+   or equivalent to setDepth command
+   /gate/digitizerMng/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/setReadoutVolume <YourVolumeName>
+   
+The parameter *myPolicy* can be *TakeEnergyWinner* for the winner-takes-all policy or *TakeEnergyCentroid* for the energy centroid policy.
+If the energy centroid policy is used, the depth is forced to be at the level just above the crystal level, whatever the system used. To set/force your own depth for centroid policy, one can use::
+
+   /gate/digitizerMng/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/readout/forceReadoutVolumeForEnergyCentroid true 
+ 
+If the winner-takes-all policy is used, then the user must choose the *depth* or *Volume* at which the readout process takes place. If the *setPolicy* command is not set, then the winner-takes-all policy is chosen by default in order to be back-compatible with previous Gate releases.
+
+:numref:`Hittosingle` illustrates the actions of both the *adder* and *readout* modules. The *adder* module transforms the *hits* into a *pulse* in each individual volume and then the *readout* module sums a group of these *pulses* into a single *pulse* at the level of depth as defined by the user for the winner-takes-all policy.
+
+
+.. figure:: Hittosingle.jpg
+   :alt: Figure 2: Hittosingle
+   :name: Hittosingle
+
+   Actions of the *it adder* and *it readout* modules
+
+The importance of the *setDepth* command line when using the winner-takes-all policy is illustrated through the following example from a PET system (see :ref:`defining_a_system-label`). In a *cylindricalPET* system, where the first volume level is *rsector*, and the second volume level is *module*, as  shown in :numref:`Depth-p4`, the *readout* *depth* depends upon how the electronic readout functions.
+
+If one PMT reads the four modules in the axial direction, the *depth* should be set with the command::
+
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/readout/setDepth 1 
+
+The energy of this *single* event is the sum of the energy of the pulses inside the white rectangle (*rsector*) of :numref:`Depth-p4`. However, if individual PMTs read each module (group of crystals), the *depth* should be set with the command::
+
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/readout/setDepth 2 
+
+In this case, the energy of the *single* event is the sum of the energies of the pulses inside the red box (*module*) of :numref:`Depth-p4`.
+
+.. figure:: Depth-p4.jpg
+   :alt: Figure 3: Depth-p4
+   :name: Depth-p4
+
+   Setting the *readout depth* in a CylindricalPET system
+
+The next task is to transform this output *pulse* from the readout module into a *single* which is the physical observable of the experiment. This transformation is the result of the detector response and should mimic the behaviors of the photo-detector, electronics, and acquisition system.
 
 
 .. _Distributions-label:
@@ -225,20 +272,6 @@ The possible type name available corresponds to the five distributions described
    +----------------+--------------------------------------------------------------------------------+
 
 
-Adder
-~~~~~
-
-One particle often creates multiple interactions, and consequently multiple *hits*, within a crystal. The first step of the digitizer is to sum all the *hits* that occur within the same crystal (i.e. the same volume). This is due to the fact that the electronics always measure an integrated signal, and do not have the time or energy resolution necessary to distinguish between the individual interactions of the particle within a crystal. This digitizer action is completed by a module called the adder. The adder should be the first module of a digitizer chain. It acts on the lowest level in the system hierarchy, as explained in :ref:`defining_a_system-label`:
-
-* A system must be used to describe the geometry (also the mother volume name must corresponds to a system name)
-* The lowest level of this system must be attached to the detector volume and must be declared as a *sensitive detector*
-
-The adder regroups *hits* per volume into a *pulse*. If one particle that enters a detector makes multiple *hits* within two different crystal volumes before being stopped, the output of the adder module will consists of two *pulses*. Each *pulse* is computed as follows : the energy is taken to be the total of energies in each volume, the position is obtained with an energy-weighted centroid of the different *hit* positions. The time is equal to the time at which the first *hit* occured.
-
-The command to use the adder module is::
-
-   /gate/digitizer/Singles/insert adder
-
 Adder Compton
 ~~~~~~~~~~~~~
 
@@ -248,54 +281,7 @@ Instead, for each electronic energy deposition, the energy is added to the previ
    /gate/digitizer/Singles/insert adderCompton
    /gate/digitizer/Singles/insert adder
 
-Readout
-~~~~~~~
 
-With the exception of a detector system where each crystal is read by an individual photo-detector, the readout segmentation is often different from the basic geometrical structures of the detector. The readout geometry is an artificial geometry that is usually associated with a group of sensitive detectors. There are two ways of modelling this readout process : either a winner-takes-all approach that will somewhat model APD-like readout, or a energy-centroid approach that will be closer to the block-PMT readout. Using the winner-takes-all policy, the grouping has to be determined by the user through a variable named *depth* corresponding to the component in the volume hierarchy at which pulses are summed together. Using this variable, the *pulses* are summed if their volume ID's are identical to this level of depth. Using the energy-centroid policy, the depth of the grouping is forced to occur at the 'crystal' level whatever the system used, so the depth variable is ignored. This means that the pulses in a same level just above the crystal level are summed together.
-
-The readout module regroups pulses per block (group of *sensitive detectors*). For both policy, the resulting pulse in the block has the total energy of all pulses summed together. For the winner-takes-all policy, the position of the pulse is the one with the maximum energy. For the energy-centroid policy, the position is determined by weighting the crystal indices of each pulse by the deposited energy in order to get the energy centroid position. In this case, only the crystal index is determined, and the actual cartesian coordinates of the resulting pulse are reset to the center of this crystal. If a sub-level of the crystal is used (different layers), then the final sub-level is determined by the one having the maximum energy deposited (so a winner-takes-all approach for these sub-levels of the crystal is used)::
-
-   /gate/digitizer/Singles/insert readout
-   /gate/digitizer/Singles/readout/setPolicy myPolicy
-   /gate/digitizer/Singles/readout/setDepth X
-   or equivalent to setDepth command
-   /gate/digitizer/Singles/readout/setReadoutVolume <YourVolumeName>
-   
-The parameter *myPolicy* can be *TakeEnergyWinner* for the winner-takes-all policy or *TakeEnergyCentroid* for the energy centroid policy.
-If the energy centroid policy is used, the depth is forced to be at the level just above the crystal level, whatever the system used. To set/force your own depth for centroid policy, one can use:
-
- /gate/digitizer/Singles/readout/forceReadoutVolumeForEnergyCentroid    true 
- 
-If the winner-takes-all policy is used, then the user must choose the *depth* or *Volume* at which the readout process takes place. If the *setPolicy* command is not set, then the winner-takes-all policy is chosen by default in order to be back-compatible with previous Gate releases.
-
-:numref:`Hittosingle` illustrates the actions of both the *adder* and *readout* modules. The *adder* module transforms the *hits* into a *pulse* in each individual volume and then the *readout* module sums a group of these *pulses* into a single *pulse* at the level of depth as defined by the user for the winner-takes-all policy.
-
-
-.. figure:: Hittosingle.jpg
-   :alt: Figure 2: Hittosingle
-   :name: Hittosingle
-
-   Actions of the *it adder* and *it readout* modules
-
-The importance of the *setDepth* command line when using the winner-takes-all policy is illustrated through the following example from a PET system (see :ref:`defining_a_system-label`). In a *cylindricalPET* system, where the first volume level is *rsector*, and the second volume level is *module*, as  shown in :numref:`Depth-p4`, the *readout* *depth* depends upon how the electronic readout functions.
-
-If one PMT reads the four modules in the axial direction, the *depth* should be set with the command::
-
-   /gate/digitizer/Singles/readout/setDepth 1 
-
-The energy of this *single* event is the sum of the energy of the pulses inside the white rectangle (*rsector*) of :numref:`Depth-p4`. However, if individual PMTs read each module (group of crystals), the *depth* should be set with the command::
-
-   /gate/digitizer/Singles/readout/setDepth 2 
-
-In this case, the energy of the *single* event is the sum of the energies of the pulses inside the red box (*module*) of :numref:`Depth-p4`.
-
-.. figure:: Depth-p4.jpg
-   :alt: Figure 3: Depth-p4
-   :name: Depth-p4
-
-   Setting the *readout depth* in a CylindricalPET system
-
-The next task is to transform this output *pulse* from the readout module into a *single* which is the physical observable of the experiment. This transformation is the result of the detector response and should mimic the behaviors of the photo-detector, electronics, and acquisition system.
 
 Blurring : Energy blurring
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
