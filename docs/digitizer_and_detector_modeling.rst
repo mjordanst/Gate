@@ -12,6 +12,13 @@ General Purpose
 
 The purpose of the digitizer module is to simulate the behaviour of the scanner detectors and signal processing chain.
 
+New version of Digitizer was proposed since Gate 9.3.
+
+General architerure and main commends were changed.
+
+**Please, do not hesitate to use a helping script to convert your old digitizer macros to new ones: TODO add path!!!**
+
+
 From particle detection to coincidences in GATE
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -23,7 +30,7 @@ The typical data-flow for an event is as follows:
 * An elementary trajectory step is applied. A step corresponds to the trajectory of a particle between discrete interactions (i.e. photoelectric, Compton, pair production, etc). During a step, the changes to particle's energy and momentum are calculated. The length of a step depends upon the nature of the interaction, the type of particle and material, etc. The calculation of the step length is complex and is mentioned here only briefly. For more details, please refer to the Geant4 documentation.
 * If a step occurs within a volume corresponding to a *sensitive* detector, the interaction information between the particle and the material is stored. For example, this information may include the deposited energy, the momentum before and after the interaction, the name of the volume where the interaction occurred, etc. This set of information is referred to as a *Hit*.
 * Steps 2 and 3 are repeated until the energy of the particle becomes lower than a predefined value, or the particle position goes outside the predefined limits. The entire series of steps form a simulated trajectory of a particle, that is called a *Track* in Geant4.
-* The amount of energy deposited in a crystal is filtered by the digitizer module. The output from the digitizer corresponds to the signal after it has been processed by the Front End Electronics (FEE). Generally, the FEE is made of several processing units, working in a serial and/or in parallel. This process of transforming the energy of a *Hit* into the final digital value is called *Digitization* and is performed by the GATE digitizer. Each processing unit in the FEE is represented in GATE by a corresponding digitizer module. The final value obtained after filtering by a set of these modules is called a *Single*. *Singles* can be saved as output. Each transient value, between two modules, is called a *Pulse*.
+* The amount of energy deposited in a crystal is filtered by the digitizer module. The output from the digitizer corresponds to the signal after it has been processed by the Front End Electronics (FEE). Generally, the FEE is made of several processing units, working in a serial and/or in parallel. This process of transforming the energy of a *Hit* into the final digital value is called *Digitization* and is performed by the GATE digitizer. Each processing unit in the FEE is represented in GATE by a corresponding digitizer module. The final value obtained after filtering by a set of these modules is called a *Single*. *Singles* can be saved as output. Each transient value, between two modules, is called a *Digi*.
 
 This process is repeated for each event in the simulation in order to produce one or more sets of Singles. These *Singles* can be stored into an output file (as a ROOT tree, for example).
 
@@ -42,20 +49,55 @@ A hit is a snapshot of the physical interaction of a track within a sensitive re
 *  Interaction type of the hit 
 *  Volume name containing the hit
 
-As a result, the history of a particle is saved as a series of *hits* generated along the particles trajectory. In addition to the physical hits, Geant4 saves a special *hit*. This *hit* takes place when a particle moves from one volume to another (this type of *hit* deposits zero energy). The *hit* data represents the basic information that a user has with which to construct the physically observable behaviour of a scanner. To see the information stored in a *hit*, see the file *GateCrystalHit.hh*.
+As a result, the history of a particle is saved as a series of *hits* generated along the particles trajectory. In addition to the physical hits, Geant4 saves a special *hit*. This *hit* takes place when a particle moves from one volume to another (this type of *hit* deposits zero energy). The *hit* data represents the basic information that a user has with which to construct the physically observable behaviour of a scanner. To see the information stored in a *hit*, see the file *GateHit.hh*.
 
-Role of the digitizer
-~~~~~~~~~~~~~~~~~~~~~
+Digitizer Manager
+~~~~~~~~~~~~~~~~~
 
-As mentioned above, the information contained in the *hit* does not correspond to what is provided by a real detector. To simulate the digital values (*pulses*) that result from the output of the Front End Electronics, the sampling methods of the signal must be specified. To do this, a number of digitizer modules are available and are described below. 
+Here explain the general architerture
+add image
 
-The role of *the digitizer* is to build, from the *hit* information, the physical observables, which include energy, position, and time of detection for each particle. In addition, the digitizer must implement the required logic to simulate coincidences during PET simulations. Typical usage of digitizer module includes the following actions: 
+Four types: 
+
+*  Singles Digitizers
+*  Coincidence Sorters
+*  Coincidences Digitizers (to be added)
+*  Waveform generator (to be added) 
+
+Comment on SD
+
+
+Singles Digitizers
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+As mentioned above, the information contained in the *hit* does not correspond to what is provided by a real detector. To simulate the digital values (*digis*) that result from the output of the Front End Electronics, the sampling methods of the signal must be specified. To do this, a number of digitizer modules are available and are described below. 
+
+The role of *singles digitizer* is to build, from the *hit* information, the physical observables, which include energy, position, and time of detection for each particle. In addition, the digitizer must implement the required logic to simulate coincidences during PET simulations. Typical usage of digitizer module includes the following actions: 
 
 * simulate detector response 
 * simulate readout scheme 
 * simulate trigger logic
 
-These actions are accomplished by inserting *digitizer* modules into GATE, as explained in the next sections.
+The Signles Digitizer is organized as a chain of digitizer modules that begins with the hit and ends with the single which represents the physical observable seen from the detector.
+   
+As user creates a GATE simulation with enabled option to save *Singles* and at least one digitizer module, a default *Single Digitizer* named *Singles_<SDname>* is created authomatically. 
+
+If one more, new Singles Digitizer is needed, the following command template should be used::
+
+   /gate/digitizerMng/name <singles_digitizer_name>
+   /gate/digitizerMng/chooseSD <sensitive_detector_name>
+   /gate/digitizerMng/insert SinglesDigitizer 
+
+The digitization consists of a series of signal processors, *digitizer modules* in GATE. The output at each step along the series is defined as a *digi* and can be saved at each step (see Output section !!!). These *digis* or*Singles* realistically simulate the physical observables of a detector response to a particle interacting with it. An example is shown in :numref:`Digitizer`.
+
+.. figure:: Digitizer.jpg
+   :alt: Figure 1: Digitizer
+   :name: Digitizer 
+   
+   It is important to notice that the order of the digitizer module declaration should make sense. The data flow follows the same order as the module declaration in the macro. In a typical scanner, the following sequence works well, athough it is not mandatory (the module names will be explained in the rest of the section):
+
+* insert adder before readout 
+* insert readout before thresholder/upholder 
+* insert blurring before thresholder/upholder 
 
 Disabling the digitizer
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -63,30 +105,38 @@ Disabling the digitizer
 If you want to disable the digitizer process and all output (that are already disabled by default), you can use the following commands::
 
    /gate/output/analysis/disable
-   /gate/output/digi/disable
+   /gate/output/digi/disable !!!
 
 .. _digitizer_modules-label:
 
 Digitizer modules
 -----------------
+Adder
+~~~~~
 
-The digitization consists of a series of signal processors. The output at each step along the series is defined as a *pulse*. At the end of the chain, the output *pulses* are named *singles*. These *Singles* realistically simulate the physical observables of a detector response to a particle interacting with it. An example is shown in :numref:`Digitizer`.
+One particle often creates multiple interactions, and consequently multiple *hits*, within a crystal. The first step of the digitizer is to sum all the *hits* that occur within the same crystal (i.e. the same volume). This is due to the fact that the electronics always measure an integrated signal, and do not have the time or energy resolution necessary to distinguish between the individual interactions of the particle within a crystal. This digitizer action is completed by a module called the adder. The adder should be the first module of a digitizer chain. It acts on the lowest level in the system hierarchy, as explained in :ref:`defining_a_system-label`:
 
-.. figure:: Digitizer.jpg
-   :alt: Figure 1: Digitizer
-   :name: Digitizer
+* A system must be used to describe the geometry (also the mother volume name must corresponds to a system name)
+* The lowest level of this system must be attached to the detector volume and must be declared as a *sensitive detector*
 
-   The digitizer is organized as a chain of modules that begins with the hit and ends with the single which represents the physical observable seen from the detector.
+If one particle that enters a detector makes multiple *hits* within two different crystal volumes before being stopped, the output of the adder module will consists of two *Singles*. Each *Single* is computed as follows : the energy is taken to be the total of energies in each volume, the position is obtained with an energy-weighted centroid of the different *hit* positions. The time is equal to the time at which the first *hit* occured.
 
-To specify a new signal-processing module (i.e. add a new processing unit in the readout scheme) the following command template should be used::
+The command to use the adder module is::
 
-   /gate/digitizer/insert MODULE 
+   /gate/digitizerMng/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/insert    adder
 
-where **MODULE** is the name of the digitizer module. The order of the module declaration should make sense. The data flow follows the same order as the module declaration in the macro. In a typical scanner, the following sequence works well, athough it is not mandatory (the module names will be explained in the rest of the section):
+Default energy policy is EnergyCentroid. The following commandes can be used to select users energy policy::
 
-* insert adder before readout 
-* insert readout before thresholder/upholder 
-* insert blurring before thresholder/upholder 
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/adder/positionPolicy energyWeightedCentroid
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/adder/positionPolicy takeEnergyWinner
+
+Example::
+   
+   /gate/digitizerMng/crystal/SinglesDigitizer/Singles/insert    adder 
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/adder/positionPolicy energyWeightedCentroid
+
+
+
 
 .. _Distributions-label:
 
