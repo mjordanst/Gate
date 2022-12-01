@@ -33,7 +33,7 @@
 
 
 
-GateTimeResolution::GateTimeResolution(GateDigitizer *digitizer)
+GateTimeResolution::GateTimeResolution(GateSinglesDigitizer *digitizer)
   :GateVDigitizerModule("timeResolution","digitizerMng/"+digitizer->GetSD()->GetName()+"/SinglesDigitizer/"+digitizer->m_digitizerName+"/timeResolution",digitizer,digitizer->GetSD()),
    m_fwhm(0),
    m_outputDigi(0),

@@ -22,13 +22,13 @@ See LICENSE.md for further details
 
 #include "GateVDigitizerModule.hh"
 #include "GateDigi.hh"
-#include "GateDigitizer.hh"
 #include "GateClockDependent.hh"
 #include "GateCrystalSD.hh"
 
 #include "globals.hh"
 
 #include "GateAdderMessenger.hh"
+#include "GateSinglesDigitizer.hh"
 
 typedef enum {kEnergyCentroid,
               kEnergyWinner} adder_policy_t;
@@ -37,7 +37,7 @@ class GateAdder : public GateVDigitizerModule
 {
 public:
   
-  GateAdder(GateDigitizer *digitizer);
+  GateAdder(GateSinglesDigitizer *digitizer);
   ~GateAdder();
 
   void Digitize() override;
@@ -58,7 +58,7 @@ private:
 
   GateDigi* m_outputDigi;
   GateDigiCollection*  m_OutputDigiCollection;
-  GateDigitizer *m_digitizer;
+  GateSinglesDigitizer *m_digitizer;
 
 
 

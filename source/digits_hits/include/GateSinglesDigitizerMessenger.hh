@@ -8,8 +8,8 @@ See LICENSE.md for further details
 
 
 
-#ifndef GateDigitizerMessenger_h
-#define GateDigitizerMessenger_h 1
+#ifndef GateSinglesDigitizerMessenger_h
+#define GateSinglesDigitizerMessenger_h 1
 
 #include "globals.hh"
 #include "GateListMessenger.hh"
@@ -24,25 +24,25 @@ class G4UIcmdWithoutParameter;
 class G4UIcmdWithABool;
 class G4UIcmdWithADouble;
 
-#include "GateDigitizer.hh"
+#include "GateSinglesDigitizer.hh"
 
 
 class G4VDigitizerModule;
 
-/*! \class  GateDigitizerMessenger
+/*! \class  GateSinglesDigitizerMessenger
     \brief  This messenger manages a chain of pulse-processor modules
 
-    - GateDigitizerMessenger - by Daniel.Strul@iphe.unil.ch
+    - GateSinglesDigitizerMessenger - by Daniel.Strul@iphe.unil.ch
 */
 //    Last modification in 12/2011 by Abdul-Fattah.Mohamad-Hadi@subatech.in2p3.fr, for the multi-system approach.
 
-class GateDigitizerMessenger: public GateListMessenger
+class GateSinglesDigitizerMessenger: public GateListMessenger
 {
   public:
     //! Constructor: the argument is the chain of pulse-processor modules
-    GateDigitizerMessenger(GateDigitizer* itsDigitizer);
+    GateSinglesDigitizerMessenger(GateSinglesDigitizer* itsDigitizer);
 
-    ~GateDigitizerMessenger();
+    ~GateSinglesDigitizerMessenger();
 
     //! Standard messenger command interpreter
     void SetNewValue(G4UIcommand*, G4String);
@@ -59,15 +59,15 @@ class GateDigitizerMessenger: public GateListMessenger
 
 
     //! Returns the pulse-processor chain managed by this messenger
-   // virtual GateDigitizer* GetDigitizer()
-   //   {   	return (GateDigitizer*) GetListManager(); }
+   // virtual GateSinglesDigitizer* GetDigitizer()
+   //   {   	return (GateSinglesDigitizer*) GetListManager(); }
 
 
 
   private:
 
     G4UIcmdWithAString*         SetInputNameCmd;        //!< The UI command "set input name"
-    GateDigitizer* m_digitizer;
+    GateSinglesDigitizer* m_digitizer;
 };
 
 #endif

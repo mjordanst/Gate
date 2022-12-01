@@ -11,6 +11,8 @@ See LICENSE.md for further details
 #define GATECALLBACKMANAGER_CC
 
 #include "GateUserActions.hh"
+
+#include "../include/GateSinglesDigitizer.hh"
 #include "GateActions.hh"
 
 #include "G4UImanager.hh"
@@ -25,7 +27,6 @@ See LICENSE.md for further details
 //#include "GateDigitizerOld.hh"
 #include "GateCrystalSD.hh"
 
-#include "GateDigitizer.hh"
 
 //class GateRecorderBase;
 GateUserActions* GateUserActions::pUserActions=0;

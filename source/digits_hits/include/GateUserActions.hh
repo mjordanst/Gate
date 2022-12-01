@@ -40,7 +40,7 @@ See LICENSE.md for further details
 class GateRunAction;
 class GateEventAction;
 class G4SliceTimer;
-class GateDigitizer;
+class GateSinglesDigitizer;
 
 class GateUserActions
 {

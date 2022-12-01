@@ -22,20 +22,20 @@ See LICENSE.md for further details
 
 #include "GateVDigitizerModule.hh"
 #include "GateDigi.hh"
-#include "GateDigitizer.hh"
 #include "GateClockDependent.hh"
 #include "GateCrystalSD.hh"
 
 #include "globals.hh"
 
 #include "GateEnergyFramingMessenger.hh"
+#include "GateSinglesDigitizer.hh"
 
 
 class GateEnergyFraming : public GateVDigitizerModule
 {
 public:
   
-  GateEnergyFraming(GateDigitizer *digitizer);
+  GateEnergyFraming(GateSinglesDigitizer *digitizer);
   ~GateEnergyFraming();
   
   void Digitize() override;
@@ -60,7 +60,7 @@ private:
 
   GateDigiCollection*  m_OutputDigiCollection;
 
-  GateDigitizer *m_digitizer;
+  GateSinglesDigitizer *m_digitizer;
 
 
 };

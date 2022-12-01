@@ -7,12 +7,12 @@
   ----------------------*/
 
 /*!
-  \class  GateDigitizer
+  \class  GateSinglesDigitizer
   Last modification in 12/2011 by Abdul-Fattah.Mohamad-Hadi@subatech.in2p3.fr, for the multi-system approach.
 */
 
-#ifndef GateDigitizer_h
-#define GateDigitizer_h 1
+#ifndef GateSinglesDigitizer_h
+#define GateSinglesDigitizer_h 1
 
 #include "globals.hh"
 #include <vector>
@@ -24,19 +24,19 @@
 
 class GateDigitizerMgr;
 class G4VDigitizerModule;
-class GateDigitizerMessenger;
+class GateSinglesDigitizerMessenger;
 class GatePulseList;
 class GateVSystem;
 
 class GateVDigitizerModule;
 
-class GateDigitizer : public GateModuleListManager
+class GateSinglesDigitizer : public GateModuleListManager
 {
   public:
-    GateDigitizer(GateDigitizerMgr* itsDigitizerMng,
+    GateSinglesDigitizer(GateDigitizerMgr* itsDigitizerMng,
     				const G4String& digitizerName,
     			    GateCrystalSD *SD);
-    virtual ~GateDigitizer();
+    virtual ~GateSinglesDigitizer();
 
      //virtual void InsertProcessor(G4VDigitizerModule* newChildProcessor);
 
@@ -97,7 +97,7 @@ class GateDigitizer : public GateModuleListManager
     void DescribeMyself();
 
  protected:
-      GateDigitizerMessenger*    m_messenger;
+      GateSinglesDigitizerMessenger*    m_messenger;
       GateVSystem *m_system;            //!< System to which the digitizer is attached
       G4String				   m_outputName;
       G4String                 m_inputName;

@@ -27,20 +27,20 @@ See LICENSE.md for further details
 
 #include "GateVDigitizerModule.hh"
 #include "GateDigi.hh"
-#include "GateDigitizer.hh"
 #include "GateClockDependent.hh"
 #include "GateCrystalSD.hh"
 
 #include "globals.hh"
 
 #include "GateDummyDigitizerModuleMessenger.hh"
+#include "GateSinglesDigitizer.hh"
 
 
 class GateDummyDigitizerModule : public GateVDigitizerModule
 {
 public:
   
-  GateDummyDigitizerModule(GateDigitizer *digitizer);
+  GateDummyDigitizerModule(GateSinglesDigitizer *digitizer);
   ~GateDummyDigitizerModule();
   
   void Digitize() override;
@@ -64,7 +64,7 @@ private:
 
   GateDigiCollection*  m_OutputDigiCollection;
 
-  GateDigitizer *m_digitizer;
+  GateSinglesDigitizer *m_digitizer;
 
 
 };

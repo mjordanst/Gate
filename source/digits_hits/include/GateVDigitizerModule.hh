@@ -13,19 +13,19 @@ See LICENSE.md for further details
 
 #include "G4VDigitizerModule.hh"
 #include "GateDigi.hh"
-#include "GateDigitizer.hh"
 #include "GateClockDependent.hh"
 #include "GateCrystalSD.hh"
 
 #include "globals.hh"
+#include "GateSinglesDigitizer.hh"
 
-class GateDigitizer;
+class GateSinglesDigitizer;
 
 class GateVDigitizerModule : public G4VDigitizerModule, public GateClockDependent
 {
 public:
   
-  GateVDigitizerModule(G4String DMname, G4String path, GateDigitizer *digitizer, GateCrystalSD* SD);
+  GateVDigitizerModule(G4String DMname, G4String path, GateSinglesDigitizer *digitizer, GateCrystalSD* SD);
   GateVDigitizerModule(G4String DMname);
   virtual ~GateVDigitizerModule();
   
@@ -45,7 +45,7 @@ public:
   //! Pure virtual method DecribeMyself()
   virtual void DescribeMyself(size_t indent=0) =0 ;
 
-  inline GateDigitizer* GetDigitizer()
+  inline GateSinglesDigitizer* GetDigitizer()
     { return m_digitizer; }
 
 private:
@@ -55,7 +55,7 @@ private:
 
   GateDigiCollection*  OutputDigiCollection;
 */
-  GateDigitizer *m_digitizer;
+  GateSinglesDigitizer *m_digitizer;
 
 
 protected:

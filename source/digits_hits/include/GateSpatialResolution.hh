@@ -27,7 +27,6 @@ See LICENSE.md for further details
 
 #include "GateVDigitizerModule.hh"
 #include "GateDigi.hh"
-#include "GateDigitizer.hh"
 #include "GateClockDependent.hh"
 #include "GateCrystalSD.hh"
 
@@ -37,12 +36,13 @@ See LICENSE.md for further details
 
 #include "G4VoxelLimits.hh"
 #include "G4TouchableHistoryHandle.hh"
+#include "GateSinglesDigitizer.hh"
 
 class GateSpatialResolution : public GateVDigitizerModule
 {
 public:
   
-  GateSpatialResolution(GateDigitizer *digitizer);
+  GateSpatialResolution(GateSinglesDigitizer *digitizer);
   ~GateSpatialResolution();
   
   void Digitize() override;
@@ -99,7 +99,7 @@ private:
 
   GateDigiCollection*  m_OutputDigiCollection;
 
-  GateDigitizer *m_digitizer;
+  GateSinglesDigitizer *m_digitizer;
 
   G4VoxelLimits limits;
   G4double Xmin, Xmax, Ymin, Ymax, Zmin, Zmax;

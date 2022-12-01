@@ -15,7 +15,7 @@
 
    - Create your DM by coping this class and GateDummyDigitizerMessenger class for your DM messenger
    - Places to change are marked with // ****** comment and called with "dummy" names
-   - Include your module to GateDigitizerMessenger in the method DoInsertion(..)
+   - Include your module to GateSinglesDigitizerMessenger in the method DoInsertion(..)
 
 	If you adapting some already exiting class from Old Gate Digitizer here is some of the tips
 	- Digitize () is a fusion of GateVPulseProcessor::ProcessPulseList and GateXXX::ProcessOnePulse
@@ -46,7 +46,7 @@
 
 
 
-GateDummyDigitizerModule::GateDummyDigitizerModule(GateDigitizer *digitizer)
+GateDummyDigitizerModule::GateDummyDigitizerModule(GateSinglesDigitizer *digitizer)
   :GateVDigitizerModule("Dummy","digitizerMng/"+digitizer->GetSD()->GetName()+"/SinglesDigitizer/"+digitizer->m_digitizerName+"/dummy",digitizer,digitizer->GetSD()),
    m_parameter("dummy"),
    m_outputDigi(0),

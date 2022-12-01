@@ -6,7 +6,8 @@ of the GNU Lesser General  Public Licence (LGPL)
 See LICENSE.md for further details
 ----------------------*/
 
-#include "GateDigitizerMessenger.hh"
+#include "GateSinglesDigitizer.hh"
+#include "GateSinglesDigitizerMessenger.hh"
 #include "GateConfiguration.h"
 
 #include "G4UIdirectory.hh"
@@ -20,7 +21,6 @@ See LICENSE.md for further details
 #include "G4UIcmdWithADouble.hh"
 
 #include "GateVDigitizerModule.hh"
-#include "GateDigitizer.hh"
 #include "GateDigitizerMgr.hh"
 #include "GateAdder.hh"
 #include "GateReadout.hh"
@@ -72,10 +72,10 @@ See LICENSE.md for further details
 #endif
 #include "GateSystemFilter.hh"
 
-GateDigitizerMessenger::GateDigitizerMessenger(GateDigitizer* itsDigitizer)
+GateSinglesDigitizerMessenger::GateSinglesDigitizerMessenger(GateSinglesDigitizer* itsDigitizer)
 :GateListMessenger(itsDigitizer),m_digitizer(itsDigitizer)
 {
-	//G4cout<<"GateDigitizerMessenger constr"<<G4endl;
+	//G4cout<<"GateSinglesDigitizerMessenger constr"<<G4endl;
   pInsertCmd->SetCandidates(DumpMap());
 
   G4String cmdName;
@@ -94,7 +94,7 @@ GateDigitizerMessenger::GateDigitizerMessenger(GateDigitizer* itsDigitizer)
 
 
 
-GateDigitizerMessenger::~GateDigitizerMessenger()
+GateSinglesDigitizerMessenger::~GateSinglesDigitizerMessenger()
 {
   delete SetInputNameCmd;
 
@@ -103,9 +103,9 @@ GateDigitizerMessenger::~GateDigitizerMessenger()
 
 
 
-void GateDigitizerMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
+void GateSinglesDigitizerMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 {
-	//G4cout<<"GateDigitizerMessenger SetNewValue "<< newValue <<G4endl;
+	//G4cout<<"GateSinglesDigitizerMessenger SetNewValue "<< newValue <<G4endl;
 
   if (command == SetInputNameCmd)
     { m_digitizer->SetInputName(newValue); }
@@ -116,7 +116,7 @@ void GateDigitizerMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 
 
 
-const G4String& GateDigitizerMessenger::DumpMap()
+const G4String& GateSinglesDigitizerMessenger::DumpMap()
 {
  //  static G4String theList = "readout pileup thresholder energyThresholder localEnergyThresholder DoImodel upholder blurring localBlurring localTimeDelay localEfficiency energyEfficiency noise discretizer buffer transferEfficiency crosstalk lightYield quantumEfficiency intrinsicResolutionBlurring sigmoidalThresholder calibration spblurring sp3Dlocalblurring adder adderLocal adderCompton adderComptPhotIdeal adderComptPhotIdealLocal localClustering  clustering deadtime crystalblurring timeResolution localTimeResolution opticaladder systemFilter gridDiscretization  localMultipleRejection";
    static G4String theList = "readout adder energyFraming timeResolution energyResolution spatialResolution";
@@ -126,7 +126,7 @@ const G4String& GateDigitizerMessenger::DumpMap()
 
 
 
-void GateDigitizerMessenger::DoInsertion(const G4String& childTypeName)
+void GateSinglesDigitizerMessenger::DoInsertion(const G4String& childTypeName)
 {
 
   if (GetNewInsertionBaseName().empty())
@@ -266,7 +266,7 @@ else if (childTypeName=="localMultipleRejection")
 }
 
 
-G4bool GateDigitizerMessenger::CheckNameConflict(const G4String& name)
+G4bool GateSinglesDigitizerMessenger::CheckNameConflict(const G4String& name)
 {
   // Check whether an object with the same name already exists in the list
   return ( GetListManager()->FindElement( GetListManager()->GetObjectName() + "/" + name ) != 0 ) ;

@@ -51,7 +51,7 @@
 
 #include "GateSteppingActionMessenger.hh"
 #include "GateCrystalSD.hh"
-//#include "GateDigitizer.hh"
+//#include "GateSinglesDigitizer.hh"
 
 #include "GateDigitizerMgr.hh"
 

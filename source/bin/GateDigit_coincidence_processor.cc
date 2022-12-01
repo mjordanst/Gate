@@ -3,7 +3,6 @@
 
 #include "GateMessageManager.hh"
 #include "G4UImanager.hh"
-#include "GateDigitizer.hh"
 #include "GateCCRootDefs.hh"
 #include "GateCCCoincidencesFileReader.hh"
 #include "GateCCCoincidenceDigi.hh"
@@ -15,6 +14,7 @@
 #include "GateSignalHandler.hh"
 
 #include <cstdlib>
+#include "../digits_hits/include/GateSinglesDigitizer.hh"
 
 using std::cout;
 using std::endl;

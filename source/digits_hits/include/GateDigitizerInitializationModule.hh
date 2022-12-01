@@ -20,16 +20,15 @@
 #include "GateDigi.hh"
 #include "GateClockDependent.hh"
 #include "GateDigitizerInitializationModule.hh"
-#include "GateDigitizer.hh"
-
 #include "globals.hh"
+#include "GateSinglesDigitizer.hh"
 
 
 class GateDigitizerInitializationModule : public GateVDigitizerModule
 {
 public:
 
-	GateDigitizerInitializationModule(GateDigitizer *digitizer);
+	GateDigitizerInitializationModule(GateSinglesDigitizer *digitizer);
   ~GateDigitizerInitializationModule();
 
 
@@ -44,7 +43,7 @@ private:
   G4int m_HCID;
 
   GateDigiCollection*  m_outputDigiCollection;
-  GateDigitizer* m_digitizer;
+  GateSinglesDigitizer* m_digitizer;
 
 
 

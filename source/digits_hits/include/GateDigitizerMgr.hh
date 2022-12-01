@@ -14,7 +14,7 @@
 	PulseProcessorChain -> Digitizer
 
 	StoreNewPulseProcessorChain -> AddNewSinglesDigitizer
-	GateSingleDigiMaker	-> GateDigitizer
+	GateSingleDigiMaker	-> GateSinglesDigitizer
 
 	DigitizerName = CollectionName
 
@@ -30,10 +30,10 @@
 #include "GateTools.hh"
 #include "GateCrystalSD.hh"
 #include "G4DigiManager.hh"
-#include "GateDigitizer.hh"
 #include "GateCoincidenceSorter.hh"
 
 #include "GateDigitizerInitializationModule.hh"
+#include "GateSinglesDigitizer.hh"
 
 
 class GateDigitizerMgrMessenger;
@@ -46,7 +46,7 @@ class GateVSystem;
  * PulseProcessorChain -> Digitizer
  * PulseProcessor, Processor-> DigitizerModule
  * DigitizerName = CollectionName
- * ?? GateVPulseProcessor -> GateDigitizerModule: public G4VDigitizerModule ?? to put common methods ??
+ * ?? GateVPulseProcessor -> GateSinglesDigitizerModule: public G4VDigitizerModule ?? to put common methods ??
  *
  *
  *
@@ -101,7 +101,7 @@ public:
    // Add a system to the DigitizerOld systems list
    virtual void AddSystem(GateVSystem* aSystem);
    // To find a system from the DigitizerOld systems list
-   GateVSystem* FindSystem(GateDigitizer* digitizer);
+   GateVSystem* FindSystem(GateSinglesDigitizer* digitizer);
    GateVSystem* FindSystem(G4String& systemName);
 
    //Messenger commands
@@ -119,9 +119,9 @@ public:
    //! Run Singles Digitizers
    void RunDigitizers();
    //! Integrates a new digitizer/singlesCollection
-   void AddNewSinglesDigitizer(GateDigitizer* digitizer);
+   void AddNewSinglesDigitizer(GateSinglesDigitizer* digitizer);
    //! Find Digitizer by its name
-  GateDigitizer* FindDigitizer(G4String mName);
+  GateSinglesDigitizer* FindDigitizer(G4String mName);
    /// End of methods for Singles
 
 
@@ -129,7 +129,7 @@ public:
 
    //Sorters
    //Sorters -> Initialization of Coincidence Digitizers
-   //void AddNewSinglesDigitizer(GateDigitizer* digitizer);
+   //void AddNewSinglesDigitizer(GateSinglesDigitizer* digitizer);
 
    void RunCoincidenceSorters();
    void AddNewCoincidenceSorter(GateCoincidenceSorter* coincidenceSorter);
@@ -178,7 +178,7 @@ public:
   G4bool m_isTheFirstEvent;
   std::vector<GateCrystalSD*>    	m_SDlist;	 //!< Vector of Sensitive Detectors
   std::vector<GateDigitizerInitializationModule*>    	m_digitizerIMList;	 //!< Vector of initialisation modules for different SD
-  std::vector<GateDigitizer*>    	m_SingleDigitizersList;	 //!< Vector of digitizers
+  std::vector<GateSinglesDigitizer*>    	m_SingleDigitizersList;	 //!< Vector of digitizers
   std::vector<GateCoincidenceSorter*>    	m_CoincidenceSortersList;	 //!< Vector of coincidence sorters
 
   G4bool m_recordSingles;

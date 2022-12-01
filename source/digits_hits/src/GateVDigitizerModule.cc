@@ -30,7 +30,7 @@
 
 #include "GateOutputMgr.hh"
 
-GateVDigitizerModule::GateVDigitizerModule(G4String name, G4String path, GateDigitizer *digitizer,  GateCrystalSD* SD)
+GateVDigitizerModule::GateVDigitizerModule(G4String name, G4String path, GateSinglesDigitizer *digitizer,  GateCrystalSD* SD)
   :G4VDigitizerModule(name),
    GateClockDependent(path),
    m_digitizer(digitizer),
@@ -119,7 +119,7 @@ void GateVDigitizerModule::InputCollectionID()
 		{
 			G4String inputCollectionName = m_digitizer->GetInputName()+"_"+m_digitizer->m_SD->GetName();
 			//G4cout<<"inputCollectionName "<<inputCollectionName<<G4endl;
-			GateDigitizer* inputDigitizer = DigiMan->FindDigitizer(inputCollectionName);
+			GateSinglesDigitizer* inputDigitizer = DigiMan->FindDigitizer(inputCollectionName);
 			DCID=inputDigitizer->m_outputDigiCollectionID;
 			//G4cout<<" DCID "<< DCID<<G4endl;
 		}

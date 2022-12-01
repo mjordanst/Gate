@@ -67,7 +67,7 @@ G4int GateVOutputModule::GetCollectionID(G4String collectionName)
 	{
 		if (out.size()==2)
 		{
-		GateDigitizer* digitizer = digitizerMng->FindDigitizer(collectionName);
+		GateSinglesDigitizer* digitizer = digitizerMng->FindDigitizer(collectionName);
 		G4int lastDCID=digitizer->m_outputDigiCollectionID;
 		collectionID = lastDCID;
 		}

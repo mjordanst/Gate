@@ -131,7 +131,7 @@ void GateDigitizerMgrMessenger::DoInsertion(const G4String& childTypeName)
 
 	  G4SDManager* SDman = G4SDManager::GetSDMpointer();
 	  GateCrystalSD* SD = (GateCrystalSD*) SDman->FindSensitiveDetector(m_SDname, true);
-	  GetDigitizerMng()->AddNewSinglesDigitizer( new GateDigitizer(GetDigitizerMng(),GetNewCollectionName(),SD) );
+	  GetDigitizerMng()->AddNewSinglesDigitizer( new GateSinglesDigitizer(GetDigitizerMng(),GetNewCollectionName(),SD) );
 
   } else if (childTypeName=="CoincidenceSorter") {
 	  // One CoinSorter per System! Defined in the constructor of the system ! Only its parameters should be defiend with CS messenger

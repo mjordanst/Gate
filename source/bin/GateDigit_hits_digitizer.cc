@@ -1,10 +1,10 @@
 
 
+#include "../digits_hits/include/GateSinglesDigitizer.hh"
 #include "G4SystemOfUnits.hh"
 #include "GateMessageManager.hh"
 #include "G4UImanager.hh"
 #include "GateCCHitFileReader.hh"
-#include "GateDigitizer.hh"
 #include "GateSingleDigi.hh"
 #include "GateRandomEngine.hh"
 

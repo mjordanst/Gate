@@ -28,7 +28,7 @@
 #include "G4ios.hh"
 //:G4VDigitizerModule("GateDigitizerInitializationModule"),
 
-GateDigitizerInitializationModule::GateDigitizerInitializationModule(GateDigitizer *digitizer)
+GateDigitizerInitializationModule::GateDigitizerInitializationModule(GateSinglesDigitizer *digitizer)
   :GateVDigitizerModule("DigiInit","digitizerMng/"+digitizer->GetSD()->GetName()+"/SinglesDigitizer/"+digitizer->m_digitizerName+"/adder",digitizer, digitizer->GetSD()),
    m_FirstEvent(true),
    m_HCID(-1),

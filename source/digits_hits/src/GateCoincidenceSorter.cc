@@ -174,7 +174,7 @@ void GateCoincidenceSorter::Digitize()
 
   //Input digi collection
   GateDigitizerMgr* digitizerMng = GateDigitizerMgr::GetInstance();
-  GateDigitizer* inputDigitizer = digitizerMng->FindDigitizer(m_inputName);//m_collectionName);
+  GateSinglesDigitizer* inputDigitizer = digitizerMng->FindDigitizer(m_inputName);//m_collectionName);
 
   G4int inputCollID=inputDigitizer->m_outputDigiCollectionID;
 

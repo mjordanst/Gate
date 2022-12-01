@@ -44,7 +44,6 @@ See LICENSE.md for further details
 
 #include "GateVDigitizerModule.hh"
 #include "GateDigi.hh"
-#include "GateDigitizer.hh"
 #include "GateClockDependent.hh"
 #include "GateReadoutMessenger.hh"
 #include "GateCrystalSD.hh"
@@ -58,6 +57,7 @@ See LICENSE.md for further details
 #include "GateVSystem.hh"
 #include "GateArrayComponent.hh"
 #include "GateObjectStore.hh"
+#include "GateSinglesDigitizer.hh"
 
 
 
@@ -65,7 +65,7 @@ class GateReadout : public GateVDigitizerModule
 {
 public:
 
-  GateReadout(GateDigitizer *digitizer);
+  GateReadout(GateSinglesDigitizer *digitizer);
   ~GateReadout();
   
   void Digitize() override;
@@ -140,7 +140,7 @@ private:
 
   GateDigi* m_outputDigi;
   GateDigiCollection*  m_OutputDigiCollection;
-  GateDigitizer *m_digitizer;
+  GateSinglesDigitizer *m_digitizer;
 
 
 };

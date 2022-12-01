@@ -24,7 +24,7 @@
 
 
 // :GateVDigitizerModule(name,digitizer),
-GateAdder::GateAdder(GateDigitizer *digitizer)
+GateAdder::GateAdder(GateSinglesDigitizer *digitizer)
   :GateVDigitizerModule("Adder","digitizerMng/"+digitizer->GetSD()->GetName()+"/SinglesDigitizer/"+digitizer->m_digitizerName+"/adder",digitizer, digitizer->GetSD()),
    m_positionPolicy(kEnergyCentroid),
    m_outputDigi(0),

@@ -7,7 +7,7 @@
   ----------------------*/
 
 /*!
-  \class  GateDigitizer
+  \class  GateSinglesDigitizer
   GND (Gate New Digitizer) class
   2022 olga.kochebina@cea.fr
 
@@ -16,9 +16,8 @@
 
 */
 
-#include "GateDigitizer.hh"
-#include "GateDigitizerMessenger.hh"
-
+#include "GateSinglesDigitizer.hh"
+#include "GateSinglesDigitizerMessenger.hh"
 #include "G4UnitsTable.hh"
 
 #include "GateDigitizerMgr.hh"
@@ -30,7 +29,7 @@
 #include "GateOutputMgr.hh"
 #include "GateDigitizerInitializationModule.hh"
 
-GateDigitizer::GateDigitizer( GateDigitizerMgr* itsDigitizerMng,
+GateSinglesDigitizer::GateSinglesDigitizer( GateDigitizerMgr* itsDigitizerMng,
 										  const G4String& digitizerUsersName,
     			                          GateCrystalSD* SD)
   : GateModuleListManager(itsDigitizerMng,itsDigitizerMng->GetObjectName() + "/"+ SD->GetName() +"/SinglesDigitizer/" + digitizerUsersName ,"SinglesDigitizer"),
@@ -40,8 +39,8 @@ GateDigitizer::GateDigitizer( GateDigitizerMgr* itsDigitizerMng,
 	m_SD(SD),
 	m_digitizerName(digitizerUsersName)
 {
-	//G4cout<<"GateDigitizer::GateDigitizer "<<  itsDigitizerMng->GetObjectName() + "/"+ SD->GetName() +"/SinglesDigitizer/" + digitizerUsersName <<G4endl;
-	m_messenger = new GateDigitizerMessenger(this);
+	//G4cout<<"GateSinglesDigitizer::GateSinglesDigitizer "<<  itsDigitizerMng->GetObjectName() + "/"+ SD->GetName() +"/SinglesDigitizer/" + digitizerUsersName <<G4endl;
+	m_messenger = new GateSinglesDigitizerMessenger(this);
 
   //Prepare OutputMng for this digitizer
   	GateOutputMgr::GetInstance()->RegisterNewSingleDigiCollection(m_digitizerName+"_"+SD->GetName(),false);
@@ -51,7 +50,7 @@ GateDigitizer::GateDigitizer( GateDigitizerMgr* itsDigitizerMng,
   		itsDigitizerMng->AddNewSinglesDigitizer(this);
 
   	}
-	//G4cout<<"end GateDigitizer::GateDigitizer "<<  itsDigitizerMng->GetObjectName() + "/"+ SD->GetName() +"/SinglesDigitizer/" + "Singles" <<G4endl;
+	//G4cout<<"end GateSinglesDigitizer::GateSinglesDigitizer "<<  itsDigitizerMng->GetObjectName() + "/"+ SD->GetName() +"/SinglesDigitizer/" + "Singles" <<G4endl;
 
 
 }
@@ -59,18 +58,18 @@ GateDigitizer::GateDigitizer( GateDigitizerMgr* itsDigitizerMng,
 
 
 
-GateDigitizer::~GateDigitizer()
+GateSinglesDigitizer::~GateSinglesDigitizer()
 {
   for (auto processor = theListOfNamedObject.begin(); processor != theListOfNamedObject.end(); ++processor)
   {
-    GateMessage("Core", 5, "~GateDigitizer -- delete module: " << (*processor)->GetObjectName() << Gateendl );
+    GateMessage("Core", 5, "~GateSinglesDigitizer -- delete module: " << (*processor)->GetObjectName() << Gateendl );
     delete (*processor);
   }
   delete m_messenger;
 }
 
 
-void GateDigitizer::AddNewModule(GateVDigitizerModule* DM)
+void GateSinglesDigitizer::AddNewModule(GateVDigitizerModule* DM)
 {
 	if (nVerboseLevel>1)
 		G4cout << "[GateSinglesDigitizer::AddNewModule]: "<< DM->GetName() <<"\n";
@@ -81,7 +80,7 @@ void GateDigitizer::AddNewModule(GateVDigitizerModule* DM)
 }
 
 
-void GateDigitizer::DescribeMyself()
+void GateSinglesDigitizer::DescribeMyself()
 {
 	G4cout<<"Digitizer Describe"<<G4endl;
 	G4cout<<"Digitizer Name: "<< m_digitizerName<<G4endl;

@@ -27,11 +27,11 @@ See LICENSE.md for further details
 
 #include "GateVDigitizerModule.hh"
 #include "GateDigi.hh"
-#include "GateDigitizer.hh"
 #include "GateClockDependent.hh"
 #include "GateCrystalSD.hh"
 
 #include "globals.hh"
+#include "GateSinglesDigitizer.hh"
 
 #include "GateTimeResolutionMessenger.hh"
 
@@ -40,7 +40,7 @@ class GateTimeResolution : public GateVDigitizerModule
 {
 public:
   
-  GateTimeResolution(GateDigitizer *digitizer);
+  GateTimeResolution(GateSinglesDigitizer *digitizer);
   ~GateTimeResolution();
   
   void Digitize() override;
@@ -65,7 +65,7 @@ private:
 
   GateDigiCollection*  m_OutputDigiCollection;
 
-  GateDigitizer *m_digitizer;
+  GateSinglesDigitizer *m_digitizer;
 
 
 };

@@ -27,20 +27,20 @@ See LICENSE.md for further details
 
 #include "GateVDigitizerModule.hh"
 #include "GateDigi.hh"
-#include "GateDigitizer.hh"
 #include "GateClockDependent.hh"
 #include "GateCrystalSD.hh"
 
 #include "globals.hh"
 
 #include "GateEnergyResolutionMessenger.hh"
+#include "GateSinglesDigitizer.hh"
 
 
 class GateEnergyResolution : public GateVDigitizerModule
 {
 public:
   
-  GateEnergyResolution(GateDigitizer *digitizer);
+  GateEnergyResolution(GateSinglesDigitizer *digitizer);
   ~GateEnergyResolution();
   void SetEnergyResolutionParameters();
 
@@ -66,7 +66,7 @@ private:
   GateDigi* m_outputDigi;
   GateEnergyResolutionMessenger *m_Messenger;
   GateDigiCollection*  m_OutputDigiCollection;
-  GateDigitizer *m_digitizer;
+  GateSinglesDigitizer *m_digitizer;
   //G4bool m_IsFirstEntrance;
 
 

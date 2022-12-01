@@ -42,7 +42,7 @@ GateEcatSystem::GateEcatSystem(const G4String& itsName)
   //OK GND 2022
   /*   //G4double coincidenceWindow = 10.* ns;
     GateDigitizerOld* digitizer = GateDigitizerOld::GetInstance();
-  //GateDigitizer* digitizer = GateDigitizer::GetInstance();
+  //GateSinglesDigitizer* digitizer = GateSinglesDigitizer::GetInstance();
   GateCoincidenceSorter* coincidenceSorter = new GateCoincidenceSorter(digitizer,"Coincidences",coincidenceWindow);
   digitizer->StoreNewCoincidenceSorter(coincidenceSorter);
 */

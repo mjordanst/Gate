@@ -79,7 +79,7 @@ void GateDigitizerMgr::Initialize()
 				}
 
 			//Save the ID of the last digitizer module for current digitizer
-			GateDigitizer *digitizer=m_SingleDigitizersList[i_D];//
+			GateSinglesDigitizer *digitizer=m_SingleDigitizersList[i_D];//
 			G4String DigitizerName=digitizer->GetName();
 
 			if(m_SingleDigitizersList[i_D]->m_DMlist.size()>0)
@@ -162,7 +162,7 @@ void GateDigitizerMgr::AddSystem(GateVSystem* aSystem)
 
 
 //------------------------------------------------------------------------------
-GateVSystem* GateDigitizerMgr::FindSystem(GateDigitizer* digitizer)
+GateVSystem* GateDigitizerMgr::FindSystem(GateSinglesDigitizer* digitizer)
 {
   GateVSystem* system = 0;
   if(digitizer->size() != 0)
@@ -217,7 +217,7 @@ void GateDigitizerMgr::AddNewSD(GateCrystalSD* newSD)
 
 //-----------------------------------------------------------------
 // Integrates a new pulse-processor chain
-void GateDigitizerMgr::AddNewSinglesDigitizer(GateDigitizer* digitizer)
+void GateDigitizerMgr::AddNewSinglesDigitizer(GateSinglesDigitizer* digitizer)
 {
   GateDigitizerInitializationModule * myDM = new GateDigitizerInitializationModule(digitizer);
   m_digitizerIMList.push_back(myDM);
@@ -283,7 +283,7 @@ GateClockDependent* GateDigitizerMgr::FindElement(G4String mName)
 }
 
 
-GateDigitizer* GateDigitizerMgr::FindDigitizer(G4String mName)
+GateSinglesDigitizer* GateDigitizerMgr::FindDigitizer(G4String mName)
 {
 
 	//G4cout<<"GateDigitizerMgr::FindDigitizer "<< m_SingleDigitizersList.size() <<G4endl;
@@ -379,7 +379,7 @@ void GateDigitizerMgr::RunDigitizers()
 			}
 			//Save the ID of the last digitizer module for current digitizer
 
-			/*GateDigitizer *digitizer=m_SingleDigitizersList[i_D];//
+			/*GateSinglesDigitizer *digitizer=m_SingleDigitizersList[i_D];//
 			G4String DigitizerName=digitizer->GetName();
 
 			GateVDigitizerModule * DM = (GateVDigitizerModule*)m_SingleDigitizersList[i_D]->m_DMlist[m_SingleDigitizersList[i_D]->m_DMlist.size()-1];

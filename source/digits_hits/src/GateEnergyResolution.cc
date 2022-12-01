@@ -15,7 +15,7 @@
 
    - Create your DM by coping this class and GateDummyDigitizerMessenger class for your DM messenger
    - Places to change are marked with // ****** comment and called with "dummy" names
-   - Include your module to GateDigitizerMessenger in the method DoInsertion(..)
+   - Include your module to GateSinglesDigitizerMessenger in the method DoInsertion(..)
 
 	If you adapting some already exiting class from Old Gate Digitizer here is some of the tips
 	- Digitize () is a fusion of GateVPulseProcessor::ProcessPulseList and GateXXX::ProcessOnePulse
@@ -49,7 +49,7 @@
 
 
 
-GateEnergyResolution::GateEnergyResolution(GateDigitizer *digitizer)
+GateEnergyResolution::GateEnergyResolution(GateSinglesDigitizer *digitizer)
   :GateVDigitizerModule("energyResolution","digitizerMng/"+digitizer->GetSD()->GetName()+"/SinglesDigitizer/"+digitizer->m_digitizerName+"/energyResolution",digitizer,digitizer->GetSD()),
    m_reso(0),
    m_resoMin(0),

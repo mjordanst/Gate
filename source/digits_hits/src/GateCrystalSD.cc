@@ -7,6 +7,8 @@
   ----------------------*/
 
 #include "GateCrystalSD.hh"
+
+#include "../include/GateSinglesDigitizer.hh"
 #include "GateDetectorConstruction.hh"
 #include "GateHit.hh"
 #include "G4HCofThisEvent.hh"
@@ -29,7 +31,6 @@
 #include "GateVVolume.hh"
 
 //OK GND 2022
-#include "GateDigitizer.hh"
 #include "GateDigitizerMgr.hh"
 //#include "GateDigitizerInitializationModule.hh"
 
@@ -56,9 +57,9 @@ GateCrystalSD::GateCrystalSD(const G4String& name)
 	GateDigitizerMgr* digitizerMng=GateDigitizerMgr::GetInstance();
 	//digitizerMng->AddNewSD(this);
 
-	GateDigitizer* digitizer = new GateDigitizer(digitizerMng,"Singles",this);
+	GateSinglesDigitizer* digitizer = new GateSinglesDigitizer(digitizerMng,"Singles",this);
 	digitizerMng->AddNewSinglesDigitizer(digitizer);
-	//digitizerMng->AddNewSinglesDigitizer( new GateDigitizer(digitizerMng,"Singles",this));
+	//digitizerMng->AddNewSinglesDigitizer( new GateSinglesDigitizer(digitizerMng,"Singles",this));
 
 	digitizerMng->AddNewSD(this);
 	//In order to get unique HCID each time when we create a new SD

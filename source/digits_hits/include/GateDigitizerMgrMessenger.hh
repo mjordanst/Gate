@@ -11,11 +11,10 @@ See LICENSE.md for further details
 #define GateDigitizerMgrMessenger_h 1
 
 #include "GateDigitizerMgr.hh"
-#include "GateDigitizer.hh"
-
 #include "G4UImessenger.hh"
 #include "globals.hh"
 #include "GateClockDependentMessenger.hh"
+#include "GateSinglesDigitizer.hh"
 
 class GateDigitizerMgr;
 class G4UIdirectory;
