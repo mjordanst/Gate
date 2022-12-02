@@ -5,10 +5,10 @@ This software is distributed under the terms
 of the GNU Lesser General  Public Licence (LGPL)
 See LICENSE.md for further details
 ----------------------*/
+//GND:ClassToRemove
 
-
-#ifndef GateEnergyEfficiencyMessenger_h
-#define GateEnergyEfficiencyMessenger_h 1
+#ifndef GateEnergyEfficiencyOldMessenger_h
+#define GateEnergyEfficiencyOldMessenger_h 1
 
 #include "GatePulseProcessorMessenger.hh"
 
@@ -16,13 +16,13 @@ class G4UIdirectory;
 class G4UIcmdWithAString;
 class G4UIcmdWithAnInteger;
 
-class GateEnergyEfficiency;
+class GateEnergyEfficiencyOld;
 
-class GateEnergyEfficiencyMessenger: public GatePulseProcessorMessenger
+class GateEnergyEfficiencyOldMessenger: public GatePulseProcessorMessenger
 {
   public:
-    GateEnergyEfficiencyMessenger(GateEnergyEfficiency* itsPulseProcessor);
-    virtual ~GateEnergyEfficiencyMessenger();
+    GateEnergyEfficiencyOldMessenger(GateEnergyEfficiencyOld* itsPulseProcessor);
+    virtual ~GateEnergyEfficiencyOldMessenger();
 
     inline void SetNewValue(G4UIcommand* aCommand, G4String aString);
 

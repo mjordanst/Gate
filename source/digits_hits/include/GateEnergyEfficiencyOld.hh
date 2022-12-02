@@ -6,9 +6,9 @@ of the GNU Lesser General  Public Licence (LGPL)
 See LICENSE.md for further details
 ----------------------*/
 
-
-#ifndef GateEnergyEfficiency_h
-#define GateEnergyEfficiency_h 1
+//GND:ClassToRemove
+#ifndef GateEnergyEfficiencyOld_h
+#define GateEnergyEfficiencyOld_h 1
 
 #include "globals.hh"
 #include <iostream>
@@ -16,17 +16,17 @@ See LICENSE.md for further details
 
 #include "GateVPulseProcessor.hh"
 
-class GateEnergyEfficiencyMessenger;
+class GateEnergyEfficiencyOldMessenger;
 class GateVDistribution;
-class GateEnergyEfficiency : public GateVPulseProcessor
+class GateEnergyEfficiencyOld : public GateVPulseProcessor
 {
   public:
 
-    GateEnergyEfficiency(GatePulseProcessorChain* itsChain,
+    GateEnergyEfficiencyOld(GatePulseProcessorChain* itsChain,
 		 const G4String& itsName=theTypeName) ;
 
     //! Destructor
-    virtual ~GateEnergyEfficiency() ;
+    virtual ~GateEnergyEfficiencyOld() ;
 
     virtual void DescribeMyself(size_t indent);
     void SetEfficiency(GateVDistribution* dist) {m_efficiency = dist;}
@@ -40,7 +40,7 @@ class GateEnergyEfficiency : public GateVPulseProcessor
     void ProcessOnePulse(const GatePulse* inputPulse,GatePulseList& outputPulseList);
   private:
     GateVDistribution* m_efficiency;    	   //!< efficiency table
-    GateEnergyEfficiencyMessenger *m_messenger;   //!< Messenger
+    GateEnergyEfficiencyOldMessenger *m_messenger;   //!< Messenger
 
     static const G4String& theTypeName;   //!< Default type-name for all efficiency
 

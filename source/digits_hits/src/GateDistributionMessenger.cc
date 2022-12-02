@@ -107,8 +107,10 @@ void GateDistributionMessenger::SetUnitX(const G4String& unitX)
 {
     m_unitX = unitX;
     getValueCmd->SetUnitCategory(UnitCategoryX());
+    GetDistribution()->SetUnitX(unitX);
 }
 void GateDistributionMessenger::SetUnitY(const G4String& unitY)
 {
     m_unitY = unitY;
+    GetDistribution()->SetUnitY(unitY);
 }

@@ -6,7 +6,7 @@ of the GNU Lesser General  Public Licence (LGPL)
 See LICENSE.md for further details
 ----------------------*/
 
-
+//GND:ClassToRemove
 #include "GateLocalEfficiencyMessenger.hh"
 #include "GateLocalEfficiency.hh"
 #include "G4UIcmdWithAString.hh"

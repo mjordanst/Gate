@@ -7,6 +7,16 @@
   See LICENSE.md for further details
   ----------------------*/
 
+// OK GND 2022
+/*!
+  \class  GateAdder (prev. GatePulseAdder)
+  \brief   for adding/grouping pulses per volume.
+
+    - For each volume where there was one or more input pulse, we get exactly
+      one output pulse, whose energy is the sum of all the input-pulse energies,
+      and whose position is the centroid of the input-pulse positions.
+
+*/
 
 #include "GateAdder.hh"
 #include "GateAdderMessenger.hh"

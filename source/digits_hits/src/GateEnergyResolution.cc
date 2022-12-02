@@ -10,24 +10,12 @@
 /*!
   \class  GateEnergyResolution
 
-  This class is not used by GATE !
-  The purpose of this class is to help to create new users digitizer module(DM).
+	(ex GateBlurring, crystal blurring, local energy blurring)
 
-   - Create your DM by coping this class and GateDummyDigitizerMessenger class for your DM messenger
-   - Places to change are marked with // ****** comment and called with "dummy" names
-   - Include your module to GateSinglesDigitizerMessenger in the method DoInsertion(..)
-
-	If you adapting some already exiting class from Old Gate Digitizer here is some of the tips
-	- Digitize () is a fusion of GateVPulseProcessor::ProcessPulseList and GateXXX::ProcessOnePulse
-	- pulse --> Digi
-	- outputPulseList --> OutputDigiCollectionVector
-	- inputPulse-->inputDigi
-	- outputPulse --> m_outputDigi
-	- how to adapt iterators check GateAdder class
+	 This module apples simulates Gaussian blurring of
+	 the energy spectrum of a pulse after the readout module.
 
 
-  !!!! DO NOT FORGET TO WRITE A SHORT EXPLANATION ON WHAT DOES YOUR DM !!!!
-	The example is also given in .hh
 */
 
 #include "GateEnergyResolution.hh"

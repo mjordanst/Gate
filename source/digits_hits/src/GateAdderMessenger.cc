@@ -7,6 +7,13 @@ See LICENSE.md for further details
 ----------------------*/
 
 // OK GND 2022
+/*! \class  GatePulseAdderMessenger
+    \brief  Messenger for the GatePulseAdder
+
+    - GatePulseAdderMessenger - by Daniel.Strul@iphe.unil.ch
+
+    \sa GatePulseAdder, GatePulseProcessorMessenger
+*/
 
 #include "GateAdderMessenger.hh"
 #include "GateAdder.hh"

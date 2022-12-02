@@ -394,9 +394,9 @@ size_t GateVSystem::ComputeIdFromVolID(const GateOutputVolumeID& volID,std::vect
   if (isFirstPass){
     isFirstPass=false;
     for (size_t i=0;i<GetTreeDepth();i++){
-      G4cout<<"nofSubCrystal @ level "<<i<< Gateendl;
+      //G4cout<<"nofSubCrystal @ level "<<i<< Gateendl;
       nofCrystalList.push_back(ComputeNofSubCrystalsAtLevel(i,enableList));
-      G4cout<<"= "<<nofCrystalList[i]<< Gateendl;
+      //G4cout<<"= "<<nofCrystalList[i]<< Gateendl;
     }
   }
   size_t ans = 0;

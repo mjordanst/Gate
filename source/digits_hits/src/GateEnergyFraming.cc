@@ -11,7 +11,17 @@
     \brief  GateEnergyFraming applies an energy window selection
     ex-GateThresholder + ex-GateUpholder
 
-    - GateEnergyFraming - by olga.kochebina@cea.fr
+    - GateEnergyFraming
+
+      This digitizer module sets a simple
+      uphold and threshold limits: any input digi whose energy is below or above
+      the energy limit is copied into the output digi-list.
+      On the contrary, any input digi whose energy is above or below this
+      limit is discarded.
+
+   Previous authors: Daniel.Strul@iphe.unil.ch, Steven.Staelens@rug.ac.be
+   Added to GND in November 2022 by olga.kochebina@cea.fr
+
 
     \sa GateEnergyFraming, GateEnergyFramingMessenger
 */

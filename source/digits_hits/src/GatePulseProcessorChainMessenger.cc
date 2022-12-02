@@ -11,6 +11,7 @@ See LICENSE.md for further details
 #include "GateConfiguration.h"
 #include "GatePulseProcessorChainMessenger.hh"
 
+#include "../include/GateEnergyEfficiencyOld.hh"
 #include "G4UIdirectory.hh"
 #include "G4UIcmdWithAString.hh"
 #include "G4UIcmdWithAnInteger.hh"
@@ -33,7 +34,6 @@ See LICENSE.md for further details
 #include "GateLocalTimeDelay.hh"
 #include "GateLocalBlurring.hh"
 #include "GateLocalEfficiency.hh"
-#include "GateEnergyEfficiency.hh"
 #include "GateNoise.hh"
 #include "GateBuffer.hh"
 #include "GateDiscretizer.hh"
@@ -192,7 +192,7 @@ void GatePulseProcessorChainMessenger::DoInsertion(const G4String& childTypeName
   else if (childTypeName=="localEfficiency")
     newProcessor = new GateLocalEfficiency(GetProcessorChain(),newInsertionName);
   else if (childTypeName=="energyEfficiency")
-    newProcessor = new GateEnergyEfficiency(GetProcessorChain(),newInsertionName);
+    newProcessor = new GateEnergyEfficiencyOld(GetProcessorChain(),newInsertionName);
   else if (childTypeName=="noise")
     newProcessor = new GateNoise(GetProcessorChain(),newInsertionName);
   else if (childTypeName=="buffer")

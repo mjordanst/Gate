@@ -5,7 +5,7 @@ This software is distributed under the terms
 of the GNU Lesser General  Public Licence (LGPL)
 See LICENSE.md for further details
 ----------------------*/
-
+//GND:ClassToRemove
 
 #include "GateLocalEfficiency.hh"
 
@@ -54,6 +54,8 @@ void GateLocalEfficiency::ComputeSizes()
 	 return;
       }
       depth = system->GetTreeDepth();
+
+      G4cout<<m_enabled.size()<<" "<< depth<<G4endl;
       if (m_enabled.size() != depth) {
 	 G4cerr<<"[GateLocalEfficiency::ProcessOnePulse]Warning : enabling vector size modified (from "<<m_enabled.size()
 	       <<" to "<<depth<<") and set all entries to 0\n";
@@ -111,10 +113,11 @@ void GateLocalEfficiency::ProcessOnePulse(const GatePulse* inputPulse,GatePulseL
    }
 
    static bool firstPass=true;
-   if (firstPass && m_enabled.empty())  {
-      firstPass=false;
-      ComputeSizes();
-   }
+      if (firstPass && m_enabled.empty())  {
+         ComputeSizes();
+      }
+
+
    size_t ligne = system->ComputeIdFromVolID(inputPulse->GetOutputVolumeID(),m_enabled);
    G4double eff = m_efficiency->Value(ligne);
 

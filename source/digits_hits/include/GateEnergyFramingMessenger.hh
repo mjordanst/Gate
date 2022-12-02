@@ -7,16 +7,15 @@ See LICENSE.md for further details
 ----------------------*/
 
 // OK GND 2022
-/*This class is not used by GATE !
-  The purpose of this class is to help to create new users digitizer module(DM).
-  Please, check GateEnergyFraming.cc for more detals
-  */
-
 
 /*! \class  GateEnergyFramingMessenger
     \brief  Messenger for the GateEnergyFraming
 
-    - GateEnergyFraming - by olga.kochebina@cea.fr
+    - GateEnergyFraming
+
+	Previous authors: Daniel.Strul@iphe.unil.ch, Steven.Staelens@rug.ac.be
+   Added to GND in November 2022 by olga.kochebina@cea.fr
+
 
     \sa GateEnergyFraming, GateEnergyFramingMessenger
 */

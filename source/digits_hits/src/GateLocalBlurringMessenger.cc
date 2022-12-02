@@ -6,6 +6,8 @@
   See LICENSE.md for further details
   ----------------------*/
 
+//GND:ClassToRemove
+
 
 #include "GateLocalBlurringMessenger.hh"
 #include "GateLocalBlurring.hh"

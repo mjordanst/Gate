@@ -7,17 +7,10 @@ See LICENSE.md for further details
 ----------------------*/
 
 // OK GND 2022
-/*This class is not used by GATE !
-  The purpose of this class is to help to create new users digitizer module(DM).
-  Please, check GateSpatialResolution.cc for more detals
-  */
-
 
 /*! \class  GateSpatialResolution
     \brief  GateSpatialResolution does some dummy things with input digi
     to create output digi
-
-    - GateSpatialResolution - by name.surname@email.com
 
     \sa GateSpatialResolution, GateSpatialResolutionMessenger
 */

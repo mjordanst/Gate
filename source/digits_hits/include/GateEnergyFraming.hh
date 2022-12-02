@@ -12,7 +12,12 @@ See LICENSE.md for further details
     \brief  GateEnergyFraming applies an energy window selection
     ex-GateThresholder + ex-GateUpholder
 
-    - GateEnergyFraming - by olga.kochebina@cea.fr
+     - GateEnergyFraming
+
+    Previous authors: Daniel.Strul@iphe.unil.ch, Steven.Staelens@rug.ac.be
+
+   	Added to GND in November 2022 by olga.kochebina@cea.fr
+
 
     \sa GateEnergyFraming, GateEnergyFramingMessenger
 */

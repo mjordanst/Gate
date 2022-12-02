@@ -12,7 +12,7 @@
 #include "GateObjectStore.hh"
 #include "GateConstants.hh"
 
-
+//GND:ClassToRemove
 GateCC3DlocalSpblurring::GateCC3DlocalSpblurring(GatePulseProcessorChain* itsChain,
                                                  const G4String& itsName)
     : GateVPulseProcessor(itsChain,itsName)

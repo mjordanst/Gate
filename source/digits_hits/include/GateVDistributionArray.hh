@@ -29,6 +29,8 @@ class GateVDistributionArray : public GateVDistribution
 
     G4double Integral() const {return m_arrayRepartition.back();}
 
+
+
     virtual G4double MinX() const;
     virtual G4double MinY() const;
     virtual G4double MaxX() const;
@@ -64,6 +66,7 @@ class GateVDistributionArray : public GateVDistribution
     G4double m_factorX;
     G4double m_factorY;
     G4int m_autoStart;
+
 };
 
 

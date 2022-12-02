@@ -6,15 +6,16 @@ of the GNU Lesser General  Public Licence (LGPL)
 See LICENSE.md for further details
 ----------------------*/
 
+//GND:ClassToRemove
+#include "../include/GateEnergyEfficiencyOldMessenger.hh"
 
-#include "GateEnergyEfficiencyMessenger.hh"
-#include "GateEnergyEfficiency.hh"
+#include "../include/GateEnergyEfficiencyOld.hh"
 #include "G4UIcmdWithAString.hh"
 #include "G4UIcmdWithAnInteger.hh"
 #include "GateVDistribution.hh"
 #include "GateDistributionListManager.hh"
 
-GateEnergyEfficiencyMessenger::GateEnergyEfficiencyMessenger(GateEnergyEfficiency* itsPulseProcessor)
+GateEnergyEfficiencyOldMessenger::GateEnergyEfficiencyOldMessenger(GateEnergyEfficiencyOld* itsPulseProcessor)
     : GatePulseProcessorMessenger(itsPulseProcessor)
 {
   G4String guidance;
@@ -27,15 +28,15 @@ GateEnergyEfficiencyMessenger::GateEnergyEfficiencyMessenger(GateEnergyEfficienc
 }
 
 
-GateEnergyEfficiencyMessenger::~GateEnergyEfficiencyMessenger()
+GateEnergyEfficiencyOldMessenger::~GateEnergyEfficiencyOldMessenger()
 {
   delete distNameCmd;
 }
 
 
-void GateEnergyEfficiencyMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
+void GateEnergyEfficiencyOldMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 {
-  GateEnergyEfficiency* localEff = (GateEnergyEfficiency*)GetNamedObject();
+  GateEnergyEfficiencyOld* localEff = (GateEnergyEfficiencyOld*)GetNamedObject();
   if (!localEff) return;
   if ( command==distNameCmd ){
     GateVDistribution* distrib = (GateVDistribution*)GateDistributionListManager::GetInstance()->FindElementByBaseName(newValue);

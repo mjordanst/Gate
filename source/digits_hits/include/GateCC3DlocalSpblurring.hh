@@ -1,3 +1,5 @@
+//GND:ClassToRemove
+
 #ifndef GateCC3DlocalSpblurring_h
 #define GateCC3DlocalSpblurring_h 1
 

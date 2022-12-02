@@ -8,6 +8,8 @@
 #include "G4UIcmdWithADouble.hh"
 #include "G4UIcmdWith3VectorAndUnit.hh"
 
+
+//GND:ClassToRemove
 GateCC3DlocalSpblurringMessenger::GateCC3DlocalSpblurringMessenger(GateCC3DlocalSpblurring* itsDelay)
     : GatePulseProcessorMessenger(itsDelay)
 {

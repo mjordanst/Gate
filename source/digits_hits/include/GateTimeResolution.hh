@@ -7,17 +7,12 @@ See LICENSE.md for further details
 ----------------------*/
 
 // OK GND 2022
-/*This class is not used by GATE !
-  The purpose of this class is to help to create new users digitizer module(DM).
-  Please, check GateTimeResolution.cc for more detals
-  */
-
 
 /*! \class  GateTimeResolution
     \brief  GateTimeResolution does some dummy things with input digi
     to create output digi
 
-    - GateTimeResolution - by name.surname@email.com
+    - GateTimeResolution - by Martin.Rey@epfl.ch (July 2003)
 
     \sa GateTimeResolution, GateTimeResolutionMessenger
 */

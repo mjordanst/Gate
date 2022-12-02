@@ -7,17 +7,14 @@ See LICENSE.md for further details
 ----------------------*/
 
 // OK GND 2022
-/*This class is not used by GATE !
-  The purpose of this class is to help to create new users digitizer module(DM).
-  Please, check GateEnergyResolution.cc for more detals
-  */
-
 
 /*! \class  GateEnergyResolution
-    \brief  GateEnergyResolution does some dummy things with input digi
-    to create output digi
+    \brief  GateEnergyResolution
+    Digitizer Module for simulating a Gaussian resolution on the energy spectrum.
+ 	The user can choose a specific resolution for each type of crystal.
+    Each time, (s)he must choose the resolution and the energy of reference.
 
-    - GateEnergyResolution - by name.surname@email.com
+    - GateEnergyResolution - by Martin.Rey@epfl.ch (nov 2002)
 
     \sa GateEnergyResolution, GateEnergyResolutionMessenger
 */

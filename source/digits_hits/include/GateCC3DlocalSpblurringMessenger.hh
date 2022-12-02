@@ -1,4 +1,4 @@
-
+//GND:ClassToRemove
 
 #ifndef GateCC3DlocalSpblurringMessenger_h
 #define GateCC3DlocalSpblurringMessenger_h 1

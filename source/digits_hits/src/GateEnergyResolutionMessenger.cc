@@ -7,10 +7,15 @@ See LICENSE.md for further details
 ----------------------*/
 
 // OK GND 2022
-/*This class is not used by GATE !
-  The purpose of this class is to help to create new users digitizer module(DM).
-  Please, check GateEnergyResolution.cc for more detals
-  */
+
+/*! \class  GateEnergyResolutionMessenger
+    \brief  Messenger for the GateEnergyResolution
+
+    - GateEnergyResolution - by by Martin.Rey@epfl.ch (nov 2002)
+
+    \sa GateEnergyResolution, GateEnergyResolutionMessenger
+*/
+
 
 #include "GateEnergyResolutionMessenger.hh"
 #include "GateEnergyResolution.hh"

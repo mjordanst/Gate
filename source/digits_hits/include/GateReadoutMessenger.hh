@@ -7,16 +7,9 @@ See LICENSE.md for further details
 ----------------------*/
 
 // OK GND 2022
-/*This class is not used by GATE !
-  The purpose of this class is to help to create new users digitizer module(DM).
-  Please, check GateReadout.cc for more detals
-  */
-
 
 /*! \class  GateReadoutMessenger
     \brief  Messenger for the GateReadout
-
-    - GateReadout - by name.surname@email.com
 
     \sa GateReadout, GateReadoutMessenger
 */
