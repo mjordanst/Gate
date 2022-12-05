@@ -74,244 +74,12 @@ If you want to disable the digitizer process and all output (that are already di
    /gate/output/analysis/disable
    /gate/output/digi/disable !!!
 
-
-Singles Digitizers
--------------------
-As mentioned above, the information contained in the *hit* does not correspond to what is provided by a real detector. To simulate the digital values (*digis*) that result from the output of the Front End Electronics, the sampling methods of the signal must be specified. To do this, a number of digitizer modules are available and are described below. 
-
-The role of *singles digitizer* is to build, from the *hit* information, the physical observables, which include energy, position, and time of detection for each particle. In addition, the digitizer must implement the required logic to simulate coincidences during PET simulations. Typical usage of digitizer module includes the following actions: 
-
-* simulate detector response 
-* simulate readout scheme 
-* simulate trigger logic
-
-The Singles Digitizer is organized as a chain of digitizer modules that begins with the hit and ends with the single which represents the physical observable seen from the detector.
-   
-As the user creates a GATE simulation with enabled option to save *Singles* and at least one digitizer module, a default *Single Digitizer* named *Singles_<SDname>* is created automatically. 
-
-If one more, new Singles Digitizer is needed, the following command template should be used::
-
-   /gate/digitizerMgr/name <singles_digitizer_name>
-   /gate/digitizerMgr/chooseSD <sensitive_detector_name>
-   /gate/digitizerMgr/insert SinglesDigitizer 
-   
-It is also possible to define input Singles Collection if needed::
-   /gate/digitizerMgr/<sensitive_detector_name>/SinglesDigitizer/<singles_digitizer_name>/setInputCollection Singles
-
-The digitization consists of a series of signal processors, *digitizer modules* in GATE. The output at each step along the series is defined as a *digi* and can be saved at each step (see Output section !!!). These *digis* or*Singles* realistically simulate the physical observables of a detector response to a particle interacting with it. An example is shown in :numref:`Digitizer`.
-
-.. figure:: Digitizer.jpg
-   :alt: Figure 1: Digitizer
-   :name: Digitizer 
-   
-   It is important to notice that the order of the digitizer module declaration should make sense. The data flow follows the same order as the module declaration in the macro. In a typical scanner, the following sequence works well, although it is not mandatory (the module names will be explained in the rest of the section):
-
-* insert adder before readout 
-* insert readout before energy framing
-* insert resolution before energy framing
-
-
-
-.. _digitizer_modules-label:
-
-Digitizer modules
-~~~~~~~~~~~~~~~~~
-
-Adder
-^^^^^
-
-One particle often creates multiple interactions, and consequently multiple *hits*, within a crystal. The first step of the digitizer is to sum all the *hits* that occur within the same crystal (i.e. the same volume). This is due to the fact that the electronics always measure an integrated signal, and do not have the time or energy resolution necessary to distinguish between the individual interactions of the particle within a crystal. This digitizer action is completed by a module called the adder. The adder should be the first module of a digitizer chain. It acts on the lowest level in the system hierarchy, as explained in :ref:`defining_a_system-label`:
-
-* A system must be used to describe the geometry (also the mother volume name must corresponds to a system name)
-* The lowest level of this system must be attached to the detector volume and must be declared as a *sensitive detector*
-
-If one particle that enters a detector makes multiple *hits* within two different crystal volumes before being stopped, the output of the adder module will consist of two *Singles*. Each *Single* is computed as follows : the energy is taken to be the total of energies in each volume, the position is obtained with an energy-weighted centroid of the different *hit* positions. The time is equal to the time at which the first *hit* occured.
-
-The command to use the adder module is::
-
-   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/insert    adder
-
-Default energy policy is EnergyCentroid. The following commands can be used to select users energy policy::
-
-   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/adder/positionPolicy energyWeightedCentroid
-   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/adder/positionPolicy takeEnergyWinner
-
-Example::
-   
-   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/insert    adder 
-   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/adder/positionPolicy energyWeightedCentroid
-
-Readout
-^^^^^^^
-
-With the exception of a detector system where each crystal is read by an individual photo-detector, the readout segmentation is often different from the basic geometrical structures of the detector. The readout geometry is an artificial geometry that is usually associated with a group of sensitive detectors. There are two ways of modelling this readout process : either a winner-takes-all approach that will somewhat model APD-like readout, or an energy-centroid approach that will be closer to the block-PMT readout. Using the winner-takes-all policy, the grouping has to be determined by the user through a variable named *depth* corresponding to the component in the volume hierarchy at which pulses are summed together. There is also the *setReadoutVolume* option to choose the level of readout by the name of your system element. Using this variable, the *digis* are summed if their volume ID's are identical to this level of depth. Using the energy-centroid policy, the depth of the grouping is forced to occur at the 'crystal' level whatever the system used, so the depth variable is ignored. This means that the pulses in the same level just above the crystal level are summed together.
-
-The readout module regroups pulses per block (group of *sensitive detectors*). For both policy, the resulting pulse in the block has the total energy of all pulses summed together. For the winner-takes-all policy, the position of the pulse is the one with the maximum energy. For the energy-centroid policy, the position is determined by weighting the crystal indices of each pulse by the deposited energy in order to get the energy centroid position. In this case, only the crystal index is determined, and the actual cartesian coordinates of the resulting pulse are reset to the center of this crystal. If a sub-level of the crystal is used (different layers), then the final sub-level is determined by the one having the maximum energy deposited (so a winner-takes-all approach for these sublevels of the crystal is used)::
-
-   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/insert readout
-   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/readout/setPolicy myPolicy
-   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/readout/setDepth X
-   or equivalent to setDepth command
-   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/setReadoutVolume <YourVolumeName>
-   
-The parameter *myPolicy* can be *TakeEnergyWinner* for the winner-takes-all policy or *TakeEnergyCentroid* for the energy centroid policy.
-If the energy centroid policy is used, the depth is forced to be at the level just above the crystal level, whatever the system used. To set/force your own depth for centroid policy, one can use::
-
-   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/readout/forceReadoutVolumeForEnergyCentroid true 
- 
-If the winner-takes-all policy is used, then the user must choose the *depth* or *Volume* at which the readout process takes place. If the *setPolicy* command is not set, then the winner-takes-all policy is chosen by default in order to be back-compatible with previous Gate releases.
-
-:numref:`Hittosingle` illustrates the actions of both the *adder* and *readout* modules. The *adder* module transforms the *hits* into a *pulse* in each individual volume and then the *readout* module sums a group of these *pulses* into a single *pulse* at the level of depth as defined by the user for the winner-takes-all policy.
-
-
-.. figure:: Hittosingle.jpg
-   :alt: Figure 2: Hittosingle
-   :name: Hittosingle
-
-   Actions of the *it adder* and *it readout* modules
-
-The importance of the *setDepth* command line when using the winner-takes-all policy is illustrated through the following example from a PET system (see :ref:`defining_a_system-label`). In a *cylindricalPET* system, where the first volume level is *rsector*, and the second volume level is *module*, as  shown in :numref:`Depth-p4`, the *readout* *depth* depends upon how the electronic readout functions.
-
-If one PMT reads the four modules in the axial direction, the *depth* should be set with the command::
-
-   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/readout/setDepth 1 
-
-The energy of this *single* event is the sum of the energy of the pulses inside the white rectangle (*rsector*) of :numref:`Depth-p4`. However, if individual PMTs read each module (group of crystals), the *depth* should be set with the command::
-
-   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/readout/setDepth 2 
-
-In this case, the energy of the *single* event is the sum of the energies of the pulses inside the red box (*module*) of :numref:`Depth-p4`.
-
-.. figure:: Depth-p4.jpg
-   :alt: Figure 3: Depth-p4
-   :name: Depth-p4
-
-   Setting the *readout depth* in a CylindricalPET system
-
-The next task is to transform this output *pulse* from the readout module into a *single* which is the physical observable of the experiment. This transformation is the result of the detector response and should mimic the behaviors of the photo-detector, electronics, and acquisition system.
-
-Energy resolution 
-^^^^^^^^^^^^^^^^^
-   (ex blurring, crystal blurring, local energy blurring)
-
-The *energy resolution* digitizer module simulates Gaussian blurring of the energy spectrum of a pulse after the *readout* module. This is accomplished by introducing a resolution, :math:`R_0` (FWHM), at a given energy, :math:`E_0`. To enable module::
- 
-   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/insert   energyResolution
-   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/energyResolution/fwhm 0.15
-   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/energyOfReference 511. keV
-   
-In the case of a scanner where all the detectors are made of the same type of crystal, it is often useful to assign a different energy resolution for each crystal in the detector block, between a minimum and a maximum value. To model the efficiency of the system, a coefficient (between 0 and 1) can also be set. As an example, a random blurring of all the crystals between 15% and 35% at a reference energy of 511 keV, and with a quantum efficiency of 90% can be modelled using the following commands::
-
-   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/insert   energyResolution
-   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/energyResolution/fwhmMin 0.15
-   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/energyResolution/fwhmMin 0.35
-   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/energyResolution/energyOfReference 511. keV
-    
-According to the camera, the energy resolution may follow different laws, such as an inverse square law or a linear law. 
-
-The inverse square law (:math:`R=R_0\frac{\sqrt{E_0}}{\sqrt{E}}`), is used by default.
-
-For linear law, one must specify the linear law and fix the attributes like the energy of reference, the resolution and the slope::
-
-   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/energyResolution/slope -0.055 1/MeV
-
-Example::
- 
-   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/insert   energyResolution
-   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/energyResolution/fwhm 0.15
-   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/energyResolution/energyOfReference 511. keV
-   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/energyResolution/slope -0.055 1/MeV
- 
-
-Time resolution
-^^^^^^^^^^^^^^^
-The *time resolution* module introduces a Gaussian blurring in the detection time. It works in the same manner as the *energy resolution* module, but with time instead of energy. To set a Gaussian temporal resolution (FWHM) of 1.4 ns, use the following commands::
-
-   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/insert timeResolution 
-   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/timeResolution/fwhm 1.4 ns
-
-Example::
- 
-   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/insert   timeResolution
-   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/timeResolution/fwhm 1.4 ns
-
-Spatial resolution
-^^^^^^^^^^^^^^^^^^
-   (ex spatial blurring)
-
-The spatial resolution is assumed to follow a Gaussian distribution defined by its width::
-
-   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/insert spatialResolution 
-   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/spatialResolution/fwhm 2.0 mm 
-
-or if resolution is varying for X, Y and Z:: 
-
-   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/spatialResolution/fwhmX 2.0 mm  
-   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/spatialResolution/fwhmY 3.0 mm 
-   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/spatialResolution/fwhmZ 1.0 mm 
-
-In case if the position obtained after applying a Gaussian blurring exceeds the limits of the original volume, it is set to the surface of that volume (ex, crystal) or surface of a group of volumes (ex, block of crystals). For example, in SPECT the final position should be located within the original detector volume (smallest volume), in this case one should apply the following commande::
-
-   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/spatialResolution/confineInsideOfSmallestElement true
-
-BEWARE: This relocation procedure is validated only for the first group level of crystals.
-
-Example::
- 
-   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/insert   spatialResolution
-   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/spatialResolution/fwhm 1.0 mm
-   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/spatialResolution/confineInsideOfSmallestElement true 
-   
-Energy Framing
-^^^^^^^^^^^^^^
-   (ex Thresholder and Upholder)
-   
-The *Energy Framing* module allows the user to select an energy window to discard low and high energy events. The low energy cut, supplied by the user, represents a threshold response, below which the detector remains inactive. The user-supplied high energy cut is the maximum energy the detector will register. In both PET and SPECT analysis, the proper setting of these windows is crucial to mimic the behavior of real scanners, in terms of scatter fractions and count rate performances for instance. The energy selection for the photo-peak is performed using the following commands::
-
-   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/insert    energyFraming
-   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/energyFraming/setMin 400. keV
-   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/energyFraming/setMax 600. keV
-
-Example: 
-
-In SPECT analysis, subtractive scatter correction methods such as the dual-energy-window or the triple-energy-window method may be performed in post processing on images obtained from several energy windows. If one needs multiple energy windows, several digitizer branches will be created. Furthermore, the projections associated with each energy window can be recorded into one interfile output. In the following example, 3 energy windows are defined separately with their names and energy frames::
-
-   /gate/digitizerMgr/name Window1
-   /gate/digitizerMgr/chooseSD crystal
-   /gate/digitizerMgr/insert SinglesDigitizer
-   /gate/digitizerMgr/crystal/SinglesDigitizer/Window1/setInputCollection Singles
-   /gate/digitizerMgr/crystal/SinglesDigitizer/Window1/insert energyFraming
-   /gate/digitizerMgr/crystal/SinglesDigitizer/Window1/energyFraming/setMin 315 keV
-   /gate/digitizerMgr/crystal/SinglesDigitizer/Window1/energyFraming/setMax 328 keV
-   
-   /gate/digitizerMgr/name Window2
-   /gate/digitizerMgr/chooseSD crystal
-   /gate/digitizerMgr/insert SinglesDigitizer
-   /gate/digitizerMgr/crystal/SinglesDigitizer/Window2/setInputCollection Singles
-   /gate/digitizerMgr/crystal/SinglesDigitizer/Window2/insert energyFraming
-   /gate/digitizerMgr/crystal/SinglesDigitizer/Window2/energyFraming/setMin 328 keV
-   /gate/digitizerMgr/crystal/SinglesDigitizer/Window2/energyFraming/setMax 400 keV
-   
-   /gate/digitizerMgr/name Window3
-   /gate/digitizerMgr/chooseSD crystal
-   /gate/digitizerMgr/insert SinglesDigitizer
-   /gate/digitizerMgr/crystal/SinglesDigitizer/Window3/setInputCollection Singles
-   /gate/digitizerMgr/crystal/SinglesDigitizer/Window3/insert energyFraming
-   /gate/digitizerMgr/crystal/SinglesDigitizer/Window3/energyFraming/setMin 328 keV
-   /gate/digitizerMgr/crystal/SinglesDigitizer/Window3/energyFraming/setMax 400 keV 
-
-   
-   !!! NOT TESTED YET IN NEW GATE DIGITIZER !!! When specifying the interfile output (see :ref:`interfile_output_of_projection_set-label`), the different window names must be added with the following commands::
-
-   /gate/output/projection/setInputDataName Window1
-   /gate/output/projection/addInputDataName Window2
-   /gate/output/projection/addInputDataName Window3
-   
-
+Tools
+---------------
 .. _Distributions-label:
 
 Distributions
-^^^^^^^^^^^^^
+~~~~~~~~~~~~~
 
 Since many of the modules presented below have to deal with functions or probability density, a generic tool is provided to describe such mathematical objects in GATE. Basically, a distribution in GATE is defined by its name, its type (Gaussian, Exponential, etc...) and the parameters specifics to each distribution type (such as the mean and the standard deviation of a Gaussian function). Depending on the context, these objects are used directly as functions, or as probability densities into which a variable is randomly chosen. In the following, the generic term of distribution will be used to describe both of these objects, since their declaration is unified under this term into GATE.
 
@@ -393,6 +161,341 @@ The possible type name available corresponds to the five distributions described
    +----------------+--------------------------------------------------------------------------------+
    | read           | do read the file (should be called after specifying all the other parameters)  | 
    +----------------+--------------------------------------------------------------------------------+
+
+
+Singles Digitizers
+-------------------
+As mentioned above, the information contained in the *hit* does not correspond to what is provided by a real detector. To simulate the digital values (*digis*) that result from the output of the Front End Electronics, the sampling methods of the signal must be specified. To do this, a number of digitizer modules are available and are described below. 
+
+The role of *singles digitizer* is to build, from the *hit* information, the physical observables, which include energy, position, and time of detection for each particle. In addition, the digitizer must implement the required logic to simulate coincidences during PET simulations. Typical usage of digitizer module includes the following actions: 
+
+* simulate detector response 
+* simulate readout scheme 
+* simulate trigger logic
+
+The Singles Digitizer is organized as a chain of digitizer modules that begins with the hit and ends with the single which represents the physical observable seen from the detector.
+   
+As the user creates a GATE simulation with enabled option to save *Singles* and at least one digitizer module, a default *Single Digitizer* named *Singles_<SDname>* is created automatically. 
+
+If one more, new Singles Digitizer is needed, the following command template should be used::
+
+   /gate/digitizerMgr/name <singles_digitizer_name>
+   /gate/digitizerMgr/chooseSD <sensitive_detector_name>
+   /gate/digitizerMgr/insert SinglesDigitizer 
+   
+It is also possible to define input Singles Collection if needed::
+   /gate/digitizerMgr/<sensitive_detector_name>/SinglesDigitizer/<singles_digitizer_name>/setInputCollection Singles
+
+The digitization consists of a series of signal processors, *digitizer modules* in GATE. The output at each step along the series is defined as a *digi* and can be saved at each step (see Output section !!!). These *digis* or*Singles* realistically simulate the physical observables of a detector response to a particle interacting with it. An example is shown in :numref:`Digitizer`.
+
+.. figure:: Digitizer.jpg
+   :alt: Figure 1: Digitizer
+   :name: Digitizer 
+   
+   It is important to notice that the order of the digitizer module declaration should make sense. The data flow follows the same order as the module declaration in the macro. In a typical scanner, the following sequence works well, although it is not mandatory (the module names will be explained in the rest of the section):
+
+* insert adder before readout 
+* insert readout before energy framing
+* insert resolution before energy framing
+
+
+
+.. _digitizer_modules-label:
+
+Digitizer modules
+~~~~~~~~~~~~~~~~~
+
+Adder
+^^^^^
+
+One particle often creates multiple interactions, and consequently multiple *hits*, within a crystal. The first step of the digitizer is to sum all the *hits* that occur within the same crystal (i.e. the same volume). This is due to the fact that the electronics always measure an integrated signal, and do not have the time or energy resolution necessary to distinguish between the individual interactions of the particle within a crystal. This digitizer action is completed by a module called the adder. The adder should be the first module of a digitizer chain. It acts on the lowest level in the system hierarchy, as explained in :ref:`defining_a_system-label`:
+
+* A system must be used to describe the geometry (also the mother volume name must corresponds to a system name)
+* The lowest level of this system must be attached to the detector volume and must be declared as a *sensitive detector*
+
+If one particle that enters a detector makes multiple *hits* within two different crystal volumes before being stopped, the output of the adder module will consist of two *Singles*. Each *Single* is computed as follows : the energy is taken to be the total of energies in each volume, the position is obtained with an energy-weighted centroid of the different *hit* positions. The time is equal to the time at which the first *hit* occured.
+
+The command to use the adder module is::
+
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/insert    adder
+
+Default energy policy is EnergyCentroid. The following commands can be used to select users energy policy::
+
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/adder/positionPolicy energyWeightedCentroid
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/adder/positionPolicy takeEnergyWinner
+
+**Example**::
+   
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/insert    adder 
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/adder/positionPolicy energyWeightedCentroid
+
+Readout
+^^^^^^^
+
+With the exception of a detector system where each crystal is read by an individual photo-detector, the readout segmentation is often different from the basic geometrical structures of the detector. The readout geometry is an artificial geometry that is usually associated with a group of sensitive detectors. There are two ways of modelling this readout process : either a winner-takes-all approach that will somewhat model APD-like readout, or an energy-centroid approach that will be closer to the block-PMT readout. Using the winner-takes-all policy, the grouping has to be determined by the user through a variable named *depth* corresponding to the component in the volume hierarchy at which pulses are summed together. There is also the *setReadoutVolume* option to choose the level of readout by the name of your system element. Using this variable, the *digis* are summed if their volume ID's are identical to this level of depth. Using the energy-centroid policy, the depth of the grouping is forced to occur at the 'crystal' level whatever the system used, so the depth variable is ignored. This means that the pulses in the same level just above the crystal level are summed together.
+
+The readout module regroups pulses per block (group of *sensitive detectors*). For both policy, the resulting pulse in the block has the total energy of all pulses summed together. For the winner-takes-all policy, the position of the pulse is the one with the maximum energy. For the energy-centroid policy, the position is determined by weighting the crystal indices of each pulse by the deposited energy in order to get the energy centroid position. In this case, only the crystal index is determined, and the actual cartesian coordinates of the resulting pulse are reset to the center of this crystal. If a sub-level of the crystal is used (different layers), then the final sub-level is determined by the one having the maximum energy deposited (so a winner-takes-all approach for these sublevels of the crystal is used)::
+
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/insert readout
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/readout/setPolicy myPolicy
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/readout/setDepth X
+   or equivalent to setDepth command
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/setReadoutVolume <YourVolumeName>
+   
+The parameter *myPolicy* can be *TakeEnergyWinner* for the winner-takes-all policy or *TakeEnergyCentroid* for the energy centroid policy.
+If the energy centroid policy is used, the depth is forced to be at the level just above the crystal level, whatever the system used. To set/force your own depth for centroid policy, one can use::
+
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/readout/forceReadoutVolumeForEnergyCentroid true 
+ 
+If the winner-takes-all policy is used, then the user must choose the *depth* or *Volume* at which the readout process takes place. If the *setPolicy* command is not set, then the winner-takes-all policy is chosen by default in order to be back-compatible with previous Gate releases.
+
+:numref:`Hittosingle` illustrates the actions of both the *adder* and *readout* modules. The *adder* module transforms the *hits* into a *pulse* in each individual volume and then the *readout* module sums a group of these *pulses* into a single *pulse* at the level of depth as defined by the user for the winner-takes-all policy.
+
+
+.. figure:: Hittosingle.jpg
+   :alt: Figure 2: Hittosingle
+   :name: Hittosingle
+
+   Actions of the *it adder* and *it readout* modules
+
+The importance of the *setDepth* command line when using the winner-takes-all policy is illustrated through the following example from a PET system (see :ref:`defining_a_system-label`). In a *cylindricalPET* system, where the first volume level is *rsector*, and the second volume level is *module*, as  shown in :numref:`Depth-p4`, the *readout* *depth* depends upon how the electronic readout functions.
+
+If one PMT reads the four modules in the axial direction, the *depth* should be set with the command::
+
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/readout/setDepth 1 
+
+The energy of this *single* event is the sum of the energy of the pulses inside the white rectangle (*rsector*) of :numref:`Depth-p4`. However, if individual PMTs read each module (group of crystals), the *depth* should be set with the command::
+
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/readout/setDepth 2 
+
+In this case, the energy of the *single* event is the sum of the energies of the pulses inside the red box (*module*) of :numref:`Depth-p4`.
+
+.. figure:: Depth-p4.jpg
+   :alt: Figure 3: Depth-p4
+   :name: Depth-p4
+
+   Setting the *readout depth* in a CylindricalPET system
+
+The next task is to transform this output *pulse* from the readout module into a *single* which is the physical observable of the experiment. This transformation is the result of the detector response and should mimic the behaviors of the photo-detector, electronics, and acquisition system.
+
+Energy resolution 
+^^^^^^^^^^^^^^^^^
+*(ex blurring, crystal blurring, local energy blurring)*
+
+The *energy resolution* digitizer module simulates Gaussian blurring of the energy spectrum of a pulse after the *readout* module. This is accomplished by introducing a resolution, :math:`R_0` (FWHM), at a given energy, :math:`E_0`. To enable module::
+ 
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/insert   energyResolution
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/energyResolution/fwhm 0.15
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/energyOfReference 511. keV
+   
+In the case of a scanner where all the detectors are made of the same type of crystal, it is often useful to assign a different energy resolution for each crystal in the detector block, between a minimum and a maximum value. To model the efficiency of the system, a coefficient (between 0 and 1) can also be set. As an example, a random blurring of all the crystals between 15% and 35% at a reference energy of 511 keV, and with a quantum efficiency of 90% can be modelled using the following commands::
+
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/insert   energyResolution
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/energyResolution/fwhmMin 0.15
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/energyResolution/fwhmMin 0.35
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/energyResolution/energyOfReference 511. keV
+    
+According to the camera, the energy resolution may follow different laws, such as an inverse square law or a linear law. 
+
+The inverse square law (:math:`R=R_0\frac{\sqrt{E_0}}{\sqrt{E}}`), is used by default.
+
+For linear law, one must specify the linear law and fix the attributes like the energy of reference, the resolution and the slope::
+
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/energyResolution/slope -0.055 1/MeV
+
+**Example**::
+ 
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/insert   energyResolution
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/energyResolution/fwhm 0.15
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/energyResolution/energyOfReference 511. keV
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/energyResolution/slope -0.055 1/MeV
+ 
+
+Time resolution
+^^^^^^^^^^^^^^^
+The *time resolution* module introduces a Gaussian blurring in the detection time. It works in the same manner as the *energy resolution* module, but with time instead of energy. To set a Gaussian temporal resolution (FWHM) of 1.4 ns, use the following commands::
+
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/insert timeResolution 
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/timeResolution/fwhm 1.4 ns
+
+**Example**::
+ 
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/insert   timeResolution
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/timeResolution/fwhm 1.4 ns
+
+Spatial resolution
+^^^^^^^^^^^^^^^^^^
+*(ex spatial blurring)*
+
+The spatial resolution is assumed to follow a Gaussian distribution defined by its width::
+
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/insert spatialResolution 
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/spatialResolution/fwhm 2.0 mm 
+
+or if resolution is varying for X, Y and Z:: 
+
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/spatialResolution/fwhmX 2.0 mm  
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/spatialResolution/fwhmY 3.0 mm 
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/spatialResolution/fwhmZ 1.0 mm 
+
+In case if the position obtained after applying a Gaussian blurring exceeds the limits of the original volume, it is set to the surface of that volume (ex, crystal) or surface of a group of volumes (ex, block of crystals). For example, in SPECT the final position should be located within the original detector volume (smallest volume), in this case one should apply the following commande::
+
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/spatialResolution/confineInsideOfSmallestElement true
+
+BEWARE: This relocation procedure is validated only for the first group level of crystals.
+
+**Example**::
+ 
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/insert   spatialResolution
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/spatialResolution/fwhm 1.0 mm
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/spatialResolution/confineInsideOfSmallestElement true 
+   
+Energy Framing
+^^^^^^^^^^^^^^
+*ex Thresholder and Upholder*
+   
+The *Energy Framing* module allows the user to select an energy window to discard low and high energy events. The low energy cut, supplied by the user, represents a threshold response, below which the detector remains inactive. The user-supplied high energy cut is the maximum energy the detector will register. In both PET and SPECT analysis, the proper setting of these windows is crucial to mimic the behavior of real scanners, in terms of scatter fractions and count rate performances for instance. The energy selection for the photo-peak is performed using the following commands::
+
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/insert    energyFraming
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/energyFraming/setMin 400. keV
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/energyFraming/setMax 600. keV
+
+**Example**: 
+
+In SPECT analysis, subtractive scatter correction methods such as the dual-energy-window or the triple-energy-window method may be performed in post processing on images obtained from several energy windows. If one needs multiple energy windows, several digitizer branches will be created. Furthermore, the projections associated with each energy window can be recorded into one interfile output. In the following example, 3 energy windows are defined separately with their names and energy frames::
+
+   /gate/digitizerMgr/name Window1
+   /gate/digitizerMgr/chooseSD crystal
+   /gate/digitizerMgr/insert SinglesDigitizer
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Window1/setInputCollection Singles
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Window1/insert energyFraming
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Window1/energyFraming/setMin 315 keV
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Window1/energyFraming/setMax 328 keV
+   
+   /gate/digitizerMgr/name Window2
+   /gate/digitizerMgr/chooseSD crystal
+   /gate/digitizerMgr/insert SinglesDigitizer
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Window2/setInputCollection Singles
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Window2/insert energyFraming
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Window2/energyFraming/setMin 328 keV
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Window2/energyFraming/setMax 400 keV
+   
+   /gate/digitizerMgr/name Window3
+   /gate/digitizerMgr/chooseSD crystal
+   /gate/digitizerMgr/insert SinglesDigitizer
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Window3/setInputCollection Singles
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Window3/insert energyFraming
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Window3/energyFraming/setMin 328 keV
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Window3/energyFraming/setMax 400 keV 
+
+   
+   !!! NOT TESTED YET IN NEW GATE DIGITIZER !!! When specifying the interfile output (see :ref:`interfile_output_of_projection_set-label`), the different window names must be added with the following commands::
+
+   /gate/output/projection/setInputDataName Window1
+   /gate/output/projection/addInputDataName Window2
+   /gate/output/projection/addInputDataName Window3
+   
+   
+Efficiency
+^^^^^^^^^^
+*(ex Energy Efficiency, Local efficiency)*
+The efficiency of an imaging system is an important parameter, as it defines its sensitivity: photoelectron conversion probability, transport efficiency inside of a crystal and on its border on the way toward photocathode, quantum efficiency of the photocathode and other types of efficiencies. 
+
+GATE proposes an efficiency digitizer module to take into account such kind of effects::
+
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/insert    efficiency
+   
+Simplest way is to define efficiency independently of energy and same for all crystals::
+
+    /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/efficiency/setUniqueEfficiency <value between 0 and 1>
+ 
+
+Energy mode
+"""""""""""
+To assign efficiency as a function of energy with a help of GATE Distribution :ref:`Distributions-label`, use::
+
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/efficiency/setMode energy
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/efficiency/setEfficiency <User_Distribution>
+   
+**Example**:: 
+
+/gate/distributions/name energy_eff_distrib
+/gate/distributions/insert File
+/gate/distributions/energy_eff_distrib_file/autoX false
+/gate/distributions/energy_eff_distrib_file/setUnitX keV
+/gate/distributions/energy_eff_distrib_file/setColumnX 0
+/gate/distributions/energy_eff_distrib_file/setColumnY 1
+/gate/distributions/energy_eff_distrib_file/setFileName energy_efficiency.dat
+/gate/distributions/energy_eff_distrib_file/read
+
+where *energy_efficiency.dat* has structure <energy in keV or MeV specified with ``/setUnitX`` above> and <efficiency> (do not forget to end the last line with a return) :: 
+
+   100 0.01
+   200 0.12
+   511 0.43
+
+or::
+
+/gate/distributions/name energy_eff_distrib
+/gate/distributions/insert Exponential
+/gate/distributions/energy_eff_distrib/setLambda 1 keV
+/gate/distributions/energy_eff_distrib/setAmplitude 100 keV
+
+and after::
+
+/gate/digitizerMgr/crystal/SinglesDigitizer/Singles/efficiency/setMode energy
+/gate/digitizerMgr/crystal/SinglesDigitizer/Singles/efficiency/setEfficiency energy_eff_distrib
+
+Crystal mode
+""""""""""""
+
+The different crystals, or groups of crystals, composing a PET/SPECT system can be characterized by their own efficiency. GATE offers a method to describe such efficiency per crystal or volume. To define the efficiency distribution in the scanner, one can specify which level of the volume hierarchy of the system are differentiated (see the examples in :ref:`command_line-label`). Then the distribution of efficiency, for each differentiated volume, is specified via a generic distribution, as described in :ref:`Distributions-label`::
+
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/efficiency/setMode crystal
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/efficiency/setEfficiency <User_Distribution>
+
+
+**Example**
+
+In the following examples, one assumes that the system is composed of 8 blocks (level1) of 64 crystals (level2). The first example shows how to specify one efficiency per block, defined in a file named **eff_per_block.dat**, containing 8 values (one per block, one per line in the file, do not forget to end the last line with a return)::
+
+   /gate/distributions/name block_eff_distrib 
+   /gate/distributions/insert File 
+   /gate/distributions/block_eff_distrib/autoX true 
+   /gate/distributions/block_eff_distrib/setFileName eff_per_block.dat 
+   /gate/distributions/block_eff_distrib/read
+   
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/insert efficiency 
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/efficiency/enableLevel 1 
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/efficiency/disableLevel 2 
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/efficiency/setEfficiency block_eff_distrib 
+
+In the second example, one specifies a different efficiency for each crystal inside a block, but the scheme is repeated from one block to another. So a pattern of 64 efficiency values is defined in the file **eff_within_block.dat**::
+
+   /gate/distributions/name within_block_eff_distrib 
+   /gate/distributions/insert File 
+   /gate/distributions/within_block_eff_distrib/autoX true 
+   /gate/distributions/within_block_eff_distrib/setFileName eff_within_block.dat 
+   /gate/distributions/within_block_eff_distrib/read
+   
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/insert efficiency 
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/efficiency/disableLevel 1 
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/efficiency/enableLevel 2 
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/efficiency/setEfficiency within_block_eff_distrib 
+
+Finally, in the next example, each crystal has its own efficiency, described in the file **eff_per_crystal.dat** containing 8 x 64 elements::
+
+   /gate/distributions/name crystal_eff_distrib 
+   /gate/distributions/insert File 
+   /gate/distributions/crystal_eff_distrib/autoX true 
+   /gate/distributions/crystal_eff_distrib/setFileName eff_per_crystal.dat 
+   /gate/distributions/crystal_eff_distrib/read
+   
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/insert efficiency 
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/efficiency/enableLevel 1 
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/efficiency/enableLevel 2 
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/efficiency/setEfficiency crystal_eff_distrib
+
 
 
 Modules to be addapted (NOT YET INCLUDED IN GATE NEW DIGITIZER)
@@ -574,49 +677,7 @@ The special event ID, **event_ID=-2**, is assigned to these noise events.
 
 .. _local_efficiency-label:
 
-Local efficiency
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The different crystals, or groups of crystals, composing a PET/SPECT system can be characterized by their own efficiency. GATE offers a method to describe such efficiency per crystal or volume. To define the efficiency distribution in the scanner, one can specify which level of the volume hierarchy of the system are differentiated (see the examples in :ref:`command_line-label`). Then the distribution of efficiency, for each differentiated volume, is specified via a generic distribution, as described in :ref:`Distributions-label`.
-
-In the following examples, one assumes that the system is composed of 8 blocks (level1) of 64 crystals (level2). The first example shows how to specify one efficiency per block, defined in a file named **eff_per_block.dat**, containing 8 values (one per block)::
-
-   /gate/distributions/name block_eff_distrib 
-   /gate/distributions/insert File 
-   /gate/distributions/block_eff_distrib/autoX true 
-   /gate/distributions/block_eff_distrib/setFileName eff_per_block.dat 
-   /gate/distributions/block_eff_distrib/read
-   
-   /gate/digitizer/Singles/insert localEfficiency 
-   /gate/digitizer/Singles/localEfficiency/enableLevel 1 
-   /gate/digitizer/Singles/localEfficiency/disableLevel 2 
-   /gate/digitizer/Singles/localEfficiency/setEfficiency block_eff_distrib 
-
-In the second example, one specifies a different efficiency for each crystal inside a block, but the scheme is repeated from one block to another. So a pattern of 64 efficiency values is defined in the file **eff_within_block.dat**::
-
-   /gate/distributions/name within_block_eff_distrib 
-   /gate/distributions/insert File 
-   /gate/distributions/within_block_eff_distrib/autoX true 
-   /gate/distributions/within_block_eff_distrib/setFileName eff_within_block.dat 
-   /gate/distributions/within_block_eff_distrib/read
-   
-   /gate/digitizer/Singles/insert localEfficiency 
-   /gate/digitizer/Singles/localEfficiency/disableLevel 1 
-   /gate/digitizer/Singles/localEfficiency/enableLevel 2 
-   /gate/digitizer/Singles/localEfficiency/setEfficiency within_block_eff_distrib 
-
-Finally, in the next example, each crystal has its own efficiency, described in the file **eff_per_crystal.dat** containing 8 x 64 elements::
-
-   /gate/distributions/name crystal_eff_distrib 
-   /gate/distributions/insert File 
-   /gate/distributions/crystal_eff_distrib/autoX true 
-   /gate/distributions/crystal_eff_distrib/setFileName eff_per_crystal.dat 
-   /gate/distributions/crystal_eff_distrib/read
-   
-   /gate/digitizer/Singles/insert localEfficiency 
-   /gate/digitizer/Singles/localEfficiency/enableLevel 1 
-   /gate/digitizer/Singles/localEfficiency/enableLevel 2 
-   /gate/digitizer/Singles/localEfficiency/setEfficiency crystal_eff_distrib
 
 Memory buffers and bandwidth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
