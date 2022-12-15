@@ -29,28 +29,28 @@
 #include "GateOutputMgr.hh"
 #include "GateDigitizerInitializationModule.hh"
 
-GateSinglesDigitizer::GateSinglesDigitizer( GateDigitizerMgr* itsDigitizerMng,
+GateSinglesDigitizer::GateSinglesDigitizer( GateDigitizerMgr* itsDigitizerMgr,
 										  const G4String& digitizerUsersName,
     			                          GateCrystalSD* SD)
-  : GateModuleListManager(itsDigitizerMng,itsDigitizerMng->GetObjectName() + "/"+ SD->GetName() +"/SinglesDigitizer/" + digitizerUsersName ,"SinglesDigitizer"),
+  : GateModuleListManager(itsDigitizerMgr,itsDigitizerMgr->GetObjectName() + "/"+ SD->GetName() +"/SinglesDigitizer/" + digitizerUsersName ,"SinglesDigitizer"),
 	m_outputName(digitizerUsersName+"_"+SD->GetName()),
     m_inputName(digitizerUsersName+"_"+SD->GetName()),
 	m_recordFlag(false),
 	m_SD(SD),
 	m_digitizerName(digitizerUsersName)
 {
-	//G4cout<<"GateSinglesDigitizer::GateSinglesDigitizer "<<  itsDigitizerMng->GetObjectName() + "/"+ SD->GetName() +"/SinglesDigitizer/" + digitizerUsersName <<G4endl;
+	//G4cout<<"GateSinglesDigitizer::GateSinglesDigitizer "<<  itsDigitizerMgr->GetObjectName() + "/"+ SD->GetName() +"/SinglesDigitizer/" + digitizerUsersName <<G4endl;
 	m_messenger = new GateSinglesDigitizerMessenger(this);
 
   //Prepare OutputMng for this digitizer
   	GateOutputMgr::GetInstance()->RegisterNewSingleDigiCollection(m_digitizerName+"_"+SD->GetName(),false);
-  	if(!itsDigitizerMng->m_isInitialized)
+  	if(!itsDigitizerMgr->m_isInitialized)
   	{
 
-  		itsDigitizerMng->AddNewSinglesDigitizer(this);
+  		itsDigitizerMgr->AddNewSinglesDigitizer(this);
 
   	}
-	//G4cout<<"end GateSinglesDigitizer::GateSinglesDigitizer "<<  itsDigitizerMng->GetObjectName() + "/"+ SD->GetName() +"/SinglesDigitizer/" + "Singles" <<G4endl;
+	//G4cout<<"end GateSinglesDigitizer::GateSinglesDigitizer "<<  itsDigitizerMgr->GetObjectName() + "/"+ SD->GetName() +"/SinglesDigitizer/" + "Singles" <<G4endl;
 
 
 }

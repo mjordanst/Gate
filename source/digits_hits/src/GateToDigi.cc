@@ -36,7 +36,7 @@ GateToDigi::GateToDigi(const G4String& name, GateOutputMgr* outputMgr,
   nVerboseLevel = 0;
   m_digiMessenger = new GateOutputModuleMessenger(this);
 
-  //m_digitizerMng =    GateDigitizerMgr::GetInstance();
+  //m_digitizerMgr =    GateDigitizerMgr::GetInstance();
 
 }
 //---------------------------------------------------------------------------
@@ -45,7 +45,7 @@ GateToDigi::GateToDigi(const G4String& name, GateOutputMgr* outputMgr,
 GateToDigi::~GateToDigi()
 {
   delete m_digiMessenger;
-  //delete m_digitizerMng;
+  //delete m_digitizerMgr;
 
   if (nVerboseLevel > 0) G4cout << "GateToDigi deleting...\n";
 }

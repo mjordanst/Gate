@@ -40,9 +40,9 @@ GateEcatAccelSystem::GateEcatAccelSystem(const G4String& itsName)
   digitizer->StoreNewCoincidenceSorter(coincidenceSorter);
   */
   //OK GND 2022
-  GateDigitizerMgr* digitizerMng = GateDigitizerMgr::GetInstance();
-  GateCoincidenceSorter* coincidenceSorter = new GateCoincidenceSorter(digitizerMng,"Coincidences");
-  digitizerMng->AddNewCoincidenceSorter(coincidenceSorter);
+  GateDigitizerMgr* digitizerMgr = GateDigitizerMgr::GetInstance();
+  GateCoincidenceSorter* coincidenceSorter = new GateCoincidenceSorter(digitizerMgr,"Coincidences");
+  digitizerMgr->AddNewCoincidenceSorter(coincidenceSorter);
   // Insert a sinogram maker and a ECAT7 writer into the output manager
   GateOutputMgr *outputMgr = GateOutputMgr::GetInstance();
   m_gateToSinoAccel = new GateToSinoAccel("sinoAccel", outputMgr,this,GateOutputMgr::GetDigiMode());

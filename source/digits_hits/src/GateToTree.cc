@@ -8,6 +8,7 @@ See LICENSE.md for further details
 
 //
 // Created by mdupont on 17/05/19.
+// Adapted to GND by olga.kochebina Dec. 2022
 //
 
 #include "GateToTree.hh"
@@ -29,8 +30,9 @@ See LICENSE.md for further details
 #include "G4DigiManager.hh"
 
 
-#include "GateCoincidenceDigiOld.hh"
+#include "GateCoincidenceDigi.hh"
 
+#include "GateDigitizerMgr.hh"
 
 char GateToTree::m_outputIDName[GateToTree::MAX_NB_SYSTEM][GateToTree::MAX_DEPTH_SYSTEM][GateToTree::MAX_OUTPUTIDNAME_SIZE];
 bool GateToTree::m_outputIDHasName[GateToTree::MAX_NB_SYSTEM][GateToTree::MAX_DEPTH_SYSTEM];
@@ -178,120 +180,116 @@ void GateToTree::RecordBeginOfAcquisition() {
 	G4cout<<"GateToTree::RecordBeginOfAcquisition"<<G4endl;
     if (!this->IsEnabled())
         return;
+    //OK GND 2022
+    for (auto &&m: m_mmanager_hits)
+ 	 {
 
-    if (m_hits_enabled) {
-        for (auto &&fileName: m_listOfFileName) {
-            auto extension = getExtension(fileName);
-            auto name = removeExtension(fileName);
-
-            G4String hits_filename = name + ".hits." + extension;
-            m_manager_hits.add_file(hits_filename, extension);
-        }
+	 auto &mm = m.second;
 
         if (m_hitsParams_to_write.at("PDGEncoding").toSave())
-            m_manager_hits.write_variable("PDGEncoding", &m_PDGEncoding);
+            mm.write_variable("PDGEncoding", &m_PDGEncoding);
 
         if (m_hitsParams_to_write.at("trackID").toSave())
-            m_manager_hits.write_variable("trackID", &m_trackID);
+            mm.write_variable("trackID", &m_trackID);
 
         if (m_hitsParams_to_write.at("parentID").toSave())
-            m_manager_hits.write_variable("parentID", &m_parentID);
+            mm.write_variable("parentID", &m_parentID);
 
         if (m_hitsParams_to_write.at("trackLocalTime").toSave())
-            m_manager_hits.write_variable("trackLocalTime", &m_trackLocalTime);
+            mm.write_variable("trackLocalTime", &m_trackLocalTime);
 
         if (m_hitsParams_to_write.at("time").toSave())
-            m_manager_hits.write_variable("time", &m_time[0]);
+            mm.write_variable("time", &m_time[0]);
 
         if (m_hitsParams_to_write.at("runID").toSave())
-            m_manager_hits.write_variable("runID", &m_runID);
+            mm.write_variable("runID", &m_runID);
 
         if (m_hitsParams_to_write.at("eventID").toSave())
-            m_manager_hits.write_variable("eventID", &m_eventID[0]);
+            mm.write_variable("eventID", &m_eventID[0]);
 
         if (m_hitsParams_to_write.at("sourceID").toSave())
-            m_manager_hits.write_variable("sourceID", &m_sourceID[0]);
+            mm.write_variable("sourceID", &m_sourceID[0]);
 
         if (m_hitsParams_to_write.at("primaryID").toSave())
-            m_manager_hits.write_variable("primaryID", &m_primaryID);
+            mm.write_variable("primaryID", &m_primaryID);
 
         if (m_hitsParams_to_write.at("posX").toSave())
-            m_manager_hits.write_variable("posX", &m_posX[0]);
+            mm.write_variable("posX", &m_posX[0]);
 
         if (m_hitsParams_to_write.at("posY").toSave())
-            m_manager_hits.write_variable("posY", &m_posY[0]);
+            mm.write_variable("posY", &m_posY[0]);
 
         if (m_hitsParams_to_write.at("posZ").toSave())
-            m_manager_hits.write_variable("posZ", &m_posZ[0]);
+            mm.write_variable("posZ", &m_posZ[0]);
 
         if (m_hitsParams_to_write.at("localPosX").toSave())
-            m_manager_hits.write_variable("localPosX", &m_localPosX);
+            mm.write_variable("localPosX", &m_localPosX);
 
         if (m_hitsParams_to_write.at("localPosY").toSave())
-            m_manager_hits.write_variable("localPosY", &m_localPosY);
+            mm.write_variable("localPosY", &m_localPosY);
 
         if (m_hitsParams_to_write.at("localPosZ").toSave())
-            m_manager_hits.write_variable("localPosZ", &m_localPosZ);
+            mm.write_variable("localPosZ", &m_localPosZ);
 
         if (m_hitsParams_to_write.at("momDirX").toSave())
-            m_manager_hits.write_variable("momDirX", &m_momDirX);
+            mm.write_variable("momDirX", &m_momDirX);
 
         if (m_hitsParams_to_write.at("momDirY").toSave())
-            m_manager_hits.write_variable("momDirY", &m_momDirY);
+            mm.write_variable("momDirY", &m_momDirY);
 
         if (m_hitsParams_to_write.at("momDirZ").toSave())
-            m_manager_hits.write_variable("momDirZ", &m_momDirZ);
+            mm.write_variable("momDirZ", &m_momDirZ);
 
         if (m_hitsParams_to_write.at("edep").toSave())
-            m_manager_hits.write_variable("edep", &m_edep[0]);
+            mm.write_variable("edep", &m_edep[0]);
 
         if (m_hitsParams_to_write.at("stepLength").toSave())
-            m_manager_hits.write_variable("stepLength", &m_stepLength);
+            mm.write_variable("stepLength", &m_stepLength);
 
         if (m_hitsParams_to_write.at("trackLength").toSave())
-            m_manager_hits.write_variable("trackLength", &m_trackLength);
+            mm.write_variable("trackLength", &m_trackLength);
 
         if (m_hitsParams_to_write.at("rotationAngle").toSave())
-            m_manager_hits.write_variable("rotationAngle", &m_rotationAngle);
+            mm.write_variable("rotationAngle", &m_rotationAngle);
 
         if (m_hitsParams_to_write.at("axialPos").toSave())
-            m_manager_hits.write_variable("axialPos", &m_axialPos);
+            mm.write_variable("axialPos", &m_axialPos);
 
         if (m_hitsParams_to_write.at("processName").toSave())
-            m_manager_hits.write_variable("processName", &m_processName, MAX_NB_CHARACTER);
+            mm.write_variable("processName", &m_processName, MAX_NB_CHARACTER);
 
         if (m_hitsParams_to_write.at("comptVolName").toSave())
-            m_manager_hits.write_variable("comptVolName", &m_comptonVolumeName[0], MAX_NB_CHARACTER);
+            mm.write_variable("comptVolName", &m_comptonVolumeName[0], MAX_NB_CHARACTER);
 
         if (m_hitsParams_to_write.at("RayleighVolName").toSave())
-            m_manager_hits.write_variable("RayleighVolName", &m_RayleighVolumeName[0], MAX_NB_CHARACTER);
+            mm.write_variable("RayleighVolName", &m_RayleighVolumeName[0], MAX_NB_CHARACTER);
 
         if (m_hitsParams_to_write.at("volumeIDs").toSave()) {
             for (auto i = 0; i < VOLUMEID_SIZE; ++i) {
                 std::stringstream ss;
                 ss << "volumeID[" << i << "]";
-                m_manager_hits.write_variable(ss.str(), &m_volumeID[i]);
+                mm.write_variable(ss.str(), &m_volumeID[i]);
             }
         }
 
         if (m_hitsParams_to_write.at("sourcePosX").toSave())
-            m_manager_hits.write_variable("sourcePosX", &m_sourcePosX[0]);
+            mm.write_variable("sourcePosX", &m_sourcePosX[0]);
         if (m_hitsParams_to_write.at("sourcePosY").toSave())
-            m_manager_hits.write_variable("sourcePosY", &m_sourcePosY[0]);
+            mm.write_variable("sourcePosY", &m_sourcePosY[0]);
         if (m_hitsParams_to_write.at("sourcePosZ").toSave())
-            m_manager_hits.write_variable("sourcePosZ", &m_sourcePosZ[0]);
+            mm.write_variable("sourcePosZ", &m_sourcePosZ[0]);
 
         if (m_hitsParams_to_write.at("nPhantomCompton").toSave())
-            m_manager_hits.write_variable("nPhantomCompton", &m_nPhantomCompton[0]);
+            mm.write_variable("nPhantomCompton", &m_nPhantomCompton[0]);
 
         if (m_hitsParams_to_write.at("nCrystalCompton").toSave())
-            m_manager_hits.write_variable("nCrystalCompton", &m_nCrystalCompton[0]);
+            mm.write_variable("nCrystalCompton", &m_nCrystalCompton[0]);
 
         if (m_hitsParams_to_write.at("nPhantomRayleigh").toSave())
-            m_manager_hits.write_variable("nPhantomRayleigh", &m_nPhantomRayleigh[0]);
+            mm.write_variable("nPhantomRayleigh", &m_nPhantomRayleigh[0]);
 
         if (m_hitsParams_to_write.at("nCrystalRayleigh").toSave())
-            m_manager_hits.write_variable("nCrystalRayleigh", &m_nCrystalRayleigh[0]);
+            mm.write_variable("nCrystalRayleigh", &m_nCrystalRayleigh[0]);
 
 
         if (m_hitsParams_to_write.at("componentsIDs").toSave()) {
@@ -301,7 +299,7 @@ void GateToTree::RecordBeginOfAcquisition() {
                 for (auto depth = 0; depth < m_max_depth_system[k]; ++depth) {
                     std::stringstream ss;
                     ss << m_outputIDName[k][depth];
-                    m_manager_hits.write_variable(ss.str(), &m_outputID[0][k][depth]);
+                    mm.write_variable(ss.str(), &m_outputID[0][k][depth]);
                 }
             } else {
                 for (unsigned int k = 0; k < GateSystemListManager::GetInstance()->size(); ++k) {
@@ -312,29 +310,29 @@ void GateToTree::RecordBeginOfAcquisition() {
                             continue;
                         std::stringstream ss;
                         ss << system->GetOwnName() << "/" << m_outputIDName[k][depth];
-                        m_manager_hits.write_variable(ss.str(), &m_outputID[0][k][depth]);
+                        mm.write_variable(ss.str(), &m_outputID[0][k][depth]);
                     }
                 }
             }
         }
 
         if (m_hitsParams_to_write.at("photonID").toSave())
-            m_manager_hits.write_variable("photonID", &m_photonID);
+            mm.write_variable("photonID", &m_photonID);
 
         if (m_hitsParams_to_write.at("systemID").toSave() && GateSystemListManager::GetInstance()->size() > 1)
-            m_manager_hits.write_variable("systemID", &m_systemID);
+            mm.write_variable("systemID", &m_systemID);
 
         if (m_hitsParams_to_write.at("sourceType").toSave())
-            m_manager_hits.write_variable("sourceType", &m_sourceType);
+            mm.write_variable("sourceType", &m_sourceType);
 
         if (m_hitsParams_to_write.at("decayType").toSave())
-            m_manager_hits.write_variable("decayType", &m_decayType);
+            mm.write_variable("decayType", &m_decayType);
 
         if (m_hitsParams_to_write.at("gammaType").toSave())
-            m_manager_hits.write_variable("gammaType", &m_gammaType);
+            mm.write_variable("gammaType", &m_gammaType);
 
 
-        m_manager_hits.write_header();
+        mm.write_header();
     }
 
 
@@ -609,7 +607,12 @@ void GateToTree::RecordBeginOfAcquisition() {
 }
 
 void GateToTree::RecordEndOfAcquisition() {
-    m_manager_hits.close();
+   // m_manager_hits.close();
+	//OK GND 2022
+
+	for (auto &&m: m_mmanager_hits)
+            	m.second.close();
+
     m_manager_optical.close();
     for (auto &&m: m_mmanager_singles)
         m.second.close();
@@ -632,77 +635,97 @@ void GateToTree::RecordBeginOfEvent(const G4Event *event) {
 }
 
 void GateToTree::RecordEndOfEvent(const G4Event *event) {
-	G4cout<<"GateToTree::RecordEndOfEvent"<<G4endl;
-    auto CHC = this->GetOutputMgr()->GetHitCollection();
-    if (!CHC) {
-        std::cout <<
-                  "GateToTree::RecordEndOfEvent : GateHitCollection not found"
-                  << Gateendl;
-        return;
-    }
+	//G4cout<<"GateToTree::RecordEndOfEvent"<<G4endl;
 
-//    auto writeComptonVolumeName = m_hitsParams_to_write.at("comptVolName").toSave();
-//    auto writeRayleighVolName = m_hitsParams_to_write.at("RayleighVolName").toSave();
-//    auto writeVolumeIDs = m_hitsParams_to_write.at("volumeIDs").toSave();
+	//OK GND 2022
+	auto fDM = G4DigiManager::GetDMpointer();
 
-    m_systemID = -1;
-    for (unsigned int iHit = 0; iHit < CHC->entries(); ++iHit) {
-        auto hit = (*CHC)[iHit];
-        if (!hit->GoodForAnalysis())
-            continue;
+	 if (!m_hits_to_collectionID.size()) {
+	        for (auto &&m: m_mmanager_hits) {
+	            auto str = m.first+"Collection";
+	            //str.erase(remove_if(str.begin(), str.end(), '_'), str.end());
+	            auto collectionID = fDM->GetHitsCollectionID(str);
+	            m_hits_to_collectionID.emplace(m.first, collectionID);
+	        }
+	    }
 
-        m_systemID = hit->GetSystemID();
-        retrieve(hit, m_systemID);
+	 for (auto &&m: m_mmanager_hits) {
+	        auto collectionID = m_hits_to_collectionID.at(m.first);
+	        const GateHitsCollection *CHC =
+	                (GateHitsCollection *) (fDM->GetHitsCollection(collectionID));
 
-        if (m_hitsParams_to_write.at("componentsIDs").toSave()) {
-            for (auto depth = 0; depth < MAX_DEPTH_SYSTEM; ++depth)
-                m_outputID[0][m_systemID][depth] = hit->GetComponentID(depth);
-        }
+	        if (!CHC) {
+	//            G4cout << "GateToTree::RecordEndOfEvent no collection = " << m.first << "\n";
+	            continue;
+	        }
 
-//        if(writeComptonVolumeName)
-        m_comptonVolumeName[0] = hit->GetComptonVolumeName();
+	        assert(CHC);
+	        auto v = CHC->GetVector();
+	        assert(v);
 
-//        if(writeRayleighVolName)
-        m_RayleighVolumeName[0] = hit->GetRayleighVolumeName();
+	        m_systemID = -1;
 
-        m_primaryID = hit->GetPrimaryID();
 
-        m_localPosX = hit->GetLocalPos().x() / mm;
-        m_localPosY = hit->GetLocalPos().y() / mm;
-        m_localPosZ = hit->GetLocalPos().z() / mm;
+	        for (auto &&hit: *v) {
 
-        m_momDirX = hit->GetMomentumDir().x();
-        m_momDirY = hit->GetMomentumDir().y();
-        m_momDirZ = hit->GetMomentumDir().z();
+	        	if (!hit->GoodForAnalysis())
+	        		continue;
 
-        m_PDGEncoding = hit->GetPDGEncoding();
-        m_trackID = hit->GetTrackID();
-        m_parentID = hit->GetParentID();
+				m_systemID = hit->GetSystemID();
+				retrieve(hit, m_systemID);
 
-        m_trackLocalTime = hit->GetTrackLocalTime() / second;
-        m_edep[0] = hit->GetEdep() / MeV;
-        m_stepLength = hit->GetStepLength() / mm;
-        m_trackLength = hit->GetTrackLength() / mm;
+				if (m_hitsParams_to_write.at("componentsIDs").toSave()) {
+					for (auto depth = 0; depth < MAX_DEPTH_SYSTEM; ++depth)
+						m_outputID[0][m_systemID][depth] = hit->GetComponentID(depth);
+				}
 
-        m_processName = hit->GetProcess();
+			//        if(writeComptonVolumeName)
+				m_comptonVolumeName[0] = hit->GetComptonVolumeName();
 
-        if (m_hitsParams_to_write.at("volumeIDs").toSave())
-            hit->GetVolumeID().StoreDaughterIDs(m_volumeID, VOLUMEID_SIZE);
+			//        if(writeRayleighVolName)
+				m_RayleighVolumeName[0] = hit->GetRayleighVolumeName();
 
-        m_photonID = hit->GetPhotonID();
+				m_primaryID = hit->GetPrimaryID();
 
-        m_sourceType = hit->GetSourceType();
-        m_decayType = hit->GetDecayType();
-        m_gammaType = hit->GetGammaType();
+				m_localPosX = hit->GetLocalPos().x() / mm;
+				m_localPosY = hit->GetLocalPos().y() / mm;
+				m_localPosZ = hit->GetLocalPos().z() / mm;
 
-        m_manager_hits.fill();
-    }
+				m_momDirX = hit->GetMomentumDir().x();
+				m_momDirY = hit->GetMomentumDir().y();
+				m_momDirZ = hit->GetMomentumDir().z();
 
-    auto fDM = G4DigiManager::GetDMpointer();
+				m_PDGEncoding = hit->GetPDGEncoding();
+				m_trackID = hit->GetTrackID();
+				m_parentID = hit->GetParentID();
+
+				m_trackLocalTime = hit->GetTrackLocalTime() / second;
+				m_edep[0] = hit->GetEdep() / MeV;
+				m_stepLength = hit->GetStepLength() / mm;
+				m_trackLength = hit->GetTrackLength() / mm;
+
+				m_processName = hit->GetProcess();
+
+				if (m_hitsParams_to_write.at("volumeIDs").toSave())
+					hit->GetVolumeID().StoreDaughterIDs(m_volumeID, VOLUMEID_SIZE);
+
+				m_photonID = hit->GetPhotonID();
+
+				m_sourceType = hit->GetSourceType();
+				m_decayType = hit->GetDecayType();
+				m_gammaType = hit->GetGammaType();
+
+	            m.second.fill();
+	        }
+
+	    }
+
 
     if (!m_singles_to_collectionID.size()) {
         for (auto &&m: m_mmanager_singles) {
-            auto collectionID = fDM->GetDigiCollectionID(m.first);
+            //auto collectionID = fDM->GetDigiCollectionID(m.first);
+            // OK GND 2022
+            auto collectionID = GetCollectionID(m.first);
             m_singles_to_collectionID.emplace(m.first, collectionID);
         }
     }
@@ -711,8 +734,8 @@ void GateToTree::RecordEndOfEvent(const G4Event *event) {
 //        auto collectionID = fDM->GetDigiCollectionID(m.first);
         auto collectionID = m_singles_to_collectionID.at(m.first);
 //        auto SDC = static_cast<const GateSingleDigiCollection*>(fDM->GetDigiCollection(collectionID));
-        const GateSingleDigiCollection *SDC =
-                (GateSingleDigiCollection *) (fDM->GetDigiCollection(collectionID));
+        const GateDigiCollection *SDC =
+                (GateDigiCollection *) (fDM->GetDigiCollection(collectionID));
 
         if (!SDC) {
 //            G4cout << "GateToTree::RecordEndOfEvent no collection = " << m.first << "\n";
@@ -728,12 +751,14 @@ void GateToTree::RecordEndOfEvent(const G4Event *event) {
 
         for (auto &&digi: *v) {
             if (m_systemID == -1) {
-                auto mother = static_cast<const GateHit *>(digi->GetPulse().GetMother());
+                auto mother = static_cast<const GateHit *>(digi->GetMother());
                 if (!mother) {
                     // for example pulse created by GateNoise.cc (l67).
                     m_systemID = 0;
-                } else {
-                    m_systemID = mother->GetSystemID();
+                }
+                else {
+                	//OK GND 2022 TODO seg fault
+                	m_systemID = mother->GetSystemID();
                 }
             }
 
@@ -746,6 +771,7 @@ void GateToTree::RecordEndOfEvent(const G4Event *event) {
             }
 
             m_edep[0] = digi->GetEnergy() / MeV;
+
             m.second.fill();
         }
 
@@ -753,29 +779,29 @@ void GateToTree::RecordEndOfEvent(const G4Event *event) {
 
     if (!m_coincidences_to_collectionID.size()) {
         for (auto &&m: m_mmanager_coincidences) {
-            auto collectionID = fDM->GetDigiCollectionID(m.first);
+            auto collectionID = GetCollectionID(m.first); //fDM->GetDigiCollectionID(m.first);
             m_coincidences_to_collectionID.emplace(m.first, collectionID);
         }
     }
 
     for (auto &&m: m_mmanager_coincidences) {
         auto collectionID = m_coincidences_to_collectionID.at(m.first);
-        auto SDC = static_cast<const GateCoincidenceDigiOldCollection *>(fDM->GetDigiCollection(collectionID));
+        auto CDC = static_cast<const GateCoincidenceDigiCollection *>(fDM->GetDigiCollection(collectionID));
 
-        if (!SDC) {
+        if (!CDC) {
             continue;
         }
 
-        assert(SDC);
-        auto v = SDC->GetVector();
+        assert(CDC);
+        auto v = CDC->GetVector();
         assert(v);
 
         m_systemID = -1;
 
 
-        for (auto &&digi: *v) {
+        for (auto &&coin_digi: *v) {
             if (m_systemID == -1) {
-                auto mother = static_cast<const GateHit *>(digi->GetPulse(0).GetMother());
+                auto mother = static_cast<const GateHit *>(coin_digi->GetDigi(0)->GetMother());
                 if (!mother) {
                     // for example pulse created by GateNoise.cc (l67).
                     m_systemID = 0;
@@ -784,14 +810,14 @@ void GateToTree::RecordEndOfEvent(const G4Event *event) {
                 }
             }
 
-            const auto &pulse = digi->GetPulse(0);
-            retrieve(&pulse, m_systemID);
-            m_comptonVolumeName[0] = pulse.GetComptonVolumeName();
-            m_RayleighVolumeName[0] = pulse.GetRayleighVolumeName();
+            const auto digi = coin_digi->GetDigi(0);
+            retrieve(digi, m_systemID);
+            m_comptonVolumeName[0] = digi->GetComptonVolumeName();
+            m_RayleighVolumeName[0] = digi->GetRayleighVolumeName();
 
 
-            this->retrieve(digi, 0, m_systemID);
-            this->retrieve(digi, 1, m_systemID);
+            this->retrieve(coin_digi, 0, m_systemID);
+            this->retrieve(coin_digi, 1, m_systemID);
 
 
             m_sinogramTheta = atan2(m_posX[0] - m_posX[1], m_posY[0] - m_posY[1]);
@@ -822,34 +848,34 @@ void GateToTree::RecordEndOfEvent(const G4Event *event) {
     RecordOpticalData(event);
 }
 
-void GateToTree::retrieve(GateCoincidenceDigiOld *aDigi, G4int side, G4int system_id) {
+void GateToTree::retrieve(GateCoincidenceDigi *aDigi, G4int side, G4int system_id) {
 
-	const auto &pulse = aDigi->GetPulse(side);
-    m_eventID[side] = pulse.GetEventID();
-    m_sourceID[side] = pulse.GetSourceID();
+	const auto &signleDigi = aDigi->GetDigi(side);
+    m_eventID[side] = signleDigi->GetEventID();
+    m_sourceID[side] = signleDigi->GetSourceID();
 //    m_sourceID[side] = digi->GetSourceID();
-    m_sourcePosX[side] = pulse.GetSourcePosition().x() / mm;
-    m_sourcePosY[side] = pulse.GetSourcePosition().y() / mm;
-    m_sourcePosZ[side] = pulse.GetSourcePosition().z() / mm;
+    m_sourcePosX[side] = signleDigi->GetSourcePosition().x() / mm;
+    m_sourcePosY[side] = signleDigi->GetSourcePosition().y() / mm;
+    m_sourcePosZ[side] = signleDigi->GetSourcePosition().z() / mm;
 
-    m_posX[side] = pulse.GetGlobalPos().x() / mm;
-    m_posY[side] = pulse.GetGlobalPos().y() / mm;
-    m_posZ[side] = pulse.GetGlobalPos().z() / mm;
+    m_posX[side] = signleDigi->GetGlobalPos().x() / mm;
+    m_posY[side] = signleDigi->GetGlobalPos().y() / mm;
+    m_posZ[side] = signleDigi->GetGlobalPos().z() / mm;
 
-    m_time[side] = pulse.GetTime() / s;
-    m_edep[side] = pulse.GetEnergy() / MeV;
+    m_time[side] = signleDigi->GetTime() / s;
+    m_edep[side] = signleDigi->GetEnergy() / MeV;
 
-    m_comptonVolumeName[side] = pulse.GetComptonVolumeName();
-    m_RayleighVolumeName[side] = pulse.GetRayleighVolumeName();
+    m_comptonVolumeName[side] = signleDigi->GetComptonVolumeName();
+    m_RayleighVolumeName[side] = signleDigi->GetRayleighVolumeName();
 
-    m_nPhantomCompton[side] = pulse.GetNPhantomCompton();
-    m_nCrystalCompton[side] = pulse.GetNCrystalCompton();
-    m_nPhantomRayleigh[side] = pulse.GetNPhantomRayleigh();
-    m_nCrystalRayleigh[side] = pulse.GetNCrystalRayleigh();
+    m_nPhantomCompton[side] = signleDigi->GetNPhantomCompton();
+    m_nCrystalCompton[side] = signleDigi->GetNCrystalCompton();
+    m_nPhantomRayleigh[side] = signleDigi->GetNPhantomRayleigh();
+    m_nCrystalRayleigh[side] = signleDigi->GetNCrystalRayleigh();
 
     if (m_coincidencesParams_to_write.at("componentsIDs").toSave()) {
         for (auto depth = 0; depth < MAX_DEPTH_SYSTEM; ++depth)
-            m_outputID[side][system_id][depth] = pulse.GetComponentID(depth);
+            m_outputID[side][system_id][depth] = signleDigi->GetComponentID(depth);
     }
 }
 
@@ -887,17 +913,27 @@ GateToTree::~GateToTree() {
 }
 
 void GateToTree::RegisterNewCoincidenceDigiCollection(const G4String &string, G4bool aBool) {
-    if (!aBool)
-        return;
+    //OK GND 2022 TODO ??
+	// if (!aBool)
+    //    return;
 
     m_listOfCoincidencesCollection.push_back(string);
 }
 
 void GateToTree::RegisterNewSingleDigiCollection(const G4String &string, G4bool aBool) {
-    if (!aBool)
-        return;
+    //OK GND 2022 TODO ???
+	//if (!aBool)
+     //   return;
     m_listOfSinglesCollection.push_back(string);
 }
+
+void GateToTree::RegisterNewHitsCollection(const G4String &string, G4bool aBool) {
+    //OK GND 2022 TODO ??
+	//if (!aBool)
+     //   return;
+    m_listOfHitsCollection.push_back(string);
+}
+
 
 void GateToTree::SetOutputIDName(G4int id_system, const char *anOutputIDName, size_t depth) {
     /*G4cout << "GateToTree::SetOutputIDName, id_system = '" << id_system
@@ -928,12 +964,41 @@ void GateToTree::setHitsEnabled(G4bool mHitsEnabled) {
     m_hits_enabled = mHitsEnabled;
 }
 
-void GateToTree::addCollection(const std::string &str) {
+//OK GND 2022
+void GateToTree::addHitsCollection(const std::string &str) {
 
     G4String possibleValues = "";
 
-    //!!!! OK GND 2022
-    //str = "SingleGND";
+    for (auto &&s: m_listOfHitsCollection) {
+
+        possibleValues += "'" + s + "' (type:hits);";
+
+        auto str_tmp=str+"Collection";
+        if (s == str_tmp) {
+            GateOutputTreeFileManager m;
+            for (auto &&fileName: m_listOfFileName) {
+                auto extension = getExtension(fileName);
+                auto name = removeExtension(fileName);
+
+                G4String n_fileName = name + ".hits_" + str + "." + extension;
+                m.add_file(n_fileName, extension);
+
+            }
+            m_mmanager_hits.emplace(str, std::move(m));
+         return;
+
+        }
+    }
+}
+
+
+
+void GateToTree::addCollection(const std::string &str) {
+
+	G4cout<<"GateToTree::addCollection "<<str<<G4endl;
+
+    G4String possibleValues = "";
+
     for (auto &&s: m_listOfSinglesCollection) {
 
         possibleValues += "'" + s + "' (type:singles);";
@@ -949,6 +1014,8 @@ void GateToTree::addCollection(const std::string &str) {
 
             }
             m_mmanager_singles.emplace(str, std::move(m));
+
+
 
             return;
 
@@ -1001,7 +1068,9 @@ void GateToTree::setOpticalDataEnabled(G4bool mOpticalDataEnabled) {
 }
 
 void GateToTree::RecordOpticalData(const G4Event *event) {
-    auto CHC = this->GetOutputMgr()->GetHitCollection();
+
+	//TODO GND 2022
+    /*auto CHC = this->GetOutputMgr()->GetHitCollection();
     auto PHC = this->GetOutputMgr()->GetPhantomHitCollection();
 
     m_nScintillation = 0;
@@ -1086,6 +1155,7 @@ void GateToTree::RecordOpticalData(const G4Event *event) {
 
     if (event->GetTrajectoryContainer())
         m_manager_optical.fill();
+        */
 }
 
 

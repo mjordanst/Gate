@@ -46,9 +46,9 @@ GateEcatSystem::GateEcatSystem(const G4String& itsName)
   GateCoincidenceSorter* coincidenceSorter = new GateCoincidenceSorter(digitizer,"Coincidences",coincidenceWindow);
   digitizer->StoreNewCoincidenceSorter(coincidenceSorter);
 */
-  GateDigitizerMgr* digitizerMng = GateDigitizerMgr::GetInstance();
-  GateCoincidenceSorter* coincidenceSorter = new GateCoincidenceSorter(digitizerMng,"Coincidences");
-  digitizerMng->AddNewCoincidenceSorter(coincidenceSorter);
+  GateDigitizerMgr* digitizerMgr = GateDigitizerMgr::GetInstance();
+  GateCoincidenceSorter* coincidenceSorter = new GateCoincidenceSorter(digitizerMgr,"Coincidences");
+  digitizerMgr->AddNewCoincidenceSorter(coincidenceSorter);
 
   // Insert a sinogram maker and a ECAT7 writer into the output manager
   GateOutputMgr *outputMgr = GateOutputMgr::GetInstance();

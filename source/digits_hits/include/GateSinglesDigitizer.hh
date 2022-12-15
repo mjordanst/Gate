@@ -33,7 +33,7 @@ class GateVDigitizerModule;
 class GateSinglesDigitizer : public GateModuleListManager
 {
   public:
-    GateSinglesDigitizer(GateDigitizerMgr* itsDigitizerMng,
+    GateSinglesDigitizer(GateDigitizerMgr* itsDigitizerMgr,
     				const G4String& digitizerName,
     			    GateCrystalSD *SD);
     virtual ~GateSinglesDigitizer();

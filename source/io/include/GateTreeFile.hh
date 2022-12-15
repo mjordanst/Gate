@@ -101,7 +101,8 @@ public:
   virtual void set_tree_name(const std::string &name) ;
   virtual ~GateOutputTreeFile();
 
-protected:
+//protected:
+public:
   std::string m_nameOfTree;
 };
 

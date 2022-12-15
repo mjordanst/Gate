@@ -69,7 +69,7 @@ private:
   virtual void DoInsertion(const G4String& typeName);
 
   //! Get the chain list
-  inline GateDigitizerMgr* GetDigitizerMng()
+  inline GateDigitizerMgr* GetDigitizerMgr()
     { return (GateDigitizerMgr*) GetClockDependent(); }
 
 private:

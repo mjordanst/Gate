@@ -21,12 +21,12 @@
 #include "GateCoincidenceSorter.hh"
 
 // Constructor
-GateDigitizerMgrMessenger::GateDigitizerMgrMessenger(GateDigitizerMgr* itsDigitizerMng)
-: GateClockDependentMessenger(itsDigitizerMng)
+GateDigitizerMgrMessenger::GateDigitizerMgrMessenger(GateDigitizerMgr* itsDigitizerMgr)
+: GateClockDependentMessenger(itsDigitizerMgr)
 {
   //G4cout << " DEBUT Constructor GateDigitizerMgrMessenger \n";
 
-  const G4String& elementTypeName = itsDigitizerMng->GetElementTypeName();
+  const G4String& elementTypeName = itsDigitizerMgr->GetElementTypeName();
 
   G4String guidance = G4String("Manages a list of ") + elementTypeName + "s.";
   GetDirectory()->SetGuidance(guidance.c_str());
@@ -60,7 +60,7 @@ GateDigitizerMgrMessenger::GateDigitizerMgrMessenger(GateDigitizerMgr* itsDigiti
   ListChoicesCmd->SetGuidance(guidance);
 
   cmdName = GetDirectoryName()+"list";
-  guidance = "List the " + elementTypeName + "'s within '" + GetDigitizerMng()->GetObjectName() + "'";
+  guidance = "List the " + elementTypeName + "'s within '" + GetDigitizerMgr()->GetObjectName() + "'";
   ListCmd = new G4UIcmdWithoutParameter(cmdName,this);
   ListCmd->SetGuidance(guidance);
 
@@ -95,7 +95,7 @@ void GateDigitizerMgrMessenger::SetNewValue(G4UIcommand* command,G4String newVal
   else if( command==ListChoicesCmd )
     { ListChoices(); }
   else if( command==ListCmd )
-    { GetDigitizerMng()->ShowSummary(); }
+    { GetDigitizerMgr()->ShowSummary(); }
   else
     GateClockDependentMessenger::SetNewValue(command,newValue);
 }
@@ -126,18 +126,18 @@ void GateDigitizerMgrMessenger::DoInsertion(const G4String& childTypeName)
   if (childTypeName=="SinglesDigitizer") {
 	  if(m_SDname.empty())
 	  	  GateError("***ERROR*** Please, choose the sensitive detector name for which you want to insert new digitizer. "
-	  			  "Command: /gate/digitizerMng/chooseSD\n"
+	  			  "Command: /gate/digitizerMgr/chooseSD\n"
 	  			   "ATTENTION: this command can be called only before /insert command\n");
 
 	  G4SDManager* SDman = G4SDManager::GetSDMpointer();
 	  GateCrystalSD* SD = (GateCrystalSD*) SDman->FindSensitiveDetector(m_SDname, true);
-	  GetDigitizerMng()->AddNewSinglesDigitizer( new GateSinglesDigitizer(GetDigitizerMng(),GetNewCollectionName(),SD) );
+	  GetDigitizerMgr()->AddNewSinglesDigitizer( new GateSinglesDigitizer(GetDigitizerMgr(),GetNewCollectionName(),SD) );
 
   } else if (childTypeName=="CoincidenceSorter") {
 	  // One CoinSorter per System! Defined in the constructor of the system ! Only its parameters should be defiend with CS messenger
-	 GetDigitizerMng()->AddNewCoincidenceSorter( new GateCoincidenceSorter(GetDigitizerMng(),GetNewCollectionName()) );
+	 GetDigitizerMgr()->AddNewCoincidenceSorter( new GateCoincidenceSorter(GetDigitizerMgr(),GetNewCollectionName()) );
   }/* else if (childTypeName=="coincidenceChain") {
-    GetDigitizerMng()->StoreNewCoincidenceProcessorChain( new GateCoincidencePulseProcessorChain(GetDigitizer(),GetNewInsertionBaseName()) );
+    GetDigitizerMgr()->StoreNewCoincidenceProcessorChain( new GateCoincidencePulseProcessorChain(GetDigitizer(),GetNewInsertionBaseName()) );
   *///}
    else {
     G4cout << "Digitizer module type name '" << childTypeName << "' was not recognised --> insertion request must be ignored!\n";
@@ -155,7 +155,7 @@ void GateDigitizerMgrMessenger::DoInsertion(const G4String& childTypeName)
 G4bool GateDigitizerMgrMessenger::CheckNameConflict(const G4String& newName)
 {
   // Check whether an object with the same name already exists in the list
-  return (GetDigitizerMng()->FindElement(newName) != 0 ) ;
+  return (GetDigitizerMgr()->FindElement(newName) != 0 ) ;
 }
 
 

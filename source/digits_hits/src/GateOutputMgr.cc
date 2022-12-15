@@ -64,6 +64,7 @@ DigiMode   GateOutputMgr::m_digiMode= kruntimeMode;
   - GateToRootPlotter -> TODO GND 2022???
   - GateToLMF
   - GateToBinary
+  - GateToTree
 
   All of these Output modules are implemented in the same way.
   They all have a Messenger Class.
@@ -457,6 +458,23 @@ GateCoincidenceDigiCollection* GateOutputMgr::GetCoincidenceDigiCollection(const
   return (collectionID>=0) ? (GateCoincidenceDigiCollection*) (fDM->GetDigiCollection( collectionID ) ) : 0 ;
 }
 //----------------------------------------------------------------------------------
+
+//OK GND 2022 for GateToTree adaptation
+//----------------------------------------------------------------------------------
+void GateOutputMgr::RegisterNewHitsCollection(const G4String& aCollectionName,G4bool outputFlag)
+{
+  GateMessage("Output", 5, " GateOutputMgr::RegisterNewHitsCollection\n";);
+  //G4cout<<" GateOutputMgr::RegisterNewHitsCollection "<<aCollectionName<< " "<< outputFlag<<Gateendl;
+  for (size_t iMod=0; iMod<m_outputModules.size(); iMod++)
+  {
+	  //G4cout<<m_outputModules[iMod]->GetName()<<G4endl;
+	  if(m_outputModules[iMod]->GetName() == "tree")
+		  m_outputModules[iMod]->RegisterNewHitsCollection(aCollectionName,outputFlag);
+  }
+}
+//----------------------------------------------------------------------------------
+
+
 
 
 //----------------------------------------------------------------------------------

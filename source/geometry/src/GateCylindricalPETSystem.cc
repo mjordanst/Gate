@@ -53,9 +53,9 @@ GateCylindricalPETSystem::GateCylindricalPETSystem(const G4String& itsName)
 
   // Integrate a coincidence sorter into the digitizer
   //OK GND 2022
-  GateDigitizerMgr* digitizerMng = GateDigitizerMgr::GetInstance();
-  GateCoincidenceSorter* coincidenceSorter = new GateCoincidenceSorter(digitizerMng,"Coincidences");
-  digitizerMng->AddNewCoincidenceSorter(coincidenceSorter);
+  GateDigitizerMgr* digitizerMgr = GateDigitizerMgr::GetInstance();
+  GateCoincidenceSorter* coincidenceSorter = new GateCoincidenceSorter(digitizerMgr,"Coincidences");
+  digitizerMgr->AddNewCoincidenceSorter(coincidenceSorter);
   
 #ifdef GATE_USE_LMF
 

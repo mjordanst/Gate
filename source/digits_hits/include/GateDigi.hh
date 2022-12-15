@@ -28,7 +28,7 @@ class GateDigi : public G4VDigi
 
 public:
 
-  GateDigi();
+  GateDigi(const void* itsMother=0);
 
   //! Constructor that takes a pointer!
   inline GateDigi(const GateDigi* right)
@@ -54,8 +54,8 @@ public:
 
 
 public:
-  	  //inline void  SetMother(const void* mother)      	      { m_mother = mother; }
-      //inline const void* GetMother()   const                  { return m_mother; }
+  	  inline void  SetMother(const void* mother)      	      { m_mother = mother; }
+      inline const void* GetMother()   const                  { return m_mother; }
 
       inline void  SetRunID(G4int j)                  	      { m_runID = j; }
       inline G4int GetRunID()  const                       	      { return m_runID; }
@@ -239,7 +239,7 @@ public:
 
 
   //! Pointer to the original crystal hit if known
-  //const void* m_mother;
+  const void* m_mother;
 };
 
 

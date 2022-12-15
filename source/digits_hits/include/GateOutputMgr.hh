@@ -120,6 +120,8 @@ public:
   //! Return the current coincidence-digi collection (if nay)
   GateCoincidenceDigiCollection*  GetCoincidenceDigiCollection(const G4String& collectionName);
 
+  void RegisterNewHitsCollection(const G4String& aCollectionName,G4bool outputFlag);
+
   void RegisterNewSingleDigiCollection(const G4String& aCollectionName,G4bool outputFlag);
   void RegisterNewCoincidenceDigiCollection(const G4String& aCollectionName,G4bool outputFlag);
 

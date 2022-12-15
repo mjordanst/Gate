@@ -42,7 +42,7 @@ class GateVSystem;
 
 
 /*
- * DigitizerOld -> DigitizerMng
+ * DigitizerOld -> DigitizerMgr
  * PulseProcessorChain -> Digitizer
  * PulseProcessor, Processor-> DigitizerModule
  * DigitizerName = CollectionName
@@ -162,10 +162,10 @@ private:
 
   GateDigitizerMgrMessenger *fMessenger;
 
-  static GateDigitizerMgr*  theDigitizerMng;
+  static GateDigitizerMgr*  theDigitizerMgr;
 
 protected:
-  G4String 					m_elementTypeName;	 //!< Type-name for DigitizerMng --> used only for cout and help messengers
+  G4String 					m_elementTypeName;	 //!< Type-name for DigitizerMgr --> used only for cout and help messengers
   GateSystemList*                               m_systemList;            //! List of systems to which the DigitizerOld is attached
 
   //G4String 					m_newInsertionBaseType;	 //!< Type-name for all DigitizerOld modules

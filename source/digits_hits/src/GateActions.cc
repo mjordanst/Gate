@@ -68,8 +68,8 @@ GateRunAction::GateRunAction(GateUserActions * cbm)
 	//OK GND 2022. moved from Gate.cc
 	//Very first initialization of GateDigitizerMgr
 #ifdef G4ANALYSIS_USE_GENERAL
-	GateDigitizerMgr* digitizerMng = GateDigitizerMgr::GetInstance();
-	//digitizerMng->Enable(false);
+	GateDigitizerMgr* digitizerMgr = GateDigitizerMgr::GetInstance();
+	//digitizerMgr->Enable(false);
 #endif
 }
 //-----------------------------------------------------------------------------
@@ -195,8 +195,8 @@ inline void GateEventAction::EndOfEventAction(const G4Event* anEvent)
  // G4cout<<"GateACTIONS ------ GateEventAction::EndOfEventAction " << anEvent->GetEventID() <<G4endl;
   //OK GND 2022 TODO
   //I would like to RunDigitizers here but some aHit attributes are filled in OutputMng/GateAnalysis->RecordEndOfEvent
-  //GateDigitizerMgr* digitizerMng = GateDigitizerMgr::GetInstance();
-  // 	  digitizerMng->RunDigitizers();
+  //GateDigitizerMgr* digitizerMgr = GateDigitizerMgr::GetInstance();
+  // 	  digitizerMgr->RunDigitizers();
 
 #ifdef G4ANALYSIS_USE_GENERAL
   // Here we fill the histograms of the OutputMgr manager

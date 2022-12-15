@@ -36,7 +36,7 @@
 
 #include "GateObjectStore.hh"
 #include "GateEmittedGammaInformation.hh"
-
+#include "GateOutputMgr.hh"
 // Name of the hit collection
 //const G4String GateCrystalSD::m_CrystalCollectionName = "crystalCollection"; //CrystalSD"; //has to be hardcoded somewhere. Add modifs for multiple HCs
 
@@ -54,14 +54,14 @@ GateCrystalSD::GateCrystalSD(const G4String& name)
 	collectionName.insert(collName);
 //	collectionID = -1;
 
-	GateDigitizerMgr* digitizerMng=GateDigitizerMgr::GetInstance();
-	//digitizerMng->AddNewSD(this);
+	GateDigitizerMgr* digitizerMgr=GateDigitizerMgr::GetInstance();
+	//digitizerMgr->AddNewSD(this);
 
-	GateSinglesDigitizer* digitizer = new GateSinglesDigitizer(digitizerMng,"Singles",this);
-	digitizerMng->AddNewSinglesDigitizer(digitizer);
-	//digitizerMng->AddNewSinglesDigitizer( new GateSinglesDigitizer(digitizerMng,"Singles",this));
+	GateSinglesDigitizer* digitizer = new GateSinglesDigitizer(digitizerMgr,"Singles",this);
+	digitizerMgr->AddNewSinglesDigitizer(digitizer);
+	//digitizerMgr->AddNewSinglesDigitizer( new GateSinglesDigitizer(digitizerMgr,"Singles",this));
 
-	digitizerMng->AddNewSD(this);
+	digitizerMgr->AddNewSD(this);
 	//In order to get unique HCID each time when we create a new SD
 	// one can take GetCollectionCapacity of G4SDManager
 	// by default there is always phantomSD attached
@@ -75,7 +75,11 @@ GateCrystalSD::GateCrystalSD(const G4String& name)
 
 			}
 	 */
+
 	HCID = G4SDManager::GetSDMpointer()->GetCollectionCapacity() ;
+
+	//OK GND 2022 For GateToTree class adaptaion
+  	GateOutputMgr::GetInstance()->RegisterNewHitsCollection(collName,false); // ??? save by default or not
 
 }
 //------------------------------------------------------------------------------

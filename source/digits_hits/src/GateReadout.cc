@@ -52,7 +52,7 @@
 
 
 GateReadout::GateReadout(GateSinglesDigitizer *digitizer)
-  :GateVDigitizerModule("Readout","digitizerMng/"+digitizer->GetSD()->GetName()+"/SinglesDigitizer/"+digitizer->m_digitizerName+"/readout",digitizer,digitizer->GetSD()),
+  :GateVDigitizerModule("Readout","digitizerMgr/"+digitizer->GetSD()->GetName()+"/SinglesDigitizer/"+digitizer->m_digitizerName+"/readout",digitizer,digitizer->GetSD()),
    m_depth(0),
    m_policy("TakeEnergyWinner"),
    m_IsFirstEntrance(1),

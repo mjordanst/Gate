@@ -29,7 +29,7 @@
 //:G4VDigitizerModule("GateDigitizerInitializationModule"),
 
 GateDigitizerInitializationModule::GateDigitizerInitializationModule(GateSinglesDigitizer *digitizer)
-  :GateVDigitizerModule("DigiInit","digitizerMng/"+digitizer->GetSD()->GetName()+"/SinglesDigitizer/"+digitizer->m_digitizerName+"/adder",digitizer, digitizer->GetSD()),
+  :GateVDigitizerModule("DigiInit","digitizerMgr/"+digitizer->GetSD()->GetName()+"/SinglesDigitizer/"+digitizer->m_digitizerName+"/adder",digitizer, digitizer->GetSD()),
    m_FirstEvent(true),
    m_HCID(-1),
    m_outputDigiCollection(0),

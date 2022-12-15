@@ -80,6 +80,10 @@ public:
   {}
   virtual void RegisterNewSingleDigiCollection(const G4String& ,G4bool )
   {}
+  //OK GND 2022
+  virtual void RegisterNewHitsCollection(const G4String& ,G4bool )
+  {}
+
   //! Returns the value of the object enabled/disabled status flag
   inline virtual G4bool IsEnabled() const
   { return m_isEnabled;}

@@ -55,9 +55,9 @@ GateOPETSystem::GateOPETSystem(const G4String& itsName)
   digitizer->StoreNewCoincidenceSorter(coincidenceSorter);
     */
   //OK GND 2022
-  GateDigitizerMgr* digitizerMng = GateDigitizerMgr::GetInstance();
-  GateCoincidenceSorter* coincidenceSorter = new GateCoincidenceSorter(digitizerMng,"Coincidences");
-  digitizerMng->AddNewCoincidenceSorter(coincidenceSorter);
+  GateDigitizerMgr* digitizerMgr = GateDigitizerMgr::GetInstance();
+  GateCoincidenceSorter* coincidenceSorter = new GateCoincidenceSorter(digitizerMgr,"Coincidences");
+  digitizerMgr->AddNewCoincidenceSorter(coincidenceSorter);
 #ifdef GATE_USE_LMF
 
   // Insert an LMF output module into the output manager

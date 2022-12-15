@@ -20,7 +20,7 @@ See LICENSE.md for further details
 GateCoincidenceSorterMessenger::GateCoincidenceSorterMessenger(GateCoincidenceSorter* itsCoincidenceSorter)
     : GateClockDependentMessenger(itsCoincidenceSorter), m_CoincidenceSorter(itsCoincidenceSorter)
 {
-	 G4String DirectoryName = "/gate/digitizerMng/CoincidenceSorter/"+m_CoincidenceSorter->GetOutputName()+"/";
+	 G4String DirectoryName = "/gate/digitizerMgr/CoincidenceSorter/"+m_CoincidenceSorter->GetOutputName()+"/";
 
 	// G4cout<<"GateCoincidenceSorterMessenger constr " << itsCoincidenceSorter<<" "<< this<<G4endl;
   G4String guidance;

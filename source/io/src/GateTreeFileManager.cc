@@ -109,6 +109,16 @@ void GateOutputTreeFileManager::fill()
   }
 }
 
+void GateOutputTreeFileManager::fill(std::unique_ptr<GateOutputTreeFile> f)
+{
+  //for(auto& f : m_listOfTreeFile)
+  //{
+    f->fill();
+  //}
+}
+
+
+
 void GateOutputTreeFileManager::write_header()
 {
   for(auto&& f : m_listOfTreeFile)

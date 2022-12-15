@@ -474,20 +474,20 @@ void GateAnalysis::RecordEndOfEvent(const G4Event* event)
 
   //OK GND 2022
   //RunDigitizers is called here otherwise we don't have all attributes filled for aHit
-  GateDigitizerMgr* digitizerMng=GateDigitizerMgr::GetInstance();
+  GateDigitizerMgr* digitizerMgr=GateDigitizerMgr::GetInstance();
  /* GateOutputMgr* outputMgr = GateOutputMgr::GetInstance();
    for (int i=0; i<outputMgr->m_outputModules.size(); i++ )
    {
 	   G4cout<<outputMgr->m_outputModules[i]->GetName()<<" : "<< IsEnabled()  <<G4endl;
    }
-  G4cout<<"digitizerMng->m_recordSingles " <<digitizerMng->m_recordSingles<< " "<< digitizerMng->m_recordCoincidences<<G4endl;
+  G4cout<<"digitizerMgr->m_recordSingles " <<digitizerMgr->m_recordSingles<< " "<< digitizerMgr->m_recordCoincidences<<G4endl;
 */
 
-  if (digitizerMng->m_recordSingles|| digitizerMng->m_recordCoincidences)
-	  digitizerMng->RunDigitizers();
+  if (digitizerMgr->m_recordSingles|| digitizerMgr->m_recordCoincidences)
+	  digitizerMgr->RunDigitizers();
 
-  if (digitizerMng->m_recordSingles|| digitizerMng->m_recordCoincidences)
-	  digitizerMng->RunCoincidenceSorters();
+  if (digitizerMgr->m_recordSingles|| digitizerMgr->m_recordCoincidences)
+	  digitizerMgr->RunCoincidenceSorters();
 
 } // end function
 //--------------------------------------------------------------------------------------------------

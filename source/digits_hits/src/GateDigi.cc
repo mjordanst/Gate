@@ -16,7 +16,7 @@ G4bool                GateDigi::m_singleASCIIMaskDefault;
 
 G4Allocator<GateDigi> GateDigiAllocator;
 
-GateDigi::GateDigi():
+GateDigi::GateDigi(const void* itsMother):
 	  m_runID(-1),
       m_eventID(-1),
       m_sourceID(-1),
@@ -30,7 +30,8 @@ GateDigi::GateDigi():
       #endif
       m_energyError(0.0),
       m_globalPosError(0.0),
-      m_localPosError(0.0)
+      m_localPosError(0.0),
+      m_mother(itsMother)
 {
 }
 

@@ -28,11 +28,11 @@ See LICENSE.md for further details
 //------------------------------------------------------------------------------------------------------
 G4int GateCoincidenceSorter::gm_coincSectNum=0;
 // Constructs a new coincidence sorter, attached to a GateDigitizerOld and to a system
-GateCoincidenceSorter::GateCoincidenceSorter(GateDigitizerMgr* itsDigitizerMng,
+GateCoincidenceSorter::GateCoincidenceSorter(GateDigitizerMgr* itsDigitizerMgr,
                                              const G4String& itsOutputName,
                                              const bool& IsCCSorter)
  	: GateVDigitizerModule("GateCoincidenceSorter"),
-    m_digitizerMng(itsDigitizerMng),
+    m_digitizerMgr(itsDigitizerMgr),
     m_system(0),
     m_outputName(itsOutputName),
     m_coincidenceWindow(10.* ns),
@@ -173,8 +173,8 @@ void GateCoincidenceSorter::Digitize()
 
 
   //Input digi collection
-  GateDigitizerMgr* digitizerMng = GateDigitizerMgr::GetInstance();
-  GateSinglesDigitizer* inputDigitizer = digitizerMng->FindDigitizer(m_inputName);//m_collectionName);
+  GateDigitizerMgr* digitizerMgr = GateDigitizerMgr::GetInstance();
+  GateSinglesDigitizer* inputDigitizer = digitizerMgr->FindDigitizer(m_inputName);//m_collectionName);
 
   G4int inputCollID=inputDigitizer->m_outputDigiCollectionID;
 
@@ -339,7 +339,7 @@ void GateCoincidenceSorter::Digitize()
 
 
   // TODO check if the following lines are not the bug and we really need to ignore multiple coincidences?? -> there is option for multiple coincidences ??
-  // if not bug: it was before at the end of all coincidence chains, just before the writing -> should be moved to digitizerMng
+  // if not bug: it was before at the end of all coincidence chains, just before the writing -> should be moved to digitizerMgr
   std::vector< GateCoincidenceDigi* >* output_vector = m_OutputCoincidenceDigiCollection->GetVector ();
   std::vector<GateCoincidenceDigi*>::iterator it;
 
@@ -380,7 +380,7 @@ void GateCoincidenceSorter::ProcessCompletedCoincidenceWindow4CC(GateCoincidence
         if(IsCoincidenceGood4CC(coincidence)==true){
             // Introduce some conditions to check if  is good
             coincidence->SetCoincID(coincID_CC);
-            m_digitizerMng->StoreCoincidenceDigi(coincidence);
+            m_digitizerMgr->StoreCoincidenceDigi(coincidence);
             coincID_CC++;
             return;
         }
@@ -751,13 +751,13 @@ G4bool GateCoincidenceSorter::IsForbiddenCoincidence(const GateDigi* digi1, cons
 
 void GateCoincidenceSorter::SetSystem(G4String& inputName)
 {
-   for (size_t i=0; i<m_digitizerMng->m_SingleDigitizersList.size() ; ++i)
+   for (size_t i=0; i<m_digitizerMgr->m_SingleDigitizersList.size() ; ++i)
    {
-      G4String pPCOutputName = m_digitizerMng->m_SingleDigitizersList[i]->GetOutputName();
+      G4String pPCOutputName = m_digitizerMgr->m_SingleDigitizersList[i]->GetOutputName();
 
       if(pPCOutputName.compare(inputName) == 0)
       {
-         this->SetSystem(m_digitizerMng->m_SingleDigitizersList[i]->GetSystem());
+         this->SetSystem(m_digitizerMgr->m_SingleDigitizersList[i]->GetSystem());
          break;
       }
    }

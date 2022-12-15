@@ -43,7 +43,7 @@
 
 
 GateEnergyFraming::GateEnergyFraming(GateSinglesDigitizer *digitizer)
-  :GateVDigitizerModule("EnergyFraming","digitizerMng/"+digitizer->GetSD()->GetName()+"/SinglesDigitizer/"+digitizer->m_digitizerName+"/energyFraming",digitizer,digitizer->GetSD()),
+  :GateVDigitizerModule("EnergyFraming","digitizerMgr/"+digitizer->GetSD()->GetName()+"/SinglesDigitizer/"+digitizer->m_digitizerName+"/energyFraming",digitizer,digitizer->GetSD()),
 	m_min(0),
 	m_max(std::numeric_limits<double>::max()),
 	m_outputDigi(0),

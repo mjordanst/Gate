@@ -35,12 +35,13 @@ public:
 private:
 
   G4UIcmdWithAString* m_addFileNameCmd;
-  G4UIcmdWithoutParameter *m_enableHitsOutput;
-  G4UIcmdWithoutParameter *m_disableHitsOutput;
+  // G4UIcmdWithoutParameter *m_enableHitsOutput;
+  // G4UIcmdWithoutParameter *m_disableHitsOutput;
 
   G4UIcmdWithoutParameter *m_enableOpticalDataOutput;
   G4UIcmdWithoutParameter *m_disableOpticalDataOutput;
 
+  G4UIcmdWithAString* m_addHitsCollectionCmd;
   G4UIcmdWithAString* m_addCollectionCmd;
   GateToTree *m_gateToTree;
 

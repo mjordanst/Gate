@@ -235,16 +235,16 @@ void GateToRoot::Book() {
     pet_data->Branch("stop_time_sec", &mTimeStop);
 
     //OK GND 2022
-    GateDigitizerMgr* digitizerMng = GateDigitizerMgr::GetInstance();
+    GateDigitizerMgr* digitizerMgr = GateDigitizerMgr::GetInstance();
 
-   // G4cout<<"GateToRoot SD size "<<digitizerMng->m_SDlist.size()<<G4endl;
-	for (long unsigned int i=0; i< digitizerMng->m_SDlist.size();i++)
+   // G4cout<<"GateToRoot SD size "<<digitizerMgr->m_SDlist.size()<<G4endl;
+	for (long unsigned int i=0; i< digitizerMgr->m_SDlist.size();i++)
 	{
 		GateHitTree *treeHit;
-		if (digitizerMng->m_SDlist.size() ==1 ) // keep the old name "Hits" if there is only one collection
+		if (digitizerMgr->m_SDlist.size() ==1 ) // keep the old name "Hits" if there is only one collection
 			treeHit = new GateHitTree("Hits");
 		else
-			treeHit = new GateHitTree("Hits_"+digitizerMng->m_SDlist[i]->GetName());
+			treeHit = new GateHitTree("Hits_"+digitizerMgr->m_SDlist[i]->GetName());
 		//		m_treesHit.push_back(treeHit)
 		treeHit->Init(m_hitBuffers[i]);
 		m_treesHit.push_back(treeHit);
@@ -305,8 +305,8 @@ void GateToRoot::RecordBeginOfAcquisition() {
         G4cout << "GateToRoot::RecordBeginOfAcquisition\n";
 
 	//OK GND 2022 multiSD
-	   GateDigitizerMgr* digitizerMng = GateDigitizerMgr::GetInstance();
-	   SetSDlistSize(digitizerMng->m_SDlist.size() );
+	   GateDigitizerMgr* digitizerMgr = GateDigitizerMgr::GetInstance();
+	   SetSDlistSize(digitizerMgr->m_SDlist.size() );
 	   for (G4int i=0; i<GetSDlistSize();i++)
 		{
 			GateRootHitBuffer hitBuffer;
@@ -656,7 +656,7 @@ void GateToRoot::RecordBeginOfEvent(const G4Event *evt) {
         G4cout << "GateToRoot::RecordBeginOfEvent\n";
 
     //OK GND 2022
-       // GateDigitizerMgr* digitizerMng = GateDigitizerMgr::GetInstance();
+       // GateDigitizerMgr* digitizerMgr = GateDigitizerMgr::GetInstance();
         for (G4int i=0; i< GetSDlistSize() ;i++)
         {
    		  m_hitBuffers[i].Clear();
@@ -1208,11 +1208,11 @@ void GateToRoot::SingleOutputChannel::RecordDigitizer() {
 
 	GateMessage("OutputMgr", 5, " GateToRoot::SingleOutputChannel::RecordDigitizer -- begin\n";);
     //G4cout<<"GateToRoot::SingleOutputChannel::RecordDigitizer() "<< m_collectionName <<" "<< m_collectionID<<" "<<m_outputFlag <<G4endl;
-	 //GateDigitizerMgr* digitizerMng = GateDigitizerMgr::GetInstance();
+	 //GateDigitizerMgr* digitizerMgr = GateDigitizerMgr::GetInstance();
 
 
 	if (!m_outputFlag) return;
-//	digitizerMng->ShowSummary();
+//	digitizerMgr->ShowSummary();
 //	G4cout<<"m_collectionID "<< m_collectionID<<G4endl;
 
     G4DigiManager *fDM = G4DigiManager::GetDMpointer();
@@ -1252,9 +1252,9 @@ void GateToRoot::CoincidenceOutputChannel::RecordDigitizer() {
    // G4cout<<"GateToRoot::CoincidenceOutputChannel::RecordDigitizer() "<<G4endl;
 	G4DigiManager *fDM = G4DigiManager::GetDMpointer();
 
-	 GateDigitizerMgr* digitizerMng = GateDigitizerMgr::GetInstance();
-	 GateCoincidenceSorter* cs = digitizerMng->FindCoincidenceSorter(m_collectionName);
-	 //digitizerMng->ShowSummary();
+	 GateDigitizerMgr* digitizerMgr = GateDigitizerMgr::GetInstance();
+	 GateCoincidenceSorter* cs = digitizerMgr->FindCoincidenceSorter(m_collectionName);
+	 //digitizerMgr->ShowSummary();
 
 
 	 G4String DCname=cs->GetName()+"/"+m_collectionName;

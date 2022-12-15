@@ -61,7 +61,7 @@ class GateCoincidenceSorter : public GateVDigitizerModule
 public:
 
     //! Constructs a new coincidence sorter, attached to a GateDigitizerMgr amd to a system
-    GateCoincidenceSorter(GateDigitizerMgr* itsDigitizerMng,
+    GateCoincidenceSorter(GateDigitizerMgr* itsDigitizerMgr,
                           const G4String& itsName,
                           const bool &IsCCSorter=false);
     //! Destructor
@@ -166,7 +166,7 @@ protected:
     //! \name Parameters of the sorter
     //@{
 
-    GateDigitizerMgr       *m_digitizerMng;
+    GateDigitizerMgr       *m_digitizerMgr;
     GateVSystem         *m_system;                      //!< System to which the sorter is attached
     G4String            m_outputName;
     G4String            m_inputName;

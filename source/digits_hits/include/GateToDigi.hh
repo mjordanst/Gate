@@ -45,8 +45,8 @@ public:
   //inline GateDigitizerOld*   GetDigitizer()
    //   { return m_digitizer; }
 
-  inline GateDigitizerMgr*   GetDigitizerMng()
-       { return m_digitizerMng; }
+  inline GateDigitizerMgr*   GetDigitizerMgr()
+       { return m_digitizerMgr; }
 
 
 private:
@@ -56,7 +56,7 @@ private:
 							  //!< by the pulse-processor hits
   //OK GND 2022
   //GateDigitizerOld* m_digitizer;
-  GateDigitizerMgr* m_digitizerMng;
+  GateDigitizerMgr* m_digitizerMgr;
 
   G4String       m_noFileName;
 };

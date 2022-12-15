@@ -38,7 +38,7 @@
 
 
 GateEnergyResolution::GateEnergyResolution(GateSinglesDigitizer *digitizer)
-  :GateVDigitizerModule("energyResolution","digitizerMng/"+digitizer->GetSD()->GetName()+"/SinglesDigitizer/"+digitizer->m_digitizerName+"/energyResolution",digitizer,digitizer->GetSD()),
+  :GateVDigitizerModule("energyResolution","digitizerMgr/"+digitizer->GetSD()->GetName()+"/SinglesDigitizer/"+digitizer->m_digitizerName+"/energyResolution",digitizer,digitizer->GetSD()),
    m_reso(0),
    m_resoMin(0),
    m_resoMax(0),

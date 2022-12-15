@@ -42,7 +42,7 @@
 
 
 GateEfficiency::GateEfficiency(GateSinglesDigitizer *digitizer)
-  :GateVDigitizerModule("energyEfficiency","digitizerMng/"+digitizer->GetSD()->GetName()+"/SinglesDigitizer/"+digitizer->m_digitizerName+"/efficiency",digitizer,digitizer->GetSD()),
+  :GateVDigitizerModule("energyEfficiency","digitizerMgr/"+digitizer->GetSD()->GetName()+"/SinglesDigitizer/"+digitizer->m_digitizerName+"/efficiency",digitizer,digitizer->GetSD()),
    m_mode("crystal"),
    m_uniqueEff(-1),
    m_enabled(),
@@ -135,29 +135,33 @@ void GateEfficiency::Digitize()
 			  continue; // ???
 		    }
 		  */
+		  G4double eff;
 
-		   size_t ligne;
-		   if (m_efficiency_distr)
-		   {
-			   ligne = system->ComputeIdFromVolID(inputDigi->GetOutputVolumeID(),m_enabled);
-		   }
-		   //G4cout<< inputDigi->GetEnergy()<<" " <<inputDigi->GetOutputVolumeID()<<" "<<ligne<<G4endl;
-		   G4double eff;
-		   G4String UnitX = m_efficiency_distr->GetUnitX();
+		  if (m_uniqueEff>0)
+					   eff=m_uniqueEff;
+		  else
+		  {
+			G4String UnitX = m_efficiency_distr->GetUnitX();
 
-		   if (m_uniqueEff>0)
-			   eff=m_uniqueEff;
-		   else
-			   if(m_mode=="crystal")
-				   eff = m_efficiency_distr->Value(ligne);
-			   else
-				   if(UnitX=="keV")
-					   eff = m_efficiency_distr->Value(inputDigi->GetEnergy()*keV);
-				   else
-					   GateError("[GateEfficiency::Digitizer] The default units of energy is keV. Please, use it too! "
-							   "If you need other unit of energy please contact OpenGATE developers. \n");
-
-
+			if (m_mode=="energy")
+				{
+				if(UnitX=="keV")
+					eff = m_efficiency_distr->Value(inputDigi->GetEnergy()*keV);
+				else if(UnitX=="MeV")
+					eff = m_efficiency_distr->Value(inputDigi->GetEnergy()*MeV);
+				else
+					GateError("[GateEfficiency::Digitizer] The default units of energy is keV or MeV. Please, use it too! "
+							"If you need other unit of energy please contact OpenGATE developers. \n");
+				}
+			else
+				{
+					if (m_efficiency_distr)
+					{
+					size_t ligne;
+					   ligne = system->ComputeIdFromVolID(inputDigi->GetOutputVolumeID(),m_enabled);
+					   eff = m_efficiency_distr->Value(ligne);
+					}
+				}
 
 		   if(eff>1)
 			   GateError("[GateEfficiency::Digitize] Efficiency value is > 1.0 !!! \n");
@@ -166,8 +170,10 @@ void GateEfficiency::Digitize()
 		   {
 			   m_OutputDigiCollection->insert(m_outputDigi);
 		   }
+
+		  }
 	  }
-    }
+  }
   else
     {
   	  if (nVerboseLevel>1)

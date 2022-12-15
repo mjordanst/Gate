@@ -237,7 +237,7 @@ G4bool GateToRootMessenger::IsAnOutputChannelCmd(G4UIcommand* command)
 //--------------------------------------------------------------------------
 void GateToRootMessenger::ExecuteOutputChannelCmd(G4UIcommand* command, G4String newValue)
 {
-	GateDigitizerMgr* digitizerMng=GateDigitizerMgr::GetInstance();
+	GateDigitizerMgr* digitizerMgr=GateDigitizerMgr::GetInstance();
 	//  G4cout<<"GateToRootMessenger::ExecuteOutputChannelCmd "<< G4endl;
 
   for (size_t i = 0; i<OutputChannelCmdList.size() ; ++i){
@@ -245,20 +245,20 @@ void GateToRootMessenger::ExecuteOutputChannelCmd(G4UIcommand* command, G4String
       m_outputChannelList[i]->SetOutputFlag( OutputChannelCmdList[i]->GetNewBoolValue(newValue) );
       //OK GND 2022 //TODO adapt for other outputs
 
-      GateSinglesDigitizer* digitizer=digitizerMng->FindDigitizer(m_outputChannelList[i]->m_collectionName);
+      GateSinglesDigitizer* digitizer=digitizerMgr->FindDigitizer(m_outputChannelList[i]->m_collectionName);
       if(digitizer)
     	  digitizer->m_recordFlag=true;
 
-      //Setting flag in the digitizerMng
+      //Setting flag in the digitizerMgr
       if (G4StrUtil::contains(m_outputChannelList[i]->m_collectionName, "Singles"))
       	  {
     	   if(OutputChannelCmdList[i]->GetNewBoolValue(newValue))
-    		   digitizerMng->m_recordSingles=OutputChannelCmdList[i]->GetNewBoolValue(newValue);
+    		   digitizerMgr->m_recordSingles=OutputChannelCmdList[i]->GetNewBoolValue(newValue);
       	  }
       if (G4StrUtil::contains(m_outputChannelList[i]->m_collectionName, "Coincidences"))
       	  {
     	  	  if(OutputChannelCmdList[i]->GetNewBoolValue(newValue))
-    	  		  digitizerMng->m_recordCoincidences=OutputChannelCmdList[i]->GetNewBoolValue(newValue);
+    	  		  digitizerMgr->m_recordCoincidences=OutputChannelCmdList[i]->GetNewBoolValue(newValue);
       	  }
 
       break;

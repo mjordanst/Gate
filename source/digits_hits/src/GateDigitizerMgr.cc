@@ -31,20 +31,20 @@
 #include "GateVDigitizerModule.hh"
 
 
-GateDigitizerMgr* GateDigitizerMgr::theDigitizerMng=0;
+GateDigitizerMgr* GateDigitizerMgr::theDigitizerMgr=0;
 
 //-----------------------------------------------------------------
 GateDigitizerMgr* GateDigitizerMgr::GetInstance()
 {
-  if (!theDigitizerMng)
-    theDigitizerMng = new GateDigitizerMgr;
-  return theDigitizerMng;
+  if (!theDigitizerMgr)
+    theDigitizerMgr = new GateDigitizerMgr;
+  return theDigitizerMgr;
 }
 
 
 GateDigitizerMgr::GateDigitizerMgr()
-	: GateClockDependent("digitizerMng"),
-	  m_elementTypeName("DigitizerMng module"),
+	: GateClockDependent("digitizerMgr"),
+	  m_elementTypeName("DigitizerMgr module"),
 	  m_systemList(0),
 	  m_collectionID(0),
 	  m_isInitialized(1),
@@ -316,6 +316,7 @@ return NULL;
 /////////////////
 void GateDigitizerMgr::RunDigitizers()
 {
+	//G4cout<<"GateDigitizerMgr::RunDigitizers"<<G4endl;
 	//ShowSummary();
 
 	if ( !IsEnabled() )
@@ -443,7 +444,7 @@ void GateDigitizerMgr::RunCoincidenceDigitizers()
 void GateDigitizerMgr::ShowSummary()
 {
 	G4cout<<"-----------------------"<<G4endl;
-	G4cout<<"DigitizerMng summary"<<G4endl;
+	G4cout<<"DigitizerMgr summary"<<G4endl;
 	G4DigiManager *fDM = G4DigiManager::GetDMpointer();
 	G4DCtable* DCTable=fDM->GetDCtable ();
 

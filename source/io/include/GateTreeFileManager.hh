@@ -63,9 +63,11 @@ public:
   void write_header();
   void write();
 
+  void fill(std::unique_ptr<GateOutputTreeFile>);
 
-
-private:
+//private:
+  //OK GND 2022
+  public:
   std::vector<std::unique_ptr<GateOutputTreeFile>> m_listOfTreeFile;
   std::string m_nameOfTree;
 };
