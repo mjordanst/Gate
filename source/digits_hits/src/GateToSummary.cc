@@ -83,23 +83,32 @@ void GateToSummary::RecordEndOfEvent(const G4Event* )
   m_nb_of_events++;
 
   // store number of hits during this events
-  GateHitsCollection* CHC = GetOutputMgr()->GetHitCollection();
-  if (CHC) {
-    G4int NbHits = CHC->entries();
-    G4int n = 0;
-    for (G4int iHit=0; iHit<NbHits; iHit++) {
-      GateHit* aHit = (*CHC)[iHit];
-      if (aHit->GoodForAnalysis()) n++;
-    }
-    m_nb_of_hits += n;
-  }
+  //GateHitsCollection* CHC = GetOutputMgr()->GetHitCollection();
+
+  //OK GND 2022
+  std::vector<GateHitsCollection*> CHC_vector = GetOutputMgr()->GetHitCollections();
+
+   for (long unsigned int i=0; i<CHC_vector.size();i++ )//HC_vector.size()
+   {
+	   GateHitsCollection* CHC = CHC_vector[i];
+		if (CHC) {
+		G4int NbHits = CHC->entries();
+		G4int n = 0;
+		for (G4int iHit=0; iHit<NbHits; iHit++) {
+		  GateHit* aHit = (*CHC)[iHit];
+		  if (aHit->GoodForAnalysis()) n++;
+		}
+		m_nb_of_hits += n;
+		}
+   }
 
   // store all collections (Singles, Coincidences etc)
   G4DigiManager * fDM = G4DigiManager::GetDMpointer();
   if (!fDM) return;
 
   for(auto n:m_collection_names) {
-    auto m_collectionID = fDM->GetDigiCollectionID(n);
+	  //OK GND 2022
+    auto m_collectionID = GetCollectionID(n);//fDM->GetDigiCollectionID(n);
     const GateSingleDigiCollection * SDC =
       (GateSingleDigiCollection*) (fDM->GetDigiCollection( m_collectionID ));
     if (!SDC) continue;
