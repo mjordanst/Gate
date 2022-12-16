@@ -212,11 +212,11 @@ which will provide you with a FILE_NAME.root file. By default, this root file wi
 If needed, and for a matter of file size, you could choose not to generate all trees. In this case, just add the following lines in your macro::
 
    /gate/output/root/setRootHitFlag            0
-   /gate/output/root/setRootSinglesFlag        0
+   /gate/output/root/setRootSingles_<DetectorName>Flag        0
    /gate/output/root/setRootCoincidencesFlag   0
    /gate/output/root/setRootNtupleFlag         0
 
-By turning to 1 (or 0) one of this tree flag, you will fill (or not) the given tree.  
+By turning to 1 (or 0) one of this tree flag, you will fill (or not) the given tree. The <DetectorName> is the names of all volumes that you define with commande /gate/<DetectorName>/attachCrystalSD.
  
 In a debug mode, it can be useful to store in a Tree the informations after the action of one particular module of the digitizer chain. The following flags exist to turn on or off these intermediate trees::
 
@@ -910,20 +910,22 @@ This class can be used this way, for example if you want to save hits and Single
 
     /gate/output/tree/enable
     /gate/output/tree/addFileName /tmp/p.npy
-    /gate/output/tree/hits/enable
-    /gate/output/tree/addCollection Singles
+    /gate/output/tree/addHitsCollection <DetectorName>
+    /gate/output/tree/addCollection Singles_<DetectorName>
+
+where <DetectorName> is the names of all volumes that you define with commande /gate/<DetectorName>/attachCrystalSD.
 
 Theses commands will create two new files::
 
-    /tmp/p.hits.npy
-    /tmp/p.Singles.npy
+    /tmp/p.hits_<DetectorName>.npy
+    /tmp/p.Singles_<DetectorName>.npy
 
-where data are saved (hits in /tmp/p.hits.npy and Singles /tmp/p.Singles.npy )
+where data are saved (hits in /tmp/p.hits_<DetectorName>.npy and Singles /tmp/p.Singles_<DetectorName>.npy )
 
 Because of the extension ".npy", file is a numpy compatible arrat and ca be used directly in python with something like::
 
     import numpy
-    hits = numpy.open("/tmp/p.hits.npy")
+    hits = numpy.open("/tmp/p.hits_<DetectorName>.npy")
 
 'hits' is a   `Numpy structured array <https://docs.scipy.org/doc/numpy/user/basics.rec.html>`_
 
@@ -932,20 +934,20 @@ We can add easely add ROOT output::
     /gate/output/tree/enable
     /gate/output/tree/addFileName /tmp/p.npy
     /gate/output/tree/addFileName /tmp/p.root
-    /gate/output/tree/hits/enable
-    /gate/output/tree/addCollection Singles
+    /gate/output/tree/addHitsCollection <DetectorName>
+    /gate/output/tree/addCollection Singles_<DetectorName>
 
 
 Important to notice : in order to have same behavior between ROOT, numpy and ascci output, GateToTree do not save several arrays in same file but will create::
 
-    /tmp/p.hits.root
-    /tmp/p.Singles.root
+    /tmp/p.hits_<DetectorName>.root
+    /tmp/p.Singles_<DetectorName>.root
 
 
 
 In GateToTree, one can disable branch to limit size output (instead of mask)::
 
-    /gate/output/tree/hits/enable
+    /gate/output/tree/addHitsCollection <DetectorName>
     /gate/output/tree/hits/branches/trackLocalTime/disable
 
 for volumeID[0], volumeID[1], ...::
@@ -954,7 +956,7 @@ for volumeID[0], volumeID[1], ...::
 
 Also implemented for Singles::
 
-    /gate/output/tree/addCollection Singles
+    /gate/output/tree/addCollection Singles_<DetectorName>
     /gate/output/tree/Singles/branches/comptVolName/disable
 
 
@@ -966,29 +968,28 @@ and Coincidences::
 Implemented output format
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-We take here example of an user which want to save Hits to a file. Output will on a file named "/tmp/p.hits.X" where X depends of the provided extension.
+We take here example of an user which want to save Hits to a file. Output will on a file named "/tmp/p.hits_<DetectorName>.X" where X depends of the provided extension and the <DetectorName> is the names of all volumes that you define with commande /gate/<DetectorName>/attachCrystalSD.
 
 
 numpy-like format::
 
     /gate/output/tree/enable
-    /gate/output/tree/addFileName /tmp/p.npy #saved to /tmp/p.hits.npy
-    /gate/output/tree/hits/enable
+    /gate/output/tree/addFileName /tmp/p.npy #saved to /tmp/p.hits_<DetectorName>.npy
 
 ROOT format::
 
     /gate/output/tree/enable
-    /gate/output/tree/addFileName /tmp/p.root  #saved to /tmp/p.hits.root
-    /gate/output/tree/hits/enable
+    /gate/output/tree/addFileName /tmp/p.root  #saved to /tmp/p.hits_<DetectorName>.root
+    /gate/output/tree/addHitsCollection <DetectorName>
 
 
 ASCII format::
 
     /gate/output/tree/enable
-    /gate/output/tree/addFileName /tmp/p.txt #saved to /tmp/p.hits.txt
-    /gate/output/tree/hits/enable
+    /gate/output/tree/addFileName /tmp/p.txt #saved to /tmp/p.hits_<DetectorName>.txt
+    /gate/output/tree/addHitsCollection <DetectorName>
 
-Binary format is not (yet implemented)
+Binary format is not (yet) implemented
 
 
 Choice of Collection output format
@@ -998,14 +999,14 @@ If you want to save only Hits::
 
     /gate/output/tree/enable
     /gate/output/tree/addFileName /tmp/p.npy
-    /gate/output/tree/hits/enable
+    /gate/output/tree/addHitsCollection <DetectorName>
 
 If you want to save  Hits AND Singles::
 
     /gate/output/tree/enable
     /gate/output/tree/addFileName /tmp/p.npy
-    /gate/output/tree/hits/enable               #saved to /tmp/p.hits.npy
-    /gate/output/tree/addCollection Singles     #saved to /tmp/p.Singles.npy
+    /gate/output/tree/addHitsCollection <DetectorName>               #saved to /tmp/p.hits_<DetectorName>.npy
+    /gate/output/tree/addCollection Singles_<DetectorName>     #saved to /tmp/p.Singles_<DetectorName>.npy
 
 If you want to save  Hits AND Singles AND Coincidences::
 
