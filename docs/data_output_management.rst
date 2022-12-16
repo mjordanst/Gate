@@ -1012,15 +1012,15 @@ If you want to save  Hits AND Singles AND Coincidences::
 
     /gate/output/tree/enable
     /gate/output/tree/addFileName /tmp/p.npy
-    /gate/output/tree/hits/enable                   #saved to /tmp/p.hits.npy
-    /gate/output/tree/addCollection Singles         #saved to /tmp/p.Singles.npy
-    /gate/output/tree/addCollection Coincidences    #saved to /tmp/p.Coincidences.npy
+    /gate/output/tree/addHitsCollection <DetectorName>                     #saved to /tmp/p.hits_<DetectorName>.npy
+    /gate/output/tree/addCollection Singles_<DetectorName>          #saved to /tmp/p.Singles_<DetectorName>.npy
+    /gate/output/tree/addCollection Coincidences_<DetectorName>     #saved to /tmp/p.Coincidences_<DetectorName>.npy
 
 If you want to save only Singles::
 
     /gate/output/tree/enable
     /gate/output/tree/addFileName /tmp/p.npy
-    /gate/output/tree/addCollection Singles     #saved to /tmp/p.Singles.npy
+    /gate/output/tree/addCollection Singles_<DetectorName>      #saved to /tmp/p.Singles_<DetectorName>.npy
 
 
 Selection of the variables to save
@@ -1032,7 +1032,7 @@ However, contrary to mask, the new mechanism is avalaible for Hits, Singles and 
 For example, for disabling 'trackLocalTime' in hits ::
 
 
-    /gate/output/tree/hits/enable
+    /gate/output/tree/addHitsCollection <DetectorName>
     /gate/output/tree/hits/branches/trackLocalTime/disable
 
 
@@ -1043,7 +1043,7 @@ Like for mask, the VolumeID variables are enabled/disabled together, as a group:
 
 Also, for disabling 'comptVolName' in Singles::
 
-    /gate/output/tree/addCollection Singles
+    /gate/output/tree/addCollection Singles_<DetectorName>
     /gate/output/tree/Singles/branches/comptVolName/disable
 
 
@@ -1117,13 +1117,13 @@ To deal with multiple processor chains as explained here (see :ref:`digitizer_mu
 
     /gate/output/tree/enable
     /gate/output/tree/addFileName /tmp/p.npy
-    /gate/output/tree/addCollection Singles #optionnal
-    /gate/output/tree/addCollection LESingles   #saved to /tmp/p.LESingles.npy
-    /gate/output/tree/addCollection HESingles   #saved to /tmp/p.HESingles.npy
+    /gate/output/tree/addCollection Singles_<DetectorName> #optionnal
+    /gate/output/tree/addCollection LESingles_<DetectorName>   #saved to /tmp/p.LESingles_<DetectorName>.npy
+    /gate/output/tree/addCollection HESingles_<DetectorName>   #saved to /tmp/p.HESingles_<DetectorName>.npy
 
 and for disabling variable output::
 
-    /gate/output/tree/LESingles/branches/comptVolName/disable
+    /gate/output/tree/LESingles_<DetectorName>/branches/comptVolName/disable
 
 
 Multi-system detectors
@@ -1152,7 +1152,7 @@ The following output, named "summary", will write a txt file at the end of the s
 
      /gate/output/summary/enable
      /gate/output/summary/setFileName output/digit_summary.txt
-     /gate/output/summary/addCollection Singles
+     /gate/output/summary/addCollection Singles_<DetectorName>
      /gate/output/summary/addCollection Coincidences
 
 Usually, the 'hits' and 'singles' output lead to very large files, often only needed for debug purpose. We recommend to disable the output of 'hits' and 'Singles' and only keep the 'Coincidences' output. The Summary output can still be used to get the total numbers. 
