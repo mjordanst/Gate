@@ -496,30 +496,6 @@ void GateToRoot::RecordBeginOfAcquisition() {
     }
 
 
-   /* for (size_t i = 0; i < m_outputChannelList.size(); i++)
-    {
-    	if(m_outputChannelList[i]->m_collectionID<0)
-    		m_outputChannelList[i]->m_collectionID=GetCollectionID(m_outputChannelList[i]->m_collectionName);
-
-    }
-   /* G4DigiManager * fDM = G4DigiManager::GetDMpointer();
-
-     for (std::vector<G4String>::iterator i_inputChannelName = m_inputDataChannelList.begin();
-          i_inputChannelName != m_inputDataChannelList.end(); ++i_inputChannelName)
-       {
-
-    GateDigitizerMgr* theDigitizerMgr = GateDigitizerMgr::GetInstance();
-
-
-    	  GateSinglesDigitizer* aDigitizer;
-    	  aDigitizer = dynamic_cast<GateSinglesDigitizer*>(theDigitizerMgr->FindDigitizer(*i_inputChannelName));
-    	  for (long unsigned int i =0; i<aDigitizer->m_DMlist.size(); i++)
-    	  {
-    		  m_inputDataChannelIDList.push_back(fDM->GetDigiCollectionID(aDigitizer->m_DMlist[i]->GetName()+"/"+*i_inputChannelName));
-    	  }
-        }
-        */
-
 }
 //--------------------------------------------------------------------------
 
@@ -1018,6 +994,7 @@ void GateToRoot::RecordDigitizer(const G4Event *) {
     //G4cout<<"size outputChannelList "<<m_outputChannelList.size()<<Gateendl;
     for (size_t i = 0; i < m_outputChannelList.size(); i++)
     {
+    	//OK GND 2022
     	if(m_outputChannelList[i]->m_collectionID<0)
     		m_outputChannelList[i]->m_collectionID=GetCollectionID(m_outputChannelList[i]->m_collectionName);
     	m_outputChannelList[i]->RecordDigitizer();
@@ -1153,7 +1130,9 @@ void GateToRoot::Store() {
 
 //--------------------------------------------------------------------------
 void GateToRoot::RecordVoxels(GateVGeometryVoxelStore *voxelStore) {
-    if (m_recordFlag > 0) {
+	// TODO !!! OK GND 2020 add (or remove) to GND and documentation
+
+	if (m_recordFlag > 0) {
 
         if (nVerboseLevel > 2)
             G4cout << "GateToRoot::RecordVoxels\n";
@@ -1276,20 +1255,6 @@ void GateToRoot::CoincidenceOutputChannel::RecordDigitizer() {
 	GateMessage("OutputMgr", 5, " GateToRoot::CoincidenceOutputChannel::RecordDigitizer -- begin\n";);
    // G4cout<<"GateToRoot::CoincidenceOutputChannel::RecordDigitizer() "<<G4endl;
 	G4DigiManager *fDM = G4DigiManager::GetDMpointer();
-
-	 GateDigitizerMgr* digitizerMgr = GateDigitizerMgr::GetInstance();
-	 GateCoincidenceSorter* cs = digitizerMgr->FindCoincidenceSorter(m_collectionName);
-	 //digitizerMgr->ShowSummary();
-
-
-	 G4String DCname=cs->GetName()+"/"+m_collectionName;
-	 //G4cout<<DCname<<G4endl;
-	 G4int lastDCID=fDM->GetDigiCollectionID(DCname);
-
-	 //G4cout<<"lastDCID = "<<lastDCID<<G4endl;
-	 if (m_collectionID < 0)
-	    	m_collectionID = lastDCID;
-
 
 	//G4cout<<"m_collectionName = "<<m_collectionName << " ; ID = "<< m_collectionID <<G4endl;
     GateCoincidenceDigiCollection *CDC =

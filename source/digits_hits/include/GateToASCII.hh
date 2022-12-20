@@ -145,11 +145,17 @@ private:
   G4bool   m_outFileVoxelFlag;
   G4int    m_recordFlag;
 
+  //OK GND 2002
+  G4bool   m_nSD; // number of sensitive detectors
+
 
   GateToASCIIMessenger* m_asciiMessenger;
 
   std::ofstream m_outFileRun;
   std::ofstream m_outFileHits;
+
+  std::vector<std::ofstream> m_outFilesHits;
+
 
   G4String m_fileName;
 
