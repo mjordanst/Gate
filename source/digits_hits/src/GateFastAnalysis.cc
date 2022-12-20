@@ -77,42 +77,52 @@ void GateFastAnalysis::RecordBeginOfEvent(const G4Event* )
 
 void GateFastAnalysis::RecordEndOfEvent(const G4Event* event)
 {
-   GateHitsCollection* CHC = GetOutputMgr()->GetHitCollection();
+  // GateHitsCollection* CHC = GetOutputMgr()->GetHitCollection();
 
-// Looking at Crystal Hits Collection:
-  if (CHC) {
-        G4int NbHits = CHC->entries();
+   //OK GND 2022 : TODO Test !!
+   std::vector<GateHitsCollection*> CHC_vector = GetOutputMgr()->GetHitCollections();
 
-    G4int sourceID = (((GateSourceMgr::GetInstance())->GetSourcesForThisEvent())[0])->GetSourceID();
-    G4int eventID  = event->GetEventID();
-    G4int runID    = GateRunManager::GetRunManager()->GetCurrentRun()->GetRunID();
+   for (long unsigned int i=0; i<CHC_vector.size();i++ )
+   {
+	   GateHitsCollection* CHC = CHC_vector[i];
 
-        for (G4int iHit=0;iHit<NbHits;iHit++)
-           {
-              if ((*CHC)[iHit]->GoodForAnalysis())
-               {
-               GateHit* aHit = (*CHC)[iHit];
-               G4String processName = aHit->GetProcess();
 
-	(*CHC)[iHit]->SetSourceID(sourceID);
-	(*CHC)[iHit]->SetEventID(eventID);
-	(*CHC)[iHit]->SetRunID(runID);
-	// the following parameters are not calculated and are therefore set to -1
-	// or "NULL"  to indicate no value
-        G4ThreeVector sourcePosition(-1,-1,-1);
-        (*CHC)[iHit]->SetSourcePosition(sourcePosition);
-	(*CHC)[iHit]->SetNPhantomCompton(-1);
-	(*CHC)[iHit]->SetNPhantomRayleigh(-1);
-	(*CHC)[iHit]->SetComptonVolumeName("NULL");
-	(*CHC)[iHit]->SetRayleighVolumeName("NULL");
-	(*CHC)[iHit]->SetPhotonID(-1);
-	(*CHC)[iHit]->SetPrimaryID(-1);
-	(*CHC)[iHit]->SetNCrystalCompton(-1);
-	(*CHC)[iHit]->SetNCrystalRayleigh(-1);
 
-                } // end GoodForAnalysis()
-            } // end loop over crystal hits
-  } // end if CHC
+	   // Looking at Crystal Hits Collection:
+	  if (CHC) {
+			G4int NbHits = CHC->entries();
+
+		G4int sourceID = (((GateSourceMgr::GetInstance())->GetSourcesForThisEvent())[0])->GetSourceID();
+		G4int eventID  = event->GetEventID();
+		G4int runID    = GateRunManager::GetRunManager()->GetCurrentRun()->GetRunID();
+
+			for (G4int iHit=0;iHit<NbHits;iHit++)
+			   {
+				  if ((*CHC)[iHit]->GoodForAnalysis())
+				   {
+				   GateHit* aHit = (*CHC)[iHit];
+				   G4String processName = aHit->GetProcess();
+
+		(*CHC)[iHit]->SetSourceID(sourceID);
+		(*CHC)[iHit]->SetEventID(eventID);
+		(*CHC)[iHit]->SetRunID(runID);
+		// the following parameters are not calculated and are therefore set to -1
+		// or "NULL"  to indicate no value
+			G4ThreeVector sourcePosition(-1,-1,-1);
+			(*CHC)[iHit]->SetSourcePosition(sourcePosition);
+		(*CHC)[iHit]->SetNPhantomCompton(-1);
+		(*CHC)[iHit]->SetNPhantomRayleigh(-1);
+		(*CHC)[iHit]->SetComptonVolumeName("NULL");
+		(*CHC)[iHit]->SetRayleighVolumeName("NULL");
+		(*CHC)[iHit]->SetPhotonID(-1);
+		(*CHC)[iHit]->SetPrimaryID(-1);
+		(*CHC)[iHit]->SetNCrystalCompton(-1);
+		(*CHC)[iHit]->SetNCrystalRayleigh(-1);
+
+					} // end GoodForAnalysis()
+				} // end loop over crystal hits
+	  } // end if CHC
+   }//end of loop over hits collections
 
 
  if (nVerboseLevel > 2)

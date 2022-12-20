@@ -44,10 +44,10 @@ void GateVOutputModule::Describe(size_t indent)
 
 G4int GateVOutputModule::GetCollectionID(G4String collectionName)
 {
-	G4cout<<" GateVOutputModule::GetCollectionID "<< collectionName<<G4endl;
+	//G4cout<<" GateVOutputModule::GetCollectionID "<< collectionName<<G4endl;
 	G4DigiManager *fDM = G4DigiManager::GetDMpointer();
 	GateDigitizerMgr* digitizerMgr = GateDigitizerMgr::GetInstance();
-	digitizerMgr->ShowSummary();
+	//digitizerMgr->ShowSummary();
 
 	std::string const &str = collectionName;
 	std::vector<std::string> out;
@@ -70,7 +70,7 @@ G4int GateVOutputModule::GetCollectionID(G4String collectionName)
 
 	if(module)
 	{
-	    G4cout<<module->GetObjectName()<<G4endl;
+	    //G4cout<<module->GetObjectName()<<G4endl;
 		if ( G4StrUtil::contains(module->GetObjectName(), "SinglesDigitizer"))
 		{
 			if (out.size()==2)
@@ -96,7 +96,7 @@ G4int GateVOutputModule::GetCollectionID(G4String collectionName)
 
 
 
-	std::cout << collectionName << std::endl;
+	//std::cout << collectionName << std::endl;
 	return collectionID;
 
 }

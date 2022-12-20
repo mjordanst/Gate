@@ -138,6 +138,7 @@ void GateAnalysis::RecordEndOfEvent(const G4Event* event)
     }
   else
     {
+	  //OK GND 2022
       std::vector<GateHitsCollection*> CHC_vector = GetOutputMgr()->GetHitCollections();
 
       for (long unsigned int i=0; i<CHC_vector.size();i++ )
