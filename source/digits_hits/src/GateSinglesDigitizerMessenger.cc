@@ -269,6 +269,7 @@ else if (childTypeName=="localMultipleRejection")
     return;
   }
 
+
   SetNewInsertionBaseName("");
 }
 

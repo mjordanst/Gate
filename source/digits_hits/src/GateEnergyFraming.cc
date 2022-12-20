@@ -87,7 +87,7 @@ void GateEnergyFraming::Digitize()
   if (IDC)
      {
 	  G4int n_digi = IDC->entries();
-
+	 // G4cout<<"GateEnergyFraming "<<n_digi<<G4endl;
 	  //loop over input digits
 	  for (G4int i=0;i<n_digi;i++)
 	  {

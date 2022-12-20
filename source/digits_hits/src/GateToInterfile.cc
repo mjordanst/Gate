@@ -73,9 +73,8 @@
 #include "GateToProjectionSet.hh"
 #include "GateProjectionSet.hh"
 
-#include "GateDigitizerOld.hh"
-#include "GateThresholder.hh"
-#include "GateUpholder.hh"
+#include "GateDigitizerMgr.hh"
+#include "GateEnergyFraming.hh"
 
 //---------------------------------------------------------------------------------------
 /*
@@ -308,6 +307,8 @@ void GateToInterfile::Describe(size_t indent)
 // Write the general INTERFILE information into the header
 void GateToInterfile::WriteGeneralInfo()
 {
+
+	//G4cout<<"GateToInterfile::WriteGeneralInfo"<<G4endl;
   m_headerFile << "!INTERFILE :=" << Gateendl<< "!imaging modality := " << "nucmed\n"
                << "!version of keys := " << "3.3\n"
                << "date of keys := " << "1992:01:01\n"
@@ -339,14 +340,19 @@ void GateToInterfile::WriteGeneralInfo()
 
   // Modified by HDS : multiple energy windows support
   //------------------------------------------------------------------
-  GateDigitizerOld* theDigitizer = GateDigitizerOld::GetInstance();
+  //OK GND 20200
+  GateDigitizerMgr* theDigitizerMgr = GateDigitizerMgr::GetInstance();
 
-  GatePulseProcessorChain* aPulseProcessorChain;
+
+  GateSinglesDigitizer* aDigitizer;
   G4double aThreshold = 0.;
   G4double aUphold = 0.;
   G4String aChainName;
-  GateThresholder* aThresholder;
-  GateUpholder* aUpholder;
+  G4String SDName;
+
+  GateEnergyFraming * anEnergyFraming;
+  //GateThresholder* aThresholder;
+  //GateUpholder* aUpholder;
 
   // Loop over the energy windows first and then over detector heads
   for (size_t energyWindowID = 0; energyWindowID < setMaker->GetEnergyWindowNb();
@@ -355,8 +361,10 @@ void GateToInterfile::WriteGeneralInfo()
 
       // Get the pulse processor chain pointer for the current energy window
       aChainName = setMaker->GetInputDataName(energyWindowID);
-      aPulseProcessorChain = dynamic_cast<GatePulseProcessorChain*>(theDigitizer->FindElementByBaseName(aChainName));
-      if (!aPulseProcessorChain)
+      //G4cout<<"aChainName "<<aChainName<<G4endl;
+      aDigitizer = dynamic_cast<GateSinglesDigitizer*>(theDigitizerMgr->FindDigitizer(aChainName));
+      //G4cout<<"aDigitizer name "<< aDigitizer->GetName()<<G4endl;
+      if (!aDigitizer)
         {
           G4cerr << Gateendl<< "[GateToInterfile::WriteGeneralInfo]:\n"
                  << "Can't find digitizer chain '" << aChainName << "', aborting\n";
@@ -365,7 +373,22 @@ void GateToInterfile::WriteGeneralInfo()
 
       // Try to find a thresholder and/or a upholder into the pulse processor chain.
       // Update the threshold or uphold value if we find them
-      aThresholder = dynamic_cast<GateThresholder*>(aPulseProcessorChain->FindProcessor("digitizer/"
+      //OK GND 2022
+
+      anEnergyFraming =  dynamic_cast<GateEnergyFraming*>(aDigitizer->FindDigitizerModule("digitizerMgr/"
+    		  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  +aDigitizer->GetSD()->GetName()
+																					  +"/SinglesDigitizer/"
+																					  + aDigitizer->GetName()
+																					  + "/energyFraming"));
+      if (anEnergyFraming)
+             {
+    	  	  aThreshold = anEnergyFraming->GetMin();
+    	  	  aUphold = anEnergyFraming->GetMax();
+             }
+
+      	 // G4cout<< "aThreshold "<< aThreshold<<G4endl;
+      	 // G4cout<< "aUphold "<< aUphold<<G4endl;
+      /*  aThresholder = dynamic_cast<GateThresholder*>(aDigitizer->FindProcessor("digitizer/"
                                                                                         + aChainName
                                                                                         + "/thresholder"));
       if (aThresholder)
@@ -373,14 +396,14 @@ void GateToInterfile::WriteGeneralInfo()
           aThreshold = aThresholder->GetThreshold();
         }
 
-      aUpholder = dynamic_cast<GateUpholder*>(aPulseProcessorChain->FindProcessor("digitizer/"
+      aUpholder = dynamic_cast<GateUpholder*>(aDigitizer->FindProcessor("digitizer/"
                                                                                   + aChainName
                                                                                   + "/upholder"));
       if (aUpholder)
         {
           aUphold = aUpholder->GetUphold();
         }
-
+     */
       m_headerFile << "energy window ["
                    << energyWindowID + 1
                    << "] := "

@@ -259,51 +259,52 @@ void GateProjectionSet::Fill(G4int energyWindowID, G4int headID, G4double x, G4d
   // Check that energyWindowID is valid
   if (energyWindowID < 0)
     {
-      G4cerr << "[GateToProjectionSet::Fill]:\n"
+      GateError( "[GateToProjectionSet::Fill]:\n"
              << "Received a hit with a wrong energy window ("
              << energyWindowID
-             << "): ignored!\n";
+             << "): ignored!\n");
       return;
     }
   if (static_cast<size_t>(energyWindowID) >= m_energyWindowNb)
     {
-      G4cerr << "[GateToProjectionSet::Fill]:\n"
+	  GateError( "[GateToProjectionSet::Fill]:\n"
              << "Received a hit with a wrong energy window ("
              << energyWindowID
-             << "): ignored!\n";
+             << "): ignored!\n");
       return;
     }
-
   // Check that the headID is valid
   if (headID < 0)
     {
-      G4cerr << "[GateToProjectionSet::Fill]:\n"
+	  GateError( "[GateToProjectionSet::Fill]:\n"
              << "Received a hit with a wrong head ID ("
              << headID
-             << "): ignored!\n";
+             << "): ignored!\n");
       return;
     }
   if ((size_t) headID >= m_headNb)
     {
-      G4cerr << "[GateToProjectionSet::Fill]:\n"
+	  GateError("[GateToProjectionSet::Fill]:\n"
              << "Received a hit with a wrong head ID ("
              << headID
-             << "): ignored!\n";
+             << "): ignored!\n");
       return;
     }
 
   // Check whether we're out-of-bounds
+
   G4int binX = static_cast<G4int>(floor((x - m_matrixLowEdgeX) / m_pixelSizeX));
   if ((binX < 0) || (binX >= m_pixelNbX))
     {
       if (m_verboseLevel >= 1)
-        G4cerr << "[GateProjectionSet]: coordinate x ("
+    	  GateWarning( "[GateProjectionSet]: coordinate x ("
                << G4BestUnit(x, "Length")
                << ") outside the matrix boundaries ("
                << G4BestUnit(m_matrixLowEdgeX, "Length")
                << "-"
                << G4BestUnit(-m_matrixLowEdgeX, "Length")
-               << "): ignored!\n";
+               << "): ignored!\n");
+      //abort();
       return;
     }
 
@@ -311,16 +312,15 @@ void GateProjectionSet::Fill(G4int energyWindowID, G4int headID, G4double x, G4d
   if ((binY < 0) || (binY >= m_pixelNbY))
     {
       if (m_verboseLevel >= 1)
-        G4cerr << "[GateProjectionSet]: coordinate y ("
+    	  GateWarning( "[GateProjectionSet]: coordinate y ("
                << G4BestUnit(y, "Length")
                << ") outside the matrix boundaries ("
                << G4BestUnit(m_matrixLowEdgeY, "Length")
                << "-"
                << G4BestUnit(-m_matrixLowEdgeY, "Length")
-               << "): ignored!\n";
+               << "): ignored!\n");
       return;
     }
-
   // Increment the appropriate bin (provided that we've not reached the top)
   if (m_verboseLevel >= 2)
     G4cout << "[GateProjectionSet]: binning hit at ("
@@ -360,6 +360,7 @@ void GateProjectionSet::Fill(G4int energyWindowID, G4int headID, G4double x, G4d
     {
       m_dataMax[energyWindowID][headID] = dest;
     }
+
 }
 
 /* Writes a head-projection onto an output stream

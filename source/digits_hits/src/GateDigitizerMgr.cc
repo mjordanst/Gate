@@ -98,9 +98,10 @@ void GateDigitizerMgr::Initialize()
 					{
 						G4cout << " <!> *** WARNING *** <!> SinglesDigitizer "<< m_SingleDigitizersList[i_D]->GetName() <<" is set. "
 						"However the output flag is not set to 1 for it, so it will not be written down" <<G4endl ;
-						G4cout<<"If you wan to write it down, please, use the command: /gate/output/root/setRoot"<<m_SingleDigitizersList[i_D]->GetName()<<"_"<< m_SingleDigitizersList[i_D]->GetSD()->GetName()<<"Flag 1, or similar one if you use other output module"<<G4endl;
+						G4cout<<"Please, check if your output options are correct"<<G4endl;
 					}
 				}
+
 				//G4cout<<"coll ID "<< m_collectionID<< " for "<<m_SingleDigitizersList[i_D]->GetName()<< " "<< m_SingleDigitizersList[i_D]->m_outputDigiCollectionID<<G4endl;
 
 			}

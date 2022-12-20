@@ -9,6 +9,7 @@
 #include "GateToProjectionSetMessenger.hh"
 #include "GateToProjectionSet.hh"
 #include "GateOutputMgr.hh"
+#include "GateDigitizerMgr.hh"
 
 #include "G4UIdirectory.hh"
 #include "G4UIcmdWithAString.hh"
@@ -103,7 +104,8 @@ void GateToProjectionSetMessenger::SetNewValue(G4UIcommand* command,G4String new
     { m_gateToProjectionSet->SetProjectionPlane(newValue); }
 
   else if (command == SetFileNameCmd)
-    { m_gateToProjectionSet->SetOutputFileName(newValue); }
+    { m_gateToProjectionSet->SetOutputFileName(newValue);
+    }
 
   else if( command==PixelSizeXCmd )
     { m_gateToProjectionSet->SetPixelSizeX(PixelSizeXCmd->GetNewDoubleValue(newValue)); }
@@ -118,7 +120,12 @@ void GateToProjectionSetMessenger::SetNewValue(G4UIcommand* command,G4String new
     { m_gateToProjectionSet->SetPixelNbY(PixelNumberYCmd->GetNewIntValue(newValue)); }
 
   else if (command == SetInputDataCmd)
-    { m_gateToProjectionSet->SetInputDataName(newValue); }
+    { m_gateToProjectionSet->SetInputDataName(newValue);
+    //OK GND 2022
+      GateDigitizerMgr* digitizerMgr=GateDigitizerMgr::GetInstance();
+      //m_SingleDigitizersList[i_D]->m_recordFlag
+      digitizerMgr->m_recordSingles=true;
+    }
 
   else if (command == AddInputDataCmd)
     { m_gateToProjectionSet->AddInputDataName(newValue); }

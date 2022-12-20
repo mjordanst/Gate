@@ -122,9 +122,9 @@ void GateToTreeMessenger::SetNewValue(G4UIcommand *icommand, G4String string)
   	  {
 	  m_gateToTree->addCollection(string);
 
-	  if ( G4StrUtil::contains(string, "Singles"))
+	//  if ( G4StrUtil::contains(string, "Singles"))
 		  digitizerMgr->m_recordSingles=true;
-	  if ( G4StrUtil::contains(string, "Coincidences"))
+	  //if ( G4StrUtil::contains(string, "Coincidences"))
 		  digitizerMgr->m_recordCoincidences=true;
 
   	  }

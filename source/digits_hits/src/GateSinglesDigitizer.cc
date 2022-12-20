@@ -50,6 +50,8 @@ GateSinglesDigitizer::GateSinglesDigitizer( GateDigitizerMgr* itsDigitizerMgr,
   		itsDigitizerMgr->AddNewSinglesDigitizer(this);
 
   	}
+    //theListOfNamedObject.push_back(newChildProcessor);
+
 	//G4cout<<"end GateSinglesDigitizer::GateSinglesDigitizer "<<  itsDigitizerMgr->GetObjectName() + "/"+ SD->GetName() +"/SinglesDigitizer/" + "Singles" <<G4endl;
 
 
@@ -76,6 +78,8 @@ void GateSinglesDigitizer::AddNewModule(GateVDigitizerModule* DM)
 
 	m_DMlist.push_back(DM);
 	G4DigiManager::GetDMpointer()->AddNewModule(DM);
+
+	theListOfNamedObject.push_back(DM);
 
 }
 

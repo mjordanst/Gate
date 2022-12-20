@@ -44,9 +44,10 @@ void GateVOutputModule::Describe(size_t indent)
 
 G4int GateVOutputModule::GetCollectionID(G4String collectionName)
 {
+	G4cout<<" GateVOutputModule::GetCollectionID "<< collectionName<<G4endl;
 	G4DigiManager *fDM = G4DigiManager::GetDMpointer();
 	GateDigitizerMgr* digitizerMgr = GateDigitizerMgr::GetInstance();
-	//digitizerMgr->ShowSummary();
+	digitizerMgr->ShowSummary();
 
 	std::string const &str = collectionName;
 	std::vector<std::string> out;
@@ -55,6 +56,11 @@ G4int GateVOutputModule::GetCollectionID(G4String collectionName)
 	size_t start;
 	size_t end = 0;
 
+	GateClockDependent* module = digitizerMgr->FindElement(collectionName);
+
+
+	//GateSinglesDigitizer* digitizer = digitizerMgr->FindDigitizer(collectionName);
+
 	while ((start = collectionName.find_first_not_of(delim, end)) != std::string::npos)
 	{
 		end = str.find(delim, start);
@@ -62,28 +68,35 @@ G4int GateVOutputModule::GetCollectionID(G4String collectionName)
 	}
 	G4int collectionID=-1;
 
-	if ( G4StrUtil::contains(collectionName, "Singles"))
+	if(module)
 	{
-		if (out.size()==2)
+	    G4cout<<module->GetObjectName()<<G4endl;
+		if ( G4StrUtil::contains(module->GetObjectName(), "SinglesDigitizer"))
 		{
+			if (out.size()==2)
+			{
 
-		GateSinglesDigitizer* digitizer = digitizerMgr->FindDigitizer(collectionName);
-		G4int lastDCID=digitizer->m_outputDigiCollectionID;
-		collectionID = lastDCID;
+			GateSinglesDigitizer* digitizer = digitizerMgr->FindDigitizer(collectionName);
+			G4int lastDCID=digitizer->m_outputDigiCollectionID;
+			collectionID = lastDCID;
 
+			}
 		}
 		else
 		{
-			G4String modifiedCollectionName=out[2]+"/"+out[0]+"_"+out[1];
-			collectionID = fDM->GetDigiCollectionID(modifiedCollectionName);
-		   }
+			collectionID = fDM->GetDigiCollectionID(collectionName);
+
+		}
 	}
 	else
 	{
-		collectionID = fDM->GetDigiCollectionID(collectionName);
-
+		G4String modifiedCollectionName=out[2]+"/"+out[0]+"_"+out[1];
+		collectionID = fDM->GetDigiCollectionID(modifiedCollectionName);
 	}
-		  // std::cout << m_collectionName << std::endl;
+
+
+
+	std::cout << collectionName << std::endl;
 	return collectionID;
 
 }

@@ -495,6 +495,31 @@ void GateToRoot::RecordBeginOfAcquisition() {
         ////////////////////////
     }
 
+
+   /* for (size_t i = 0; i < m_outputChannelList.size(); i++)
+    {
+    	if(m_outputChannelList[i]->m_collectionID<0)
+    		m_outputChannelList[i]->m_collectionID=GetCollectionID(m_outputChannelList[i]->m_collectionName);
+
+    }
+   /* G4DigiManager * fDM = G4DigiManager::GetDMpointer();
+
+     for (std::vector<G4String>::iterator i_inputChannelName = m_inputDataChannelList.begin();
+          i_inputChannelName != m_inputDataChannelList.end(); ++i_inputChannelName)
+       {
+
+    GateDigitizerMgr* theDigitizerMgr = GateDigitizerMgr::GetInstance();
+
+
+    	  GateSinglesDigitizer* aDigitizer;
+    	  aDigitizer = dynamic_cast<GateSinglesDigitizer*>(theDigitizerMgr->FindDigitizer(*i_inputChannelName));
+    	  for (long unsigned int i =0; i<aDigitizer->m_DMlist.size(); i++)
+    	  {
+    		  m_inputDataChannelIDList.push_back(fDM->GetDigiCollectionID(aDigitizer->m_DMlist[i]->GetName()+"/"+*i_inputChannelName));
+    	  }
+        }
+        */
+
 }
 //--------------------------------------------------------------------------
 
