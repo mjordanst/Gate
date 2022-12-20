@@ -173,6 +173,8 @@ protected:
   G4Timer m_timer;      	  //!< Timer
 
   std::vector<G4int> m_HCIDs;
+  //std::vector<GateHitsCollection*> m_CHC_vector;
+
 
 };
 

@@ -146,7 +146,7 @@ private:
   G4int    m_recordFlag;
 
   //OK GND 2002
-  G4bool   m_nSD; // number of sensitive detectors
+  G4int  m_nSD; // number of sensitive detectors
 
 
   GateToASCIIMessenger* m_asciiMessenger;

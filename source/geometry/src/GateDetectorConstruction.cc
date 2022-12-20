@@ -135,7 +135,7 @@ GateDetectorConstruction::GateDetectorConstruction()
 //---------------------------------------------------------------------------------
 GateDetectorConstruction::~GateDetectorConstruction()
 {
-
+	//G4cout<<"GateDetectorConstruction::~GateDetectorConstruction()"<<G4endl;
   if (pworld) {
     DestroyGeometry();
     delete pworld;
@@ -143,6 +143,8 @@ GateDetectorConstruction::~GateDetectorConstruction()
   }
 
   delete pdetectorMessenger;
+//	G4cout<<"end GateDetectorConstruction::~GateDetectorConstruction()"<<G4endl;
+
 }
 //---------------------------------------------------------------------------------
 
@@ -464,6 +466,7 @@ void GateDetectorConstruction::UpdateGeometry()
 //---------------------------------------------------------------------------------
 void GateDetectorConstruction::DestroyGeometry()
 {
+	//G4cout<<" GateDetectorConstruction::DestroyGeometry "<<G4endl;
   GateMessageInc("Geometry", 4,"Geometry is going to be destroyed.\n");
 
   pworld->DestroyGeometry();

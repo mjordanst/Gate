@@ -89,6 +89,7 @@ GateCrystalSD::GateCrystalSD(const G4String& name)
 // Destructor
 GateCrystalSD::~GateCrystalSD()
 {
+	//G4cout<<"GateCrystalSD::~GateCrystalSD()"<<G4endl;
    if(m_systemList) delete m_systemList;
 }
 //------------------------------------------------------------------------------

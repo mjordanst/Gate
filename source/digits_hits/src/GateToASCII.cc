@@ -16,9 +16,9 @@
 #include "GatePhantomHit.hh"
 #include "GatePrimaryGeneratorAction.hh"
 #include "GateVVolume.hh"
-#include "GateDigitizerOld.hh"
+//#include "GateDigitizerOld.hh"
 #include "GateSingleDigi.hh"
-#include "GateCoincidenceDigiOld.hh"
+#include "GateCoincidenceDigi.hh"
 #include "GateSourceMgr.hh"
 #include "GateOutputMgr.hh"
 #include "GateDigitizerMgr.hh"
@@ -64,7 +64,7 @@ GateToASCII::GateToASCII(const G4String& name, GateOutputMgr* outputMgr, DigiMod
 
   m_asciiMessenger = new GateToASCIIMessenger(this);
 
-  GateCoincidenceDigiOld::SetCoincidenceASCIIMask(1);
+  GateCoincidenceDigi::SetCoincidenceASCIIMask(1);
   GateSingleDigi::SetSingleASCIIMask(1);
 
   m_recordFlag = 0; // Design to embrace obsolete functions (histogram, recordVoxels, ...)
@@ -146,7 +146,8 @@ void GateToASCII::RecordEndOfAcquisition()
   if (m_outFileRunsFlag)
     m_outFileRun.close();
   if (m_outFileHitsFlag)
-  {//OK GND 2022
+  {
+	  	  //OK GND 2022
 	 	  for (long unsigned int i=0; i< m_nSD;i++)
 	 	  	{
 	 		  m_outFilesHits[i].close();

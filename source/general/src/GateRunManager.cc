@@ -45,6 +45,7 @@ GateRunManager::GateRunManager() : G4RunManager() {
 
 //----------------------------------------------------------------------------------------
 GateRunManager::~GateRunManager() {
+//	G4cout<<"GateRunManager::~GateRunManager() "<<G4endl;
     delete GateActorManager::GetInstance();
     delete pMessenger;
     delete mHounsfieldToMaterialsBuilder;

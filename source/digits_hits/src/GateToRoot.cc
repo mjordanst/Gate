@@ -145,11 +145,21 @@ GateToRoot::GateToRoot(const G4String &name, GateOutputMgr *outputMgr, DigiMode 
 //--------------------------------------------------------------------------
 GateToRoot::~GateToRoot() {
     delete m_rootMessenger;
+   // G4cout<<" GateToRoot::~GateToRoot()  "<<G4endl;
+
     if (nVerboseLevel > 0) G4cout << "GateToRoot deleting...\n";
     for (size_t i = 0; i < m_outputChannelList.size(); ++i)
     	{//G4cout<<"GateToRoot:deleting "<< m_outputChannelList[i]-> m_collectionName<<" "<< m_collectionID<<G4endl;
         delete m_outputChannelList[i];
     	}
+//    GateDigitizerMgr* digitizerMgr = GateDigitizerMgr::GetInstance();
+
+   /* for (long unsigned int i=0; i< GetSDlistSize();i++)
+    	{
+    		delete m_treesHit[i];
+    	}
+//    m_treesHit.clear();
+*/
 
     // v. cuplov - optical photons
     delete m_trajectoryNavigator;

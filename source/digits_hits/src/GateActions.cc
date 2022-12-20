@@ -255,6 +255,7 @@ inline void GateEventAction::EndOfEventAction(const G4Event* anEvent)
     }//tracker mode
 
    }
+
   if(anEvent->GetNumberOfPrimaryVertex() > 0) pCallbackMan->EndOfEventAction(anEvent);
 
 

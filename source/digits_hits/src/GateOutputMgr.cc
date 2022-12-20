@@ -138,6 +138,9 @@ GateOutputMgr::~GateOutputMgr()
     delete m_outputModules[iMod];
   }
   m_outputModules.clear();
+
+
+
   delete m_messenger;
 
   if (nVerboseLevel > 0) G4cout << "GateOutputMgr deleting...\n";
@@ -384,7 +387,7 @@ std::vector<GateHitsCollection*> GateOutputMgr::GetHitCollections()
 		GateHitsCollection* CHC = (GateHitsCollection*) (DigiMan->GetHitsCollection(m_HCIDs[i]));
 		CHC_vector.push_back(CHC);
 		}
-
+ //TODO OK GND 2022; if the seg fault is not from here!
   return CHC_vector;
 }
 //----------------------------------------------------------------------------------

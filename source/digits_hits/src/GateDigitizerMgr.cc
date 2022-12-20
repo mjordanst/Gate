@@ -59,6 +59,31 @@ GateDigitizerMgr::GateDigitizerMgr()
 
 GateDigitizerMgr::~GateDigitizerMgr()
 {
+ G4cout<<"GateDigitizerMgr::~GateDigitizerMgr "<<G4endl;
+
+
+ 	 if ( !m_SDlist.empty() )
+ 	    { for ( size_t i = 0; i < m_SDlist.size();i++)
+ 	        delete m_SDlist[i];
+ 	    m_SDlist.clear();
+ 	    }
+	 if ( !m_digitizerIMList.empty() )
+ 	    { for ( size_t i = 0; i < m_digitizerIMList.size();i++)
+ 	        delete m_digitizerIMList[i];
+ 	   m_digitizerIMList.clear();
+ 	    }
+	 if ( !m_SingleDigitizersList.empty() )
+ 	    { for ( size_t i = 0; i < m_SingleDigitizersList.size();i++)
+ 	        delete m_SingleDigitizersList[i];
+ 	   m_SingleDigitizersList.clear();
+ 	    }
+	 if ( !m_CoincidenceSortersList.empty() )
+ 	    { for ( size_t i = 0; i < m_CoincidenceSortersList.size();i++)
+ 	        delete m_CoincidenceSortersList[i];
+ 	   m_CoincidenceSortersList.clear();
+ 	    }
+
+
  delete fMessenger;
 }
 

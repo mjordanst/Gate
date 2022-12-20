@@ -400,7 +400,12 @@ protected:
   std::vector< VOutputChannel* > m_outputChannelVector; /*!< Vector of output channel */
 
   std::ofstream m_outFileRun; /*!< outfile for run */
+
   std::ofstream m_outFileHits; /*!< outfile for hits */
+  //OK GND 2022
+  std::vector<std::ofstream> m_outFilesHits; /*!< outfile for hits */
+  //OK GND 2002
+   G4int   m_nSD; // number of sensitive detectors
 
 private:
   static G4String FixedWidthZeroPaddedString(const G4String & full, size_t length);
