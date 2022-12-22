@@ -25,20 +25,21 @@ The GateToASCII/GateToBinary classes enable the ASCII/**binary** file output. It
    /gate/output/ascii(**binary**)/setOutFileHitsFlag   1
    
    # enable ascii(**binary**) output for Singles (end of digitizer chain)
-   /gate/output/ascii(**binary**)/setOutFileSinglesFlag   1
+   /gate/output/ascii(**binary**)/setOutFileSingles_<DetectorName>Flag   1
    
    # enable ascii(**binary**) output for coincidences
    /gate/output/ascii(**binary**)/setOutFileCoincidencesFlag   1
    
    # enable ascii(**binary**) output for singles (after a digitizer module)
-   /gate/output/ascii(**binary**)/setOutFileSingles< name of the digitizer module >Flag   1
+   /gate/output/ascii(**binary**)/setOutFileSingles_<DetectorName>_< name of the digitizer module >Flag   1
 
-The names of the digitizer module are : *Adder*, *Readout*, *Spblurring*, *Blurring*, *Thresholder*, *Upholder*. Their actions are explained in :ref:`digitizer_and_readout_parameters-label`.
+The <DetectorName> is the names of all volumes that you define with commande /gate/<DetectorName>/attachCrystalSD.
+The names of the digitizer module are : *Adder*, *Readout*, *SpatialResolution*, *EnergyResolution*, *EnergyFraming*. Their actions are explained in :ref:`digitizer_and_readout_parameters-label`.
 
 To disable these ASCII(**binary**) files which can be large, the macro should contain the following lines::
 
    /gate/output/ascii(**binary**)/setOutFileHitsFlag            0
-   /gate/output/ascii(**binary**)/setOutFileSinglesFlag         0
+   /gate/output/ascii(**binary**)/setOutFileSingles_<DetectorName>Flag         0
    /gate/output/ascii(**binary**)/setOutFileCoincidencesFlag    0
 
 Only the file *gateRun.dat* which contain the number of decay per run  will then be created.
@@ -93,7 +94,7 @@ Example : SPECTHead system N=3
 *  Column N+19 : Name of the last volume where a Rayleigh effect occurred **(8-bytes, G4string)**
 
 
-Singles files : gateSingles.dat(**.bin**)
+Singles files : gateSingles_<DetectorName>.dat(**.bin**)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The system is set as a cylindricalPET system. Each line is a single and the columns are :
@@ -163,7 +164,7 @@ Selection of the variables in Singles/Coincidences ASCII and binary outputs
 The user can select which variables he/she wants in the ASCII(**binary**) file. The mechanism is based on a series of 0/1, one for each variable. By default all variables are enabled, but one can choose to enable only some of the variables listed in 10.4.1::
 
    /gate/output/ascii(**binary**)/setCoincidenceMask      1 0 1 0 1 1
-   /gate/output/ascii(**binary**)/setSingleMask           0 0 1 1
+   /gate/output/ascii(**binary**)/setSingle_<DetectorName>Mask           0 0 1 1
 
 **Note**: the VolumeID variables are enabled/disabled together, as a group. The component of the 3D vectors, instead, like the positions (components x,y,z), are enabled/disabled one by one.
 
@@ -220,16 +221,19 @@ By turning to 1 (or 0) one of this tree flag, you will fill (or not) the given t
  
 In a debug mode, it can be useful to store in a Tree the informations after the action of one particular module of the digitizer chain. The following flags exist to turn on or off these intermediate trees::
 
-   /gate/output/root/setOutFileSinglesAdderFlag         0
-   /gate/output/root/setOutFileSinglesReadoutFlag       0
-   /gate/output/root/setOutFileSinglesSpblurringFlag    0
-   /gate/output/root/setOutFileSinglesBlurringFlag      0
-   /gate/output/root/setOutFileSinglesThresholderFlag   0
-   /gate/output/root/setOutFileSinglesUpholderFlag      0
+   /gate/output/root/setOutFileSingles_<DetectorName>_AdderFlag         0
+   /gate/output/root/setOutFileSingles_<DetectorName>_ReadoutFlag       0
+   /gate/output/root/setOutFileSingles_<DetectorName>_SpatialResolutionFlag    0
+   /gate/output/root/setOutFileSingles_<DetectorName>_EnergyResolutionFlag      0
+   /gate/output/root/setOutFileSingles_<DetectorName>_EnergyFramingFlag   0
 
 If you want to disable the whole ROOT output, just do not call it, or use the following command::
 
    /gate/output/root/disable
+
+Some of useful commands to work with a root file could be found here: 
+https://github.com/kochebina/ROOT_manual_for_Gate_users/blob/master/ROOT_manual_for_GATE_users.pdf
+   
 
 
 Using TBrowser To Browse ROOT Objects
@@ -614,7 +618,7 @@ the image size information is to be obtained in the .hdr files.
 
 .. _sinogram_output-label:
 
-Sinogram output
+Sinogram output (not yet adapted in Gate 9.3)
 ---------------
 
 If the ecat system or the ecatAccel system have been selected (see :ref:`ecat-label`), the sinogram output module can be enable with the following commands:
@@ -698,7 +702,7 @@ file.
 
 .. _ecat7_output-label:
 
-Ecat7 output
+Ecat7 output (not yet adapted in Gate 9.3)
 ------------
 
 If and only if both the ecat system and the sinogram output module have been selected, the ecat7 output
@@ -800,7 +804,7 @@ After arc correction, the radial bin size should be slightly increased to accoun
 
 .. _lmf_output-label:
 
-LMF output
+LMF output (not yet adapted in Gate 9.3)
 ----------
 
 The Crystal Clear Collaboration has developed a List Mode Format (LMF) to store the data of ClearPET prototypes. Monte Carlo data generated by GATE can also be stored under the same format using the class **GateToLMF**. This format is only available for the cylindricalPET system (see :ref:`defining_a_system-label`) and GATE can only store *single* events.
