@@ -44,7 +44,7 @@
 #include "G4Navigator.hh"
 
 GateSpatialResolution::GateSpatialResolution(GateSinglesDigitizer *digitizer)
-  :GateVDigitizerModule("spatialResolution","digitizerMgr/"+digitizer->GetSD()->GetName()+"/SinglesDigitizer/"+digitizer->m_digitizerName+"/spatialResolution",digitizer,digitizer->GetSD()),
+  :GateVDigitizerModule("SpatialResolution","digitizerMgr/"+digitizer->GetSD()->GetName()+"/SinglesDigitizer/"+digitizer->m_digitizerName+"/spatialResolution",digitizer,digitizer->GetSD()),
    m_fwhm(0),
    m_fwhmX(0),
    m_fwhmY(0),

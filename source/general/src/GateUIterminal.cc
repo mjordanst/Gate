@@ -47,15 +47,51 @@ G4int GateUIterminal::ReceiveG4cerr(const G4String& cerrString)
 
     if (isMacroError) {
       std::cerr << "[Gate] Sorry, error in a macro command : abort.\n";
-      i = cerrString.find("digitzer", 0);
-      bool isDigitizerMacroError = isMacroError || (i != std::string::npos);
-      if (isDigitizerMacroError)
-      	  {
+      std::cerr << cerrString<<G4endl;
+      if (G4StrUtil::contains(cerrString, "digitizer"))
+      {
     	  std::cerr << "------------------------ [GateSinglesDigitizer Messenger Problem]------------------------ \n";
     	  std::cerr << "Probably you try to use a command for the old version of the digitizer.\n";
     	  std::cerr << "Try </gate/digitizerMgr> commands instead, you can find the documentation here: XXXX \n"; //TODO insert the link to the documentation page
+    	  std::cerr << "A tool to automatically convert your old digitizer macro to a new is also available here: XXXX \n"; //TODO insert the link to tool page
     	  std::cerr << "---------------------------------------------------------------------------------- \n";
-      	  }
+      }
+      if (G4StrUtil::contains(cerrString, "output"))
+            {
+          	  std::cerr << "------------------------ [GateOutput Messenger Problem]------------------------ \n";
+          	  std::cerr << "Probably the command that you try to use is obsolete.\n";
+          	  if(G4StrUtil::contains(cerrString, "root"))
+              {
+          		 std::cerr << "Instead of /gate/output/root/setRootSinglesFlag, please use: /gate/output/root/setRootSingles_<DetectorName>Flag, "
+                 		  "where <DetectorName> = name that you use in command(s) /gate/<DetectorName>/attachCrystalSD\n";
+              }
+          	  if(G4StrUtil::contains(cerrString, "tree"))
+          	  {
+          		  std::cerr << "Instead of /gate/output/tree/hits/enable, please use: /gate/output/tree/addHitsCollection <DetectorName>,"
+          				  "where <DetectorName> = name that you use in command /gate/<DetectorName>/attachCrystalSD\n";
+          		  std::cerr << "Instead of /gate/output/tree/addCollection Singles, please use: /gate/output/tree/addCollection Singles_<DetectorName>,"
+          		          				  "where <DetectorName> = name that you use in command(s) /gate/<DetectorName>/attachCrystalSD\n";
+          	  }
+          	  if(G4StrUtil::contains(cerrString, "ascii"))
+          	  {
+          		  std::cerr << "Instead of /gate/output/ascii/setOutFileSinglesFlag, please use: /gate/output/ascii/setOutFileSingles_<DetectorName>Flag,"
+          	          		          				  "where <DetectorName> = name that you use in command(s) /gate/<DetectorName>/attachCrystalSD\n";
+          	  }
+          	  if(G4StrUtil::contains(cerrString, "binary"))
+          	  {
+          		  std::cerr << "Instead of /gate/output/binary/setOutFileSinglesFlag, please use: /gate/output/binary/setOutFileSingles_<DetectorName>Flag,"
+          				  "where <DetectorName> = name that you use in command(s) /gate/<DetectorName>/attachCrystalSD\n";
+          	   }
+          	  if(G4StrUtil::contains(cerrString, "projection"))
+          	  {
+          		  std::cerr << "Instead of /gate/output/projection/setInputDataName Window1, please use: /gate/output/projection/setInputDataName Window1_<DetectorName>,"
+          				  "where <DetectorName> = name that you use in command(s) /gate/<DetectorName>/attachCrystalSD\n";
+          	  }
+
+          	  std::cerr << "---------------------------------------------------------------------------------- \n";
+            }
+
+
       exit(-1);
     }
 
