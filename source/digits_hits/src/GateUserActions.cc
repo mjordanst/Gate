@@ -85,7 +85,7 @@ HitsCollectionID(-1)
 //-----------------------------------------------------------------------------
 GateUserActions::~GateUserActions()
 {
-
+ G4cout<<"GateUserActions::~GateUserActions "<<G4endl;
   delete pUserActions;
   GateDebugMessageInc("Core", 4, "GateUserActions Destructor.\n");
 

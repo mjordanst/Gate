@@ -340,7 +340,7 @@ void GateCoincidenceSorter::Digitize()
 
   // TODO check if the following lines are not the bug and we really need to ignore multiple coincidences?? -> there is option for multiple coincidences ??
   // if not bug: it was before at the end of all coincidence chains, just before the writing -> should be moved to digitizerMgr
-  std::vector< GateCoincidenceDigi* >* output_vector = m_OutputCoincidenceDigiCollection->GetVector ();
+ /* std::vector< GateCoincidenceDigi* >* output_vector = m_OutputCoincidenceDigiCollection->GetVector ();
   std::vector<GateCoincidenceDigi*>::iterator it;
 
   for (std::vector<GateCoincidenceDigi*>::const_iterator it = output_vector->begin();it != output_vector->end() ; ++it){
@@ -350,14 +350,15 @@ void GateCoincidenceSorter::Digitize()
      	 G4cout<<"* "<<(*it)->at(i)->GetEventID()<< " "<< (*it)->at(i)->GetEnergy() <<G4endl;
       }
 */
-      if ((*it)->size()>2){
+/*      if ((*it)->size()>2){
            	if (nVerboseLevel)
            	    G4cout  << "[GateCoincidenceDigiMaker::Digitize]: ignoring multiple coincidence --> no digits created\n";
            } else {
         	//  G4cout<<"Output collection "<< m_OutputCoincidenceDigiCollection->GetName()<<" : " << m_OutputCoincidenceDigiCollection->GetSize ()<<G4endl;
-        	   StoreDigiCollection(m_OutputCoincidenceDigiCollection);
-           }
-  	 }
+  */
+  StoreDigiCollection(m_OutputCoincidenceDigiCollection);
+  //         }
+  //	 }
 
 
 
@@ -460,6 +461,7 @@ void GateCoincidenceSorter::ProcessCompletedCoincidenceWindow(GateCoincidenceDig
       return;
     }
 
+    //G4cout<<"nGoods = "<<  nGoods<<G4endl;
     // all the Keep* policies pass on a multi-coincidence rather than breaking into pairs
     if( ( (m_multiplesPolicy==kKeepIfAnyIsGood) /*&& (nGoods>0)*/ ) || // if nGoods = 0, we don't get here
     	( (m_multiplesPolicy==kKeepIfOnlyOneGood) && (nGoods==1)           ) ||
@@ -502,7 +504,7 @@ void GateCoincidenceSorter::ProcessCompletedCoincidenceWindow(GateCoincidenceDig
     if(m_multiplesPolicy==kTakeWinnerIfIsGood)
     {
       if(!IsForbiddenCoincidence(coincidence->at(winner_i),coincidence->at(winner_j)) )
-    	  m_OutputCoincidenceDigiCollection->insert(CreateSubDigi(coincidence, i, j));
+    	  m_OutputCoincidenceDigiCollection->insert(CreateSubDigi(coincidence, winner_i, winner_j));
       delete coincidence;
       return;
     }

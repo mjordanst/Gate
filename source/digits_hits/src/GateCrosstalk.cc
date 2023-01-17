@@ -226,8 +226,10 @@ GateVolumeID GateCrosstalk::CreateVolumeID(const GateVolumeID* aVolumeID, G4int 
 GateOutputVolumeID GateCrosstalk::CreateOutputVolumeID(const GateVolumeID aVolumeID)
 {
   GateDetectorConstruction* aDetectorConstruction = GateDetectorConstruction::GetGateDetectorConstruction();
-  GateOutputVolumeID anOutputVolumeID = aDetectorConstruction->GetCrystalSD()->GetSystem()->ComputeOutputVolumeID(aVolumeID);
-  return anOutputVolumeID;
+  // TODO OK GND: GateDetectorConstruction-> GetCrystalSD() !
+  //  GateOutputVolumeID anOutputVolumeID = aDetectorConstruction->GetCrystalSD()->GetSystem()->ComputeOutputVolumeID(aVolumeID);
+  //return anOutputVolumeID;
+  return NULL;
 }
 
 GatePulse* GateCrosstalk::CreatePulse(G4double val, const GatePulse* pulse, G4int i, G4int j, G4int k)

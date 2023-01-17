@@ -8,7 +8,7 @@
 
 #include "GateCrystalSD.hh"
 
-#include "../include/GateSinglesDigitizer.hh"
+#include "GateSinglesDigitizer.hh"
 #include "GateDetectorConstruction.hh"
 #include "GateHit.hh"
 #include "G4HCofThisEvent.hh"
@@ -89,7 +89,7 @@ GateCrystalSD::GateCrystalSD(const G4String& name)
 // Destructor
 GateCrystalSD::~GateCrystalSD()
 {
-	//G4cout<<"GateCrystalSD::~GateCrystalSD()"<<G4endl;
+	G4cout<<"GateCrystalSD::~GateCrystalSD()"<<G4endl;
    if(m_systemList) delete m_systemList;
 }
 //------------------------------------------------------------------------------

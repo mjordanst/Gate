@@ -29,7 +29,7 @@ See LICENSE.md for further details
 #include "GatePileup.hh"
 #include "GateThresholder.hh"
 #include "GateUpholder.hh"
-#include "GateDeadTime.hh"
+#include "GateDeadTimeOld.hh"
 #include "GateBlurring.hh"
 #include "GateLocalTimeDelay.hh"
 #include "GateLocalBlurring.hh"
@@ -143,7 +143,7 @@ void GatePulseProcessorChainMessenger::DoInsertion(const G4String& childTypeName
   else if (childTypeName=="upholder")
     newProcessor = new GateUpholder(GetProcessorChain(),newInsertionName,150.*keV);
   else if (childTypeName=="deadtime")
-    newProcessor = new GateDeadTime(GetProcessorChain(),newInsertionName);
+    newProcessor = new GateDeadTimeOld(GetProcessorChain(),newInsertionName);
   else if (childTypeName=="blurring")
     newProcessor = new GateBlurring(GetProcessorChain(),newInsertionName);
   else if (childTypeName=="localBlurring")

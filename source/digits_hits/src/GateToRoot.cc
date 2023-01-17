@@ -144,8 +144,9 @@ GateToRoot::GateToRoot(const G4String &name, GateOutputMgr *outputMgr, DigiMode 
 
 //--------------------------------------------------------------------------
 GateToRoot::~GateToRoot() {
-    delete m_rootMessenger;
-   // G4cout<<" GateToRoot::~GateToRoot()  "<<G4endl;
+	G4cout<<" GateToRoot::~GateToRoot()  "<<G4endl;
+	delete m_rootMessenger;
+   //
 
     if (nVerboseLevel > 0) G4cout << "GateToRoot deleting...\n";
     for (size_t i = 0; i < m_outputChannelList.size(); ++i)

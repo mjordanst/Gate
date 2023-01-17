@@ -386,7 +386,7 @@ void GateVVolume::AttachCrystalSD() {
       AttachOutputToVolume();
     */
     // Retrieve the crystal-SD pointer from the detector-construction
-   // GateCrystalSD *crystalSD = GateDetectorConstruction::GetGateDetectorConstruction()->GetCrystalSD();
+   //GateCrystalSD *crystalSD = GateDetectorConstruction::GetGateDetectorConstruction()->GetCrystalSD();
 
     // OK GND 2022
     //----

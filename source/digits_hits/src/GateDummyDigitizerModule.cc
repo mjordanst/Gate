@@ -25,10 +25,40 @@
 	- outputPulse --> m_outputDigi
 	- how to adapt iterators check GateAdder class
 
+  To create new Digitizer Module (DM), please, follow the steps:
+  1) Copy .cc and .hh of GateDummyDigitizerModule, GateDummyDigitizerModuleMessenger to GateYourNewDigitizerModule and GateYourNewDigitizerModuleMessenger
+  2) Replace in these new files : DummyDigitizerModule -> YourNewDigitizerModule
+  3) Compile 1st time (so not forget to redo ccmake to)
+  4) Adapt GateYourNewDigitizerModuleMessenger.cc
+  5) Adapt GateYourNewDigitizerModuleMessenger.hh (!!!! DO NOT FORGET TO WRITE A SHORT EXPLANATION ON WHAT DOES YOUR DM !!!!)
+  6) Adapt GateYourNewDigitizerModule.hh
+  7) Adapt GateYourNewDigitizerModule.cc
+  	  - Change the names (x2) of YourDigitizerModule in the constructor of GateYourNewDigitizerModule.cc:
+   	   	   	  line:
+   	   	   	  :GateVDigitizerModule("Dummy","digitizerMgr/"+digitizer->GetSD()->GetName()+"/SinglesDigitizer/"+digitizer->m_digitizerName+"/dummy",digitizer,digitizer->GetSD()),
 
-  !!!! DO NOT FORGET TO WRITE A SHORT EXPLANATION ON WHAT DOES YOUR DM !!!!
-	The example is also given in .hh
-*/
+	  - !!!! DO NOT FORGET TO WRITE A SHORT EXPLANATION ON WHAT DOES YOUR DM !!!!
+	  - Comment everything inside Digitize() method
+   8) Compile 2ed time
+   9) In case of adaptation of old existing class:
+   	  - Copy everything inside ProcessOnePulse() and ProcessPulseList() from old module to Digitize() (places where to copy are indicated in this class)
+   	  - Replace:
+   	  	  inputPulse -> inputDigi
+	      outputPulse -> m_outputDigi + correct the first declaration (as in this Dummy module)
+	      outputPulseList.push_back(outputPulse) ->  m_OutputDigiCollection->insert(m_outputDigi);
+	10) Add YourDigitizerModule to GateSinglesDigitizer.cc
+			- #include "YourDigitizerModule.hh"
+			- in DumpMap() method in
+				static G4String theList = " ...."
+			- in DoInsertion() :
+				  else if (childTypeName=="yourDM")
+     	 	 	 	 {
+   	  	  	  	  	  newDM = new GateYourDigitizerModule(m_digitizer);
+   	  	  	  	  	  m_digitizer->AddNewModule(newDM);
+     	 	 	 	 }
+	11) Compile 3ed time and execute
+
+	*/
 
 #include "GateDummyDigitizerModule.hh"
 #include "GateDummyDigitizerModuleMessenger.hh"
@@ -153,8 +183,8 @@ void GateDummyDigitizerModule::Digitize()
 			G4cout << Gateendl;
 		}
 	/// *** End of the part from ProcessPulseList
-	  }
-    }
+	  } //loop  over input digits
+    } //IDC
   else
     {
   	  if (nVerboseLevel>1)

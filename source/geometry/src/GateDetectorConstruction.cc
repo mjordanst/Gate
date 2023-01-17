@@ -135,7 +135,7 @@ GateDetectorConstruction::GateDetectorConstruction()
 //---------------------------------------------------------------------------------
 GateDetectorConstruction::~GateDetectorConstruction()
 {
-	//G4cout<<"GateDetectorConstruction::~GateDetectorConstruction()"<<G4endl;
+	G4cout<<"GateDetectorConstruction::~GateDetectorConstruction()"<<G4endl;
   if (pworld) {
     DestroyGeometry();
     delete pworld;

@@ -52,6 +52,7 @@ GateAnalysis::GateAnalysis(const G4String& name, GateOutputMgr* outputMgr,DigiMo
 //--------------------------------------------------------------------------------------------------
 GateAnalysis::~GateAnalysis()
 {
+	G4cout<<"GateAnalysis::~GateAnalysis "<<G4endl;
   delete m_analysisMessenger;
   //modifs seb 3/3/2009
   delete m_trajectoryNavigator;
