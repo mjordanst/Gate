@@ -38,13 +38,14 @@
 #include "G4ios.hh"
 #include "G4UnitsTable.hh"
 
-
+#include "GateVSystem.hh"
 
 GatePileup::GatePileup(GateSinglesDigitizer *digitizer)
   :GateVDigitizerModule("Pileup","digitizerMgr/"+digitizer->GetSD()->GetName()+"/SinglesDigitizer/"+digitizer->m_digitizerName+"/pileup",digitizer,digitizer->GetSD()),
-   m_depth(1),
+   m_depth(0),
    m_volumeName(""),
    m_Pileup(0),
+   m_firstEvent(true),
    m_outputDigi(0),
    m_OutputDigiCollection(0),
    m_digitizer(digitizer)
@@ -67,10 +68,40 @@ GatePileup::~GatePileup()
 
 void GatePileup::Digitize()
 {
+ if(m_firstEvent==true)
+ {
+		if(!m_volumeName.empty() && m_depth!=0)
+			GateError("***ERROR*** You can choose Pileup parameter either with /setDepth OR /setPileupVolume!");
 
-	if(!m_volumeName.empty() && m_depth!=0)
-		GateError("***ERROR*** You can choose Pileup parameter either with /setDepth OR /setPileupVolume!");
+		 //////////////DEPTH SETTING/////////
+		//set the previously default value for compatibility of users macros
+		if(m_volumeName.empty()  && m_depth==0)
+			m_depth=1; //previously default value
 
+
+		//set m_depth according user defined volume name
+		if(!m_volumeName.empty()) //only for EnergyWinner
+		{
+			GateVSystem* m_system = this->GetDigitizer()->GetSystem();
+			if (m_system==NULL) G4Exception( "GatePileup::Digitize", "Digitize", FatalException,
+													   "Failed to get the system corresponding to that digitizer. Abort.\n");
+
+			G4int systemDepth = m_system->GetTreeDepth();
+
+			GateObjectStore* anInserterStore = GateObjectStore::GetInstance();
+			for (G4int i=1;i<systemDepth;i++)
+			{
+				GateSystemComponent* comp0= (m_system->MakeComponentListAtLevel(i))[0][0];
+				GateVVolume *creator = comp0->GetCreator();
+				GateVVolume* anInserter = anInserterStore->FindCreator(m_volumeName);
+
+				if(creator==anInserter)
+					m_depth=i;
+
+			}
+		}
+		m_firstEvent=false;
+ 	 }
 
 	G4String digitizerName = m_digitizer->m_digitizerName;
 	G4String outputCollName = m_digitizer-> GetOutputName();

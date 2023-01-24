@@ -32,6 +32,7 @@ See LICENSE.md for further details
 
 #include "GatePileupMessenger.hh"
 #include "GateSinglesDigitizer.hh"
+#include "GateObjectStore.hh"
 
 
 class GatePileup : public GateVDigitizerModule
@@ -81,7 +82,7 @@ protected:
   G4String m_volumeName;
   G4double m_Pileup;
   std::vector< GateDigi* >* m_waiting;
-
+  G4bool m_firstEvent;
 
 
 private:
