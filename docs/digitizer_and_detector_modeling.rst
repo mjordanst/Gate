@@ -64,7 +64,24 @@ Four types:
 *  Coincidences Digitizers (to be added)
 *  Waveform generator (to be added) 
 
-Comment on SD
+Several SD are possible
+
+Commands for Gate New Digitizer (since Gate 9.3)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+One of the changes for Gate New Digitizer was making more explicit the macro command lines.
+
+Instead of::
+
+/gate/digitizer/Singles/
+
+where *Singles* is the name of Singles collection to which user would like to attach a Digitizer Module (name "Singles" is default value)
+
+Now the command like looks like::
+
+/gate/digitizerMgr/<sensitive_detector_name>/SinglesDigitizer/<singles_digitizer_name>/setInputCollection Singles
+
+where *<sensitive_detector_name>* is a name of a sensitive detector from which user would like to analyse Hits with a digitizer, *SinglesDigitizer* is a type of functionalities available in the Digitizer Manager (ex, "SinglesDigitizer", "CoincidenceSorter", "CoincidencesDigitizer", "WaveformGenerator"), *<singles_digitizer_name>* is a name of chosen, for example, SinglesDigitizer, it is the same name as the output singles collection (name "Singles" is default value). 
 
 Disabling the digitizer
 ~~~~~~~~~~~~~~~~~~~~~~~
