@@ -5,7 +5,7 @@
   of the GNU Lesser General  Public Licence (LGPL)
   See LICENSE.md for further details
   ----------------------*/
-
+//GND:ClassToRemove
 
 #ifndef GateDeadTimeOld_h
 #define GateDeadTimeOld_h 1
