@@ -496,6 +496,60 @@ Finally, in the next example, each crystal has its own efficiency, described in 
    /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/efficiency/enableLevel 2 
    /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/efficiency/setEfficiency crystal_eff_distrib
 
+.. _pile-up-label:
+
+Pile-up
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+An important characteristic of a detector is its response time, which is the time that the detector takes to form the signal after the arrival of the radiation. The duration of the signal is also important. During this period, if a second event can be accepted, this second signal will *pile up* on the first. The resulting digi is a combinaison in terms of time and energy, of the two signals. If N pulses enter in the time window of the same sensitive volume (set by the depth of the system level), the output digi of the pile-up module will be a digi with an output energy defined by the sum of the energies :math:`( E_{out}= \sum_{i=0}^{N} E_{i} )` and a time set to the last time of the last digi participating to the pile-up :math:`t_{out}=t_{N}`. Since multiple events are grouped into a unique event with the pile-up effect, one can consider this as a loss of events occuring during a given time length, which can be seen as a dead time effect. Moreover, since the pile-up end time is always updated with the last single occuring, the effect is more or less represented by a paralysable dead-time. To insert a pile-up corresponding to a signal formation time of 100 ns in a module corresponding to the crystal group as described by the 4th level of the system or by its volume_name (which has to be previously attached to a level of the system), one should use::
+
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/insert pileup 
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/pileup/setDepth 4 # to set depth 
+   or
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/pileup/setPileupVolume your_volume_name # to set volume name
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/pileup/setPileup 100 ns
+
+Dead time
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Due to the shaping time of signals or for any other reason, each detection of a single event can hide the subsequent single detected on the same electronic module. This loss lasts a certain amount of time, depending on the characteristics of the detectors used as well as of the readout electronics. The dead time can be modelled in GATE as shown below. Two models of the dead-time have been implemented in the digitizer: *paralysable* and *nonparalysable* response. These models can be implemented *event by event* during a simulation. The detailed method underlying these models can be found in Knoll 1979 (Radiation detection and measurement, John Wiley & Sons, New York). The fundamental assumptions made by these two models are illustrated in :numref:`Like_knoll`.
+
+
+.. figure:: Like_knoll.jpg
+   :alt: Figure 4: Like_knoll
+   :name: Like_knoll
+
+   For 7 incoming particles and a fixed dead-time :math:`\tau`, the *nonparalysable* electronic readout will accept 3 particles, and the *paralysable* will accept only 1 particle (the dashed arrows represents the removed events, while the solid arrows are the accepted singles)
+
+The dead time module is applied to a specific volume within the Sensitive Detector system hierarchy. All events taking place within this volume level will trigger a dead-time detector response. This action of the digitizer simulates the time during which this detector, busy at processing a particle, will not be able to process the next one. Moreover, one can simulate the case where data are accumulated into a buffer, which is written to a mass storage having a time access, during which no other data can be processed. In such a case, the dead time is not started after the first data, but once the buffer is full. This case can also be simulated in GATE.
+
+To apply a dead-time to the volume_name (which has to be previously attached to a level of the system), the following commands can be used::
+
+   # ATTACHEMENT TO THE SYSTEM 
+   /gate/systems/system_name/system_level_name/attach volume_name 
+   ..
+   ..
+   # DEADTIME 
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/insert deadtime 
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/deadtime/setDeadTime 100000. ns 
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/deadtime/setMode paralysable 
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/deadtime/chooseDTVolume volume_name 
+
+The name *system_name* and its corresponding *system_level_name* do not exist and have to be chosen in the tables given in :ref:`defining_a_system-label`.
+
+In the second example, a dead time corresponding to a disk access of 1 µs for a memory buffer of 1 Mbyte is given. The *setMode* command specifies the behavior of the dead time during the disk access. If this mode is set to 0, the memory buffer is assumed to be a shared resource for the computer, and thus is not available during the disk writing. So, no data can fill the buffer during the disk access. On the other hand, in case of model 1, the buffer is immediately freed after being sent to the disk controller. Data are thus not rejected, unless the buffer is filled up again, before the disk access is finished. In such a case, the dead time module will be totally transparent (ie. will not reject any data), unless the counting rate is high enough to fill the buffer in a time lower than the disk access dead time::
+
+   # ATTACHEMENT TO THE SYSTEM 
+   /gate/systems/system_name/system_level_name/attach volume_name
+   ..
+   ..
+   # DEADTIME 
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/insert deadtime 
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/deadtime/setDeadTime 1 mus 
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/deadtime/setMode nonparalysable 
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/deadtime/chooseDTVolume volume_name 
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/deadtime/setBufferSize 1 MB 
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/deadtime/setBufferMode 0
 
 
 Modules to be addapted (NOT YET INCLUDED IN GATE NEW DIGITIZER)
@@ -691,58 +745,7 @@ To mimic the effect of limited transfer rate, a module models the data loss due 
 
 The chain *Your_Single_chain* can be the default chain *Singles* or any of single chain that the user has defined. The size of the buffer represents the number of elements, 64 Singles in this example, that the user can store in a buffer. To read the buffer in an event by event basis, one should replace the last line by **setMode = 0.**
 
-.. _pile-up-label:
 
-Pile-up
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-An important characteristic of a detector is its response time, which is the time that the detector takes to form the signal after the arrival of the radiation. The duration of the signal is also important. During this period, if a second event can be accepted, this second signal will *pile up* on the first. The resulting pulse is a combinaison in terms of time and energy, of the two signals. If N pulses enter in the time window of the same sensitive volume (set by the depth of the system level), the output pulse of the pile-up module will be a pulse with an output energy defined by the sum of the energies :math:`( E_{out}= \sum_{i=0}^{N} E_{i} )` and a time set to the last time of the last pulse participating to the pile-up :math:`t_{out}=t_{N}`. Since multiple events are grouped into a unique event with the pile-up effect, one can consider this as a loss of events occuring during a given time length, which can be seen as a dead time effect. Moreover, since the pile-up end time is always updated with the last single occuring, the effect is more or less represented by a paralysable dead-time. To insert a pile-up corresponding to a signal formation time of 100 ns in a module corresponding to the crystal group as described by the 4th level of the system, one should use::
-
-   /gate/digitizer/Singles/insert pileup 
-   /gate/digitizer/Singles/pileup/setDepth 4 
-   /gate/digitizer/Singles/pileup/setPileup 100 ns
-
-Dead time
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Due to the shaping time of signals or for any other reason, each detection of a single event can hide the subsequent single detected on the same electronic module. This loss lasts a certain amount of time, depending on the characteristics of the detectors used as well as of the readout electronics. The dead time can be modelled in GATE as shown below. Two models of the dead-time have been implemented in the digitizer: *paralysable* and *nonparalysable* response. These models can be implemented *event by event* during a simulation. The detailed method underlying these models can be found in Knoll 1979 (Radiation detection and measurement, John Wiley & Sons, New York). The fundamental assumptions made by these two models are illustrated in :numref:`Like_knoll`.
-
-
-.. figure:: Like_knoll.jpg
-   :alt: Figure 4: Like_knoll
-   :name: Like_knoll
-
-   For 7 incoming particles and a fixed dead-time :math:`\tau`, the *nonparalysable* electronic readout will accept 3 particles, and the *paralysable* will accept only 1 particle (the dashed arrows represents the removed events, while the solid arrows are the accepted singles)
-
-The dead time module is applied to a specific volume within the Sensitive Detector system hierarchy. All events taking place within this volume level will trigger a dead-time detector response. This action of the digitizer simulates the time during which this detector, busy at processing a particle, will not be able to process the next one. Moreover, one can simulate the case where data are accumulated into a buffer, which is written to a mass storage having a time access, during which no other data can be processed. In such a case, the dead time is not started after the first data, but once the buffer is full. This case can also be simulated in GATE.
-
-To apply a dead-time to the volume_name (which has to be previously attached to a level of the system), the following commands can be used::
-
-   # ATTACHEMENT TO THE SYSTEM 
-   /gate/systems/system_name/system_level_name/attach volume_name 
-   ..
-   ..
-   # DEADTIME 
-   /gate/digitizer/Singles/insert deadtime 
-   /gate/digitizer/Singles/deadtime/setDeadTime 100000. ns 
-   /gate/digitizer/Singles/deadtime/setMode paralysable 
-   /gate/digitizer/Singles/deadtime/chooseDTVolume volume_name 
-
-The name *system_name* and its corresponding *system_level_name* do not exist and have to be chosen in the tables given in :ref:`defining_a_system-label`.
-
-In the second example, a dead time corresponding to a disk access of 1 µs for a memory buffer of 1 Mbyte is given. The *setMode* command specifies the behavior of the dead time during the disk access. If this mode is set to 0, the memory buffer is assumed to be a shared resource for the computer, and thus is not available during the disk writing. So, no data can fill the buffer during the disk access. On the other hand, in case of model 1, the buffer is immediately freed after being sent to the disk controller. Data are thus not rejected, unless the buffer is filled up again, before the disk access is finished. In such a case, the dead time module will be totally transparent (ie. will not reject any data), unless the counting rate is high enough to fill the buffer in a time lower than the disk access dead time::
-
-   # ATTACHEMENT TO THE SYSTEM 
-   /gate/systems/system_name/system_level_name/attach volume_name
-   ..
-   ..
-   # DEADTIME 
-   /gate/digitizer/Singles/insert deadtime 
-   /gate/digitizer/Singles/deadtime/setDeadTime 1 mus 
-   /gate/digitizer/Singles/deadtime/setMode nonparalysable 
-   /gate/digitizer/Singles/deadtime/chooseDTVolume volume_name 
-   /gate/digitizer/Singles/deadtime/setBufferSize 1 MB 
-   /gate/digitizer/Singles/deadtime/setBufferMode 0
 
 
 .. _digitizer_multiple_processor_chains-label:
