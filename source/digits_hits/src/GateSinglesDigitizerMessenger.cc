@@ -32,6 +32,7 @@ See LICENSE.md for further details
 #include "GateEfficiency.hh"
 #include "GateDeadTime.hh"
 #include "GatePileup.hh"
+#include "GateAdderCompton.hh"
 /*
 
 #include "GatePileup.hh"
@@ -123,7 +124,7 @@ void GateSinglesDigitizerMessenger::SetNewValue(G4UIcommand* command,G4String ne
 const G4String& GateSinglesDigitizerMessenger::DumpMap()
 {
  //  static G4String theList = "readout pileup thresholder energyThresholder localEnergyThresholder DoImodel upholder blurring localBlurring localTimeDelay localEfficiency energyEfficiency noise discretizer buffer transferEfficiency crosstalk lightYield quantumEfficiency intrinsicResolutionBlurring sigmoidalThresholder calibration spblurring sp3Dlocalblurring adder adderLocal adderCompton adderComptPhotIdeal adderComptPhotIdealLocal localClustering  clustering deadtime crystalblurring timeResolution localTimeResolution opticaladder systemFilter gridDiscretization  localMultipleRejection";
-   static G4String theList = "readout adder energyFraming timeResolution energyResolution spatialResolution efficiency deadtime pileup";
+   static G4String theList = "readout adder energyFraming timeResolution energyResolution spatialResolution efficiency deadtime pileup adderCompton";
 
    return theList;
 }
@@ -187,6 +188,11 @@ void GateSinglesDigitizerMessenger::DoInsertion(const G4String& childTypeName)
   else if (childTypeName=="pileup")
        {
      	  newDM = new GatePileup(m_digitizer);
+     	  m_digitizer->AddNewModule(newDM);
+       }
+  else if (childTypeName=="adderCompton")
+       {
+     	  newDM = new GateAdderCompton(m_digitizer);
      	  m_digitizer->AddNewModule(newDM);
        }
    // newDM = new GateReadout(m_digitizer,newInsertionName);
