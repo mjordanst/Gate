@@ -246,6 +246,23 @@ Default energy policy is EnergyCentroid. The following commands can be used to s
    /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/insert    adder 
    /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/adder/positionPolicy energyWeightedCentroid
 
+
+Adder Compton
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The adderCompton module has a different behavior than the classic adder, which performs an energy-weighted centroid addition of all electronic and photonic hits.
+Instead, for each electronic energy deposition, the energy is added to the previous photonic hit in the same volume ID (or discarded if none), but the localization remains that of the photonic interaction. That way, the Compton kinematics becomes exact for photonic interations, enabling further studies. The user must use the classic adder afterwards, to handle multiple photonic interactions in the same crystal. The commands to use the adder module are::
+
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/insert adderCompton
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/insert adder
+   
+  
+**Example**::
+   
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/insert    adderCompton 
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/insert    adder 
+
+
 Readout
 ^^^^^^^
 
@@ -571,16 +588,6 @@ In the second example, a dead time corresponding to a disk access of 1 µs for a
 
 Modules to be addapted (NOT YET INCLUDED IN GATE NEW DIGITIZER)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Adder Compton
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-The adderCompton module has a different behavior than the classic adder, which performs an energy-weighted centroid addition of all electronic and photonic hits.
-Instead, for each electronic energy deposition, the energy is added to the previous photonic hit in the same volume ID (or discarded if none), but the localization remains that of the photonic interaction. That way, the Compton kinematics becomes exact for photonic interations, enabling further studies. The user must use the classic adder afterwards, to handle multiple photonic interactions in the same crystal. The commands to use the adder module are::
-
-   /gate/digitizer/Singles/insert adderCompton
-   /gate/digitizer/Singles/insert adder
-
 
 Blurring: Intrinsic resolution blurring with crystals of different compositions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
