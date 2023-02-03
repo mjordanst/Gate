@@ -83,6 +83,19 @@ void GateSinglesDigitizer::AddNewModule(GateVDigitizerModule* DM)
 
 }
 
+GateVDigitizerModule* GateSinglesDigitizer::FindDigitizerModule(const G4String& mName)
+{
+
+	for(G4int i=0;i<int(m_DMlist.size());i++)
+			{
+			G4String DMname = m_DMlist[i]->GetObjectName();//m_digitizerName+"_" +m_SingleDigitizersList[i]->m_SD->GetName();
+			//G4cout << DigitizerName << " "<< mName<< G4endl;
+			if(DMname == mName)
+				return m_DMlist [i];
+			}
+		return NULL;
+}
+
 
 void GateSinglesDigitizer::DescribeMyself()
 {

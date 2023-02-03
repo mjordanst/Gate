@@ -186,7 +186,7 @@ void GateOutputMgr::RecordEndOfEvent(const G4Event* event)
   for (size_t iMod=0; iMod<m_outputModules.size(); iMod++) {
     if ( m_outputModules[iMod]->IsEnabled() )
       {
-    	//G4cout<<"*** Output module "<<   m_outputModules[iMod]->GetName()<<G4endl;
+    	G4cout<<"*** Output module "<<   m_outputModules[iMod]->GetName()<<G4endl;
         m_outputModules[iMod]->RecordEndOfEvent(event);
       }
   }

@@ -46,9 +46,13 @@ GateNamedObject* GateListManager::FindElement(const G4String& name)
 	 //G4cout<<size()<<G4endl;
   for (GateListOfNamedObject::iterator it = theListOfNamedObject.begin(); it != theListOfNamedObject.end(); it++)
   {
-	// G4cout<<"GateListManager::FindElement name: "<<(*it)->GetObjectName() <<" "<<name<<G4endl;
+//	 G4cout<<"GateListManager::FindElement name: "<<(*it)->GetObjectName() <<" "<<name<<G4endl;
 	  if (name.compare((*it)->GetObjectName()) == 0)
-	   return *it;
+	  {
+	//	  G4cout<<"found "<<G4endl;
+	//	  G4cout<<(*it)->GetObjectName()<<G4endl;
+		  return *it;
+	  }
   }
  //G4cout<<"No named objects"<<G4endl;
   return 0;

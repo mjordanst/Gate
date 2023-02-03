@@ -130,7 +130,8 @@ GateToProjectionSet::GateToProjectionSet(const G4String& name,
 
   m_isEnabled = false; // Keep this flag false: all output are disabled by default
   m_projectionSet = new GateProjectionSet();
-  m_inputDataChannelList.push_back("Singles_crystal"); //TODO OK GND 2022! hardcoded
+  // OK GND 2022
+  //m_inputDataChannelList.push_back("Singles_crystal");
   m_messenger = new GateToProjectionSetMessenger(this);
 
   SetVerboseLevel(0);
@@ -428,7 +429,8 @@ void GateToProjectionSet::RecordEndOfEvent(const G4Event*)
 
   for (size_t energyWindowID = 0; energyWindowID < m_energyWindowNb; energyWindowID++)
     {
-	//  G4cout<<"GateToProjectionSet::RecordEndOfEvent "<< m_inputDataChannelIDList[energyWindowID]<<G4endl;
+
+	  //G4cout<<"GateToProjectionSet::RecordEndOfEvent "<< m_inputDataChannelIDList[energyWindowID]<<G4endl;
 
       SDC = dynamic_cast<const GateDigiCollection*>(fDM->GetDigiCollection(m_inputDataChannelIDList[energyWindowID]));
 
@@ -457,6 +459,7 @@ void GateToProjectionSet::RecordEndOfEvent(const G4Event*)
                      << Gateendl;
               G4cout << "Extracting projection coordinates: " << G4BestUnit(xProj,"Length") << " , " << G4BestUnit(yProj,"Length") << Gateendl;
             }
+          G4cout<<" [GateToProjectionSet]: Filling"<<G4endl;
           m_projectionSet->Fill(static_cast<G4int>(energyWindowID),
                                 headID,
                                 xProj,

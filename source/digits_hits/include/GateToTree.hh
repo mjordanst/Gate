@@ -66,6 +66,7 @@ public:
   void setHitsEnabled(G4bool mHitsEnabled);
   void addCollection(const std::string &str); //called by messenger
   void addHitsCollection(const std::string &str);
+  void addOpticalCollection(const std::string &str);
 
   G4bool getOpticalDataEnabled() const;
   void setOpticalDataEnabled(G4bool mOpticalDataEnabled);
@@ -115,6 +116,7 @@ private:
 
 
   GateOutputTreeFileManager m_manager_optical;
+  std::unordered_map<std::string,GateOutputTreeFileManager> m_mmanager_optical;
 //  std::vector<GateOutputTreeFileManager> m_vmanager_singles;
   std::unordered_map<std::string, GateOutputTreeFileManager> m_mmanager_singles;
   std::unordered_map<std::string, G4int> m_singles_to_collectionID;

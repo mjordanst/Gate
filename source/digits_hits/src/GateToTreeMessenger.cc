@@ -36,8 +36,8 @@ GateToTreeMessenger::GateToTreeMessenger(GateToTree *m) :
   //m_enableHitsOutput = new G4UIcmdWithoutParameter("/gate/output/tree/hits/enable", this);
   //m_disableHitsOutput = new G4UIcmdWithoutParameter("/gate/output/tree/hits/disable", this);
 
-  m_enableOpticalDataOutput = new G4UIcmdWithoutParameter("/gate/output/tree/optical/enable", this);
-  m_disableOpticalDataOutput = new G4UIcmdWithoutParameter("/gate/output/tree/optical/disable", this);
+  //m_enableOpticalDataOutput = new G4UIcmdWithoutParameter("/gate/output/tree/optical/enable", this);
+  //m_disableOpticalDataOutput = new G4UIcmdWithoutParameter("/gate/output/tree/optical/disable", this);
 
   cmdName = GetDirectoryName() + "addCollection";
   m_addCollectionCmd = new G4UIcmdWithAString(cmdName, this);
@@ -46,7 +46,8 @@ GateToTreeMessenger::GateToTreeMessenger(GateToTree *m) :
   cmdName = GetDirectoryName() + "addHitsCollection";
   m_addHitsCollectionCmd = new G4UIcmdWithAString(cmdName, this);
 
-
+  cmdName = GetDirectoryName() + "addOpticalCollection";
+  m_addOpticalCollectionCmd = new G4UIcmdWithAString(cmdName, this);
 
   for(auto &&m: m_gateToTree->getHitsParamsToWrite())
   {
@@ -89,6 +90,8 @@ GateToTreeMessenger::GateToTreeMessenger(GateToTree *m) :
 GateToTreeMessenger::~GateToTreeMessenger()
 {
   delete m_addFileNameCmd;
+  delete m_addHitsCollectionCmd;
+  delete m_addOpticalCollectionCmd;
  // delete m_enableHitsOutput;
  // delete m_disableHitsOutput;
 
@@ -107,15 +110,17 @@ void GateToTreeMessenger::SetNewValue(G4UIcommand *icommand, G4String string)
   if(icommand == m_disableHitsOutput)
     m_gateToTree->setHitsEnabled(false);
 */
-  if(icommand == m_enableOpticalDataOutput)
+  /*if(icommand == m_enableOpticalDataOutput)
     m_gateToTree->setOpticalDataEnabled(true);
   if(icommand == m_disableOpticalDataOutput)
     m_gateToTree->setOpticalDataEnabled(false);
-
+*/
   //OK GND 2022
   if(icommand == m_addHitsCollectionCmd)
       m_gateToTree->addHitsCollection(string);
 
+  if(icommand == m_addOpticalCollectionCmd)
+       m_gateToTree->addOpticalCollection(string);
 
   GateDigitizerMgr* digitizerMgr=GateDigitizerMgr::GetInstance();
   if(icommand == m_addCollectionCmd)

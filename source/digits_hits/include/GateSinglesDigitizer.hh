@@ -81,8 +81,8 @@ class GateSinglesDigitizer : public GateModuleListManager
      virtual GateVDigitizerModule* GetDigitizerModule(size_t i)
            	  {return (GateVDigitizerModule*) GetElement(i);}
 
-     virtual GateVDigitizerModule* FindDigitizerModule(const G4String& name)
-     	 {    	 return (GateVDigitizerModule*) FindElement(name); }
+     GateVDigitizerModule* FindDigitizerModule(const G4String& name);
+     //	 {    	 	 return (GateVDigitizerModule*) FindElement(name); }
 
 
      void SetName(const G4String& anInputName)

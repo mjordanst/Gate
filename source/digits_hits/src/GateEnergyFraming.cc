@@ -50,6 +50,8 @@ GateEnergyFraming::GateEnergyFraming(GateSinglesDigitizer *digitizer)
 	m_OutputDigiCollection(0),
 	m_digitizer(digitizer)
    {
+
+	G4cout<<"EnergyFraming "<< "digitizerMgr/"+digitizer->GetSD()->GetName()+"/SinglesDigitizer/"+digitizer->m_digitizerName+"/energyFraming" <<G4endl;
 	G4String colName = digitizer->GetOutputName();
 	collectionName.push_back(colName);
 	m_Messenger = new GateEnergyFramingMessenger(this);

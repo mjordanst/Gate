@@ -340,7 +340,7 @@ void GateToInterfile::WriteGeneralInfo()
 
   // Modified by HDS : multiple energy windows support
   //------------------------------------------------------------------
-  //OK GND 20200
+  //OK GND 2022
   GateDigitizerMgr* theDigitizerMgr = GateDigitizerMgr::GetInstance();
 
 
@@ -380,6 +380,8 @@ void GateToInterfile::WriteGeneralInfo()
 																					  +"/SinglesDigitizer/"
 																					  + aDigitizer->GetName()
 																					  + "/energyFraming"));
+
+
       if (anEnergyFraming)
              {
     	  	  aThreshold = anEnergyFraming->GetMin();

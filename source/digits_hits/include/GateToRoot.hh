@@ -330,7 +330,9 @@ private:
 
 // v. cuplov - optical photons
     GateTrajectoryNavigator *m_trajectoryNavigator;
-    TTree *OpticalTree; // new tree
+    //TTree *OpticalTree; // new tree
+    //OK GND 2022
+    std::vector<TTree*> m_OpticalTrees; // new tree
     Char_t NameOfProcessInCrystal[40];
     Char_t NameOfProcessInPhantom[40];
 //  G4int nPhantomOpticalRayleigh;

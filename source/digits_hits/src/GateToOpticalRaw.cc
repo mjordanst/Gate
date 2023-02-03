@@ -22,9 +22,9 @@
 #include "GateToProjectionSet.hh"
 #include "GateProjectionSet.hh"
 
-#include "GateDigitizerOld.hh"
-#include "GateThresholder.hh"
-#include "GateUpholder.hh"
+#include "GateDigitizerMgr.hh"
+#include "GateEnergyFraming.hh"
+//#include "GateUpholder.hh"
 
 
 GateToOpticalRaw::GateToOpticalRaw(const G4String& name, GateOutputMgr* outputMgr,GateOpticalSystem* itsSystem,DigiMode digiMode)
@@ -181,7 +181,14 @@ void GateToOpticalRaw::WriteGeneralInfo()
 
     // Modified by HDS : multiple energy windows support
 	//------------------------------------------------------------------
-	GateDigitizerOld* theDigitizer = GateDigitizerOld::GetInstance();
+	//OK GND 2022
+
+  GateDigitizerMgr* theDigitizerMgr = GateDigitizerMgr::GetInstance();
+  GateSinglesDigitizer* aDigitizer;
+
+  G4String aChainName;
+
+  /*GateDigitizerOld* theDigitizer = GateDigitizerOld::GetInstance();
 
  	GatePulseProcessorChain* aPulseProcessorChain;
 	//G4double aThreshold = 0.;
@@ -189,14 +196,16 @@ void GateToOpticalRaw::WriteGeneralInfo()
 	G4String aChainName;
 	//GateThresholder* aThresholder;
 	//GateUpholder* aUpholder;
+   */
 
 	// Loop over the energy windows first and then over detector heads
 	for (size_t energyWindowID=0; energyWindowID < setMaker->GetEnergyWindowNb(); energyWindowID++) {
 
 		// Get the pulse processor chain pointer for the current energy window
 		aChainName = setMaker->GetInputDataName(energyWindowID);
-		aPulseProcessorChain = dynamic_cast<GatePulseProcessorChain*>(theDigitizer->FindElementByBaseName( aChainName ));
-		if (!aPulseProcessorChain) {
+		//aPulseProcessorChain = dynamic_cast<GatePulseProcessorChain*>(theDigitizer->FindElementByBaseName( aChainName ));
+		aDigitizer = dynamic_cast<GateSinglesDigitizer*>(theDigitizerMgr->FindDigitizer(aChainName));
+		if (!aDigitizer) {
 			G4cerr  << 	Gateendl << "[GateToOpticalRaw::WriteGeneralInfo]:\n"
 					<< "Can't find digitizer chain '" << aChainName << "', aborting\n";
 			G4Exception( "GateToOpticalRaw::WriteGeneralInfo", "WriteGeneralInfo", FatalException, "You must change this parameter then restart the simulation\n");
