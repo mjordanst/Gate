@@ -72,7 +72,7 @@ The units are :
 * s (time)
 * deg (angle)
 
-Hits file : gateHits.dat(**.bin**)
+Hits file : gateHits.dat(**.bin**) and gateHits_<DetectorName>.dat(**.bin**)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Each line is a hit and the columns represent :
@@ -112,7 +112,7 @@ Example : SPECTHead system N=3
 *  Column N+19 : Name of the last volume where a Rayleigh effect occurred **(8-bytes, G4string)**
 
 
-Singles files : gateSingles_<DetectorName>.dat(**.bin**)
+Singles files :  gateSingles.dat(**.bin**) and gateSingles_<DetectorName>.dat(**.bin**)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The system is set as a cylindricalPET system. Each line is a single and the columns are :
@@ -1116,8 +1116,6 @@ Like for mask, the VolumeID variables are enabled/disabled together, as a group:
 Also, for disabling 'comptVolName' in Singles::
 
    /gate/output/tree/addCollection Singles
-   or
-    /gate/output/tree/addCollection Singles_<DetectorName>
     /gate/output/tree/Singles/branches/comptVolName/disable
 
 
@@ -1226,6 +1224,8 @@ The following output, named "summary", will write a txt file at the end of the s
 
      /gate/output/summary/enable
      /gate/output/summary/setFileName output/digit_summary.txt
+     /gate/output/summary/addCollection Singles 
+     or
      /gate/output/summary/addCollection Singles_<DetectorName>
      /gate/output/summary/addCollection Coincidences
 
