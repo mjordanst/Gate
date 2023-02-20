@@ -43,9 +43,9 @@ If you have several sensitive detectors in your simulation, to save all Hits and
    # enable ascii(**binary**) output for Singles (end of digitizer chain)
    /gate/output/ascii(**binary**)/setOutFileSingles_<DetectorName>Flag   1
 
- The <DetectorName> is the names of all volumes that you define with commande /gate/<DetectorName>/attachCrystalSD.
+The <DetectorName> is the names of all volumes that you define with commande /gate/<DetectorName>/attachCrystalSD.
  
- If you want to save only one Singles Collection after certain digitizer module:: 
+If you want to save only one Singles Collection after certain digitizer module:: 
 
    # enable ascii(**binary**) output for singles (after a digitizer module)
    /gate/output/ascii(**binary**)/setOutFileSingles_<DetectorName>_< name of the digitizer module >Flag   1
@@ -226,7 +226,7 @@ Example::
    /gate/output/root/enable
    /gate/output/root/setFileName FILE_NAME
 
-which will provide you with a FILE_NAME.root file. By default, this root file will contain: 2 Trees for SPECT systems (Hits and Singles) or 3 Trees for PET systems (Coincidences, Hits and Singles) in which several variables are stored. In case of multiple sensitive detectors, there will be one tree for each sensitive detector: Hits__<DetectorName>, Singles_<DetectorName>
+which will provide you with a FILE_NAME.root file. By default, this root file will contain: 2 Trees for SPECT systems (Hits and Singles) or 3 Trees for PET systems (Coincidences, Hits and Singles) in which several variables are stored. In case of multiple sensitive detectors, there will be one tree for each sensitive detector: Hits__<DetectorName>, Singles_<DetectorName>::
 
    # enable root output for hits
    /gate/output/root/setRootHitsFlag   1
@@ -250,7 +250,7 @@ If you have several sensitive detectors in your simulation, to save all Hits and
    # enable root output for Singles (end of digitizer chain)
    /gate/output/root/setRootSingles_<DetectorName>Flag   1
 
- The <DetectorName> is the names of all volumes that you define with commande /gate/<DetectorName>/attachCrystalSD.
+The <DetectorName> is the names of all volumes that you define with commande /gate/<DetectorName>/attachCrystalSD.
 
 If needed, and for a matter of file size, you could choose not to generate all trees. In this case, just add the following lines in your macro::
 
