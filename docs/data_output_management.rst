@@ -25,24 +25,42 @@ The GateToASCII/GateToBinary classes enable the ASCII/**binary** file output. It
    /gate/output/ascii(**binary**)/setOutFileHitsFlag   1
    
    # enable ascii(**binary**) output for Singles (end of digitizer chain)
-   /gate/output/ascii(**binary**)/setOutFileSingles_<DetectorName>Flag   1
+   /gate/output/ascii(**binary**)/setOutFileSinglesFlag   1
    
    # enable ascii(**binary**) output for coincidences
    /gate/output/ascii(**binary**)/setOutFileCoincidencesFlag   1
+
+If you have several sensitive detectors in your simulation, to save all Hits and Singles collections do:: 
+
+   # enable ascii(**binary**) output for hits
+   /gate/output/ascii(**binary**)/setOutFileHitsFlag   1
    
+   # enable ascii(**binary**) output for Singles (end of digitizer chain)
+   /gate/output/ascii(**binary**)/setOutFileSinglesFlag   1
+ 
+ or if you want to save only one:: 
+   
+   # enable ascii(**binary**) output for Singles (end of digitizer chain)
+   /gate/output/ascii(**binary**)/setOutFileSingles_<DetectorName>Flag   1
+
+ The <DetectorName> is the names of all volumes that you define with commande /gate/<DetectorName>/attachCrystalSD.
+ 
+ If you want to save only one Singles Collection after certain digitizer module:: 
+
    # enable ascii(**binary**) output for singles (after a digitizer module)
    /gate/output/ascii(**binary**)/setOutFileSingles_<DetectorName>_< name of the digitizer module >Flag   1
 
-The <DetectorName> is the names of all volumes that you define with commande /gate/<DetectorName>/attachCrystalSD.
 The names of the digitizer module are : *Adder*, *Readout*, *SpatialResolution*, *EnergyResolution*, *EnergyFraming*. Their actions are explained in :ref:`digitizer_and_readout_parameters-label`.
 
 To disable these ASCII(**binary**) files which can be large, the macro should contain the following lines::
 
    /gate/output/ascii(**binary**)/setOutFileHitsFlag            0
+   /gate/output/ascii(**binary**)/setOutFileSinglesFlag         0
+  or  
    /gate/output/ascii(**binary**)/setOutFileSingles_<DetectorName>Flag         0
    /gate/output/ascii(**binary**)/setOutFileCoincidencesFlag    0
 
-Only the file *gateRun.dat* which contain the number of decay per run  will then be created.
+Only the file *gateRun.dat* which contain the number of decay per run will then be created.
 
 Description of the ASCII(**binary**) file content
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -208,11 +226,37 @@ Example::
    /gate/output/root/enable
    /gate/output/root/setFileName FILE_NAME
 
-which will provide you with a FILE_NAME.root file. By default, this root file will contain: 2 Trees for SPECT systems (Hits and Singles) or 3 Trees for PET systems (Coincidences, Hits and Singles) in which several variables are stored.
+which will provide you with a FILE_NAME.root file. By default, this root file will contain: 2 Trees for SPECT systems (Hits and Singles) or 3 Trees for PET systems (Coincidences, Hits and Singles) in which several variables are stored. In case of multiple sensitive detectors, there will be one tree for each sensitive detector: Hits__<DetectorName>, Singles_<DetectorName>
+
+   # enable root output for hits
+   /gate/output/root/setRootHitsFlag   1
+   
+   # enable root output for Singles (end of digitizer chain)
+   /gate/output/root/setRootSinglesFlag   1
+   
+   # enable root output for coincidences
+   /gate/output/root/setRootCoincidencesFlag   1
+
+If you have several sensitive detectors in your simulation, to save all Hits and Singles collections do:: 
+
+   # enable root output for hits
+   /gate/output/root/setRootHitsFlag   1
+   
+   # enable root output for Singles (end of digitizer chain)
+   /gate/output/root/setRootSinglesFlag   1
+ 
+ or if you want to save only one:: 
+   
+   # enable root output for Singles (end of digitizer chain)
+   /gate/output/root/setRootSingles_<DetectorName>Flag   1
+
+ The <DetectorName> is the names of all volumes that you define with commande /gate/<DetectorName>/attachCrystalSD.
 
 If needed, and for a matter of file size, you could choose not to generate all trees. In this case, just add the following lines in your macro::
 
    /gate/output/root/setRootHitFlag            0
+   /gate/output/root/setRootSinglesFlag        0
+   or
    /gate/output/root/setRootSingles_<DetectorName>Flag        0
    /gate/output/root/setRootCoincidencesFlag   0
    /gate/output/root/setRootNtupleFlag         0
@@ -221,11 +265,11 @@ By turning to 1 (or 0) one of this tree flag, you will fill (or not) the given t
  
 In a debug mode, it can be useful to store in a Tree the informations after the action of one particular module of the digitizer chain. The following flags exist to turn on or off these intermediate trees::
 
-   /gate/output/root/setOutFileSingles_<DetectorName>_AdderFlag         0
-   /gate/output/root/setOutFileSingles_<DetectorName>_ReadoutFlag       0
-   /gate/output/root/setOutFileSingles_<DetectorName>_SpatialResolutionFlag    0
-   /gate/output/root/setOutFileSingles_<DetectorName>_EnergyResolutionFlag      0
-   /gate/output/root/setOutFileSingles_<DetectorName>_EnergyFramingFlag   0
+   /gate/output/root/setRootSingles_<DetectorName>_AdderFlag         0
+   /gate/output/root/setRootSingles_<DetectorName>_ReadoutFlag       0
+   /gate/output/root/setRootSingles_<DetectorName>_SpatialResolutionFlag    0
+   /gate/output/root/setRootSingles_<DetectorName>_EnergyResolutionFlag      0
+   /gate/output/root/setRootSingles_<DetectorName>_EnergyFramingFlag   0
 
 If you want to disable the whole ROOT output, just do not call it, or use the following command::
 
@@ -914,22 +958,27 @@ This class can be used this way, for example if you want to save hits and Single
 
     /gate/output/tree/enable
     /gate/output/tree/addFileName /tmp/p.npy
+    /gate/output/tree/hits/enable
+    /gate/output/tree/addCollection Singles
+    or
     /gate/output/tree/addHitsCollection <DetectorName>
     /gate/output/tree/addCollection Singles_<DetectorName>
 
-where <DetectorName> is the names of all volumes that you define with commande /gate/<DetectorName>/attachCrystalSD.
+if you want to save Hits or Singles only for certain  sensitive detector, <DetectorName> defined with commande /gate/<DetectorName>/attachCrystalSD.
 
-Theses commands will create two new files::
-
+Theses commands will create two new files with hits and Singles
+::
+    /tmp/p.hits.npy
+    /tmp/p.Singles.npy
+    or in case of multiple sensitive detectors
     /tmp/p.hits_<DetectorName>.npy
     /tmp/p.Singles_<DetectorName>.npy
 
-where data are saved (hits in /tmp/p.hits_<DetectorName>.npy and Singles /tmp/p.Singles_<DetectorName>.npy )
 
 Because of the extension ".npy", file is a numpy compatible arrat and ca be used directly in python with something like::
 
     import numpy
-    hits = numpy.open("/tmp/p.hits_<DetectorName>.npy")
+    hits = numpy.open("/tmp/p.hits.npy")
 
 'hits' is a   `Numpy structured array <https://docs.scipy.org/doc/numpy/user/basics.rec.html>`_
 
@@ -938,12 +987,18 @@ We can add easely add ROOT output::
     /gate/output/tree/enable
     /gate/output/tree/addFileName /tmp/p.npy
     /gate/output/tree/addFileName /tmp/p.root
+    /gate/output/tree/hits/enable
+    /gate/output/tree/addCollection Singles
+    or
     /gate/output/tree/addHitsCollection <DetectorName>
     /gate/output/tree/addCollection Singles_<DetectorName>
 
 
 Important to notice : in order to have same behavior between ROOT, numpy and ascci output, GateToTree do not save several arrays in same file but will create::
 
+    /tmp/p.hits.root
+    /tmp/p.Singles.root
+    or in case of multiple sensitive detectors
     /tmp/p.hits_<DetectorName>.root
     /tmp/p.Singles_<DetectorName>.root
 
@@ -959,8 +1014,8 @@ for volumeID[0], volumeID[1], ...::
     /gate/output/tree/hits/branches/volumeIDs/disable
 
 Also implemented for Singles::
-
-    /gate/output/tree/addCollection Singles_<DetectorName>
+     
+    /gate/output/tree/addCollection Singles
     /gate/output/tree/Singles/branches/comptVolName/disable
 
 
@@ -972,7 +1027,7 @@ and Coincidences::
 Implemented output format
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-We take here example of an user which want to save Hits to a file. Output will on a file named "/tmp/p.hits_<DetectorName>.X" where X depends of the provided extension and the <DetectorName> is the names of all volumes that you define with commande /gate/<DetectorName>/attachCrystalSD.
+We take here example of an user which want to save Hits to a file. Output will on a file named "/tmp/p.hits.X" or in case of multiple sensitive detectors "/tmp/p.hits_<DetectorName>.X" where X depends of the provided extension and the <DetectorName> is the names of all volumes that you define with commande /gate/<DetectorName>/attachCrystalSD.
 
 
 numpy-like format::
@@ -984,6 +1039,8 @@ ROOT format::
 
     /gate/output/tree/enable
     /gate/output/tree/addFileName /tmp/p.root  #saved to /tmp/p.hits_<DetectorName>.root
+    /gate/output/tree/hits/enable
+      or
     /gate/output/tree/addHitsCollection <DetectorName>
 
 
@@ -991,6 +1048,8 @@ ASCII format::
 
     /gate/output/tree/enable
     /gate/output/tree/addFileName /tmp/p.txt #saved to /tmp/p.hits_<DetectorName>.txt
+    /gate/output/tree/hits/enable
+      or
     /gate/output/tree/addHitsCollection <DetectorName>
 
 Binary format is not (yet) implemented
@@ -1003,6 +1062,8 @@ If you want to save only Hits::
 
     /gate/output/tree/enable
     /gate/output/tree/addFileName /tmp/p.npy
+    /gate/output/tree/hits/enable
+      or
     /gate/output/tree/addHitsCollection <DetectorName>
 
 If you want to save  Hits AND Singles::
@@ -1010,6 +1071,8 @@ If you want to save  Hits AND Singles::
     /gate/output/tree/enable
     /gate/output/tree/addFileName /tmp/p.npy
     /gate/output/tree/addHitsCollection <DetectorName>               #saved to /tmp/p.hits_<DetectorName>.npy
+    /gate/output/tree/addCollection Singles
+     or
     /gate/output/tree/addCollection Singles_<DetectorName>     #saved to /tmp/p.Singles_<DetectorName>.npy
 
 If you want to save  Hits AND Singles AND Coincidences::
@@ -1017,6 +1080,8 @@ If you want to save  Hits AND Singles AND Coincidences::
     /gate/output/tree/enable
     /gate/output/tree/addFileName /tmp/p.npy
     /gate/output/tree/addHitsCollection <DetectorName>                     #saved to /tmp/p.hits_<DetectorName>.npy
+    /gate/output/tree/addCollection Singles
+     or
     /gate/output/tree/addCollection Singles_<DetectorName>          #saved to /tmp/p.Singles_<DetectorName>.npy
     /gate/output/tree/addCollection Coincidences_<DetectorName>     #saved to /tmp/p.Coincidences_<DetectorName>.npy
 
@@ -1024,6 +1089,8 @@ If you want to save only Singles::
 
     /gate/output/tree/enable
     /gate/output/tree/addFileName /tmp/p.npy
+    /gate/output/tree/addCollection Singles
+     or
     /gate/output/tree/addCollection Singles_<DetectorName>      #saved to /tmp/p.Singles_<DetectorName>.npy
 
 
@@ -1035,7 +1102,8 @@ However, contrary to mask, the new mechanism is avalaible for Hits, Singles and 
 
 For example, for disabling 'trackLocalTime' in hits ::
 
-
+    /gate/output/tree/hits/enable
+      or
     /gate/output/tree/addHitsCollection <DetectorName>
     /gate/output/tree/hits/branches/trackLocalTime/disable
 
@@ -1047,6 +1115,8 @@ Like for mask, the VolumeID variables are enabled/disabled together, as a group:
 
 Also, for disabling 'comptVolName' in Singles::
 
+   /gate/output/tree/addCollection Singles
+   or
     /gate/output/tree/addCollection Singles_<DetectorName>
     /gate/output/tree/Singles/branches/comptVolName/disable
 
