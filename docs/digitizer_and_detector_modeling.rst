@@ -450,7 +450,22 @@ To assign efficiency as a function of energy with a help of GATE Distribution :r
 
    /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/efficiency/setMode energy
    /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/efficiency/setEfficiency <User_Distribution>
-   
+
+
+**Example**:: 
+/gate/distributions/name energy_eff_distrib
+/gate/distributions/insert Exponential
+/gate/distributions/energy_eff_distrib/setLambda 1 keV
+/gate/distributions/energy_eff_distrib/setAmplitude 100 keV
+
+and after::
+
+/gate/digitizerMgr/crystal/SinglesDigitizer/Singles/efficiency/setMode energy
+/gate/digitizerMgr/crystal/SinglesDigitizer/Singles/efficiency/setEfficiency energy_eff_distrib
+
+
+Or read efficiencies from a file:
+
 **Example**:: 
 
 /gate/distributions/name energy_eff_distrib
@@ -468,17 +483,6 @@ where *energy_efficiency.dat* has structure <energy in keV or MeV specified with
    200 0.12
    511 0.43
 
-or::
-
-/gate/distributions/name energy_eff_distrib
-/gate/distributions/insert Exponential
-/gate/distributions/energy_eff_distrib/setLambda 1 keV
-/gate/distributions/energy_eff_distrib/setAmplitude 100 keV
-
-and after::
-
-/gate/digitizerMgr/crystal/SinglesDigitizer/Singles/efficiency/setMode energy
-/gate/digitizerMgr/crystal/SinglesDigitizer/Singles/efficiency/setEfficiency energy_eff_distrib
 
 Crystal mode
 """"""""""""
