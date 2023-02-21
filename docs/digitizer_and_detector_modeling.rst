@@ -909,30 +909,30 @@ Command line
 
 To set up a coincidence window of 10 ns, the user should specify::
 
-   /gate/digitizer/Coincidences/setWindow 10. ns 
+   /gate/digitizerMgr/CoincidenceSorter/Coincidences/setWindow 10. ns 
 
 To change the default value of the minimum sector difference for valid coincidences (the default value is 2), the command line should be used::
 
-   /gate/digitizer/Coincidences/minSectorDifference <number> 
+   /gate/digitizerMgr/CoincidenceSorter/Coincidences/minSectorDifference <number> 
 
 By default, the offset value is equal to 0, which corresponds to a prompt coincidence sorter. If a delayed coincidence sorter is to be simulated, with a 100 ns time shift for instance, the offset value should be set using the command::
 
-   /gate/digitizer/Coincidences/setOffset 100. ns 
+   /gate/digitizerMgr/CoincidenceSorter/Coincidences/setOffset 100. ns 
 
 To specify the depth of the system hierarchy for which the coincidences have to be sorted, the following command should be used::
 
-   /gate/digitizer/Coincidences/setDepth <system's depth (1 by default)> 
+   /gate/digitizerMgr/CoincidenceSorter/Coincidences/setDepth <system's depth (1 by default)> 
 
 As explained in :numref:`Comp_allOpen_or_not`, there are two methods for building coincidences. The default one is the method 1. To switch to method 2, one should use::
 
-   /gate/digitizer/Coincidences/allPulseOpenCoincGate true
+   /gate/digitizerMgr/CoincidenceSorter/Coincidences/allDigiOpenCoincGate true
 
 So when set to false (by default) the method 1 is chosen, and when set to true, this is the method 2.
 **Be aware that the method 2 is experimental and not validated at all, so potentially containing non-reported bugs.**
 
 Finally, the rule to apply in case of multiple coincidences is specified as follows::
 
-   /gate/digitizer/Coincidences/MultiplesPolicy <policyName>
+   /gate/digitizerMgr/CoincidenceSorter/Coincidences/MultiplesPolicy <policyName>
 
 The default multiple policy is keepIfAllAreGoods.
 
@@ -943,24 +943,24 @@ Multiple coincidence sorters can be used in GATE. To create a coincidence sorter
 
 * One with a very long coincidence window::
 
-   /gate/digitizer/name LongCoincidences 
-   /gate/digitizer/insert coincidenceSorter 
-   /gate/digitizer/LongCoincidences/setInputName Singles 
-   /gate/digitizer/LongCoincidences/setWindow 1000. ns 
+   /gate/digitizerMgr/name LongCoincidences 
+   /gate/digitizerMgr/insert CoincidenceSorter 
+   /gate/digitizerMgr/CoincidenceSorter/LongCoincidences/setInputName Singles 
+   /gate/digitizerMgr/CoincidenceSorter/LongCoincidences/setWindow 1000. ns 
 
 * One for low-energy singles::
 
-   /gate/digitizer/name LECoincidences 
-   /gate/digitizer/insert coincidenceSorter 
-   /gate/digitizer/LECoincidences/setWindow 10. ns 
-   /gate/digitizer/LECoincidences/setInputName LESingles 
+   /gate/digitizerMgr/name LECoincidences 
+   /gate/digitizerMgr/insert CoincidenceSorter 
+   /gate/digitizerMgr/CoincidenceSorter/LECoincidences/setWindow 10. ns 
+   /gate/digitizerMgr/CoincidenceSorter/LECoincidences/setInputName LESingles 
 
 * One for high-energy-singles::
 
-   /gate/digitizer/name HECoincidences 
-   /gate/digitizer/insert coincidenceSorter 
-   /gate/digitizer/HECoincidences/setWindow 10. ns 
-   /gate/digitizer/HECoincidences/setInputName HESingles 
+   /gate/digitizerMgr/name HECoincidences 
+   /gate/digitizerMgr/insert coincidenceSorter 
+   /gate/digitizerMgr/CoincidenceSorter/HECoincidences/setWindow 10. ns 
+   /gate/digitizerMgr/CoincidenceSorter/HECoincidences/setInputName HESingles 
 
 A schematic view corresponding to this example is shown in :numref:`Readout_scheme1`.
 
@@ -973,7 +973,7 @@ A schematic view corresponding to this example is shown in :numref:`Readout_sche
 Coincidence processing and filtering
 ------------------------------------
 
-Coincidence pulse processors
+Coincidence pulse processors (NOT YET IN GATE NEW DIGITIZER)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Once the coincidences are identified, further processing can be applied to mimic count losses that may occur because of the acquisition limitations, such as dead time. Count loss may also be due to the limited bandwidth of wires or buffer capacities of the I/O interface. The modelling of such effects within GATE is explained below. Moreover, for PET scanners using a delayed coincidence line, data coming from the two types of coincidences (ie. prompts and delayed) can be processed by a unique coincidence sorter. If so, the rate of a coincidence type can affect the rate of the other. For instance, a prompt coincidence can produce dead time which will hide a delayed coincidence. The prompt coincidence events can also saturate the bandwidth, so that the random events are partially hidden.
@@ -1035,24 +1035,24 @@ Here, the digitizer section of a GATE macro file is analyzed line by line. The r
 Example::
 
    1 # A D D E R  
-   2 /gate/digitizer/Singles/insert adder 
+   2 /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/insert adder 
    3 
    4 # R E A D O U T  
-   5 /gate/digitizer/Singles/insert readout  
-   6 /gate/digitizer/Singles/readout/setDepth 
+   5 /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/insert readout  
+   6 /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/readout/setDepth 
    7
    8 # E N E R G Y B L U R R I N G  
-   9 /gate/digitizer/Singles/insert blurring  
-   10 /gate/digitizer/Singles/blurring/setResolution 0.26  
-   11 /gate/digitizer/Singles/blurring/setEnergyOfReference 511. keV 
+   9 /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/insert blurring  
+   10 /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/blurring/setResolution 0.26  
+   11 /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/blurring/setEnergyOfReference 511. keV 
    12 
    13 # L O W E N E R G Y C U T
-   14 /gate/digitizer/Singles/insert thresholder
-   15 /gate/digitizer/Singles/thresholder/setThreshold 50. keV
+   14 /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/insert thresholder
+   15 /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/thresholder/setThreshold 50. keV
    16
-   17 /gate/digitizer/name cutLowSingles
-   18 /gate/digitizer/insert singleChain
-   19 /gate/digitizer/cutLowSingles/setInputName Singles
+   17 /gate/digitizerMgr/name cutLowSingles
+   18 /gate/digitizerMgr/insert SinglesDigitizer
+   19 /gate/digitizerMgr/crystal/SinglesDigitizer/cutLowSingles/setInputName Singles
    20 
    21 # N O I S E
    22 
@@ -1064,53 +1064,53 @@ Example::
    28 /gate/distributions/name dt_distrib  
    29 /gate/distributions/insert Exponential  
    30 /gate/distributions/dt_distrib/setLambda 7.57 mus  
-   31
-   32 /gate/digitizer/cutLowSingles/insert noise  
-   33 /gate/digitizer/cutLowSingles/noise setDeltaTDistributions dt_distrib  
-   34 /gate/digitizer/cutLowSingles/noise setEnergyDistributions energy_distrib
+   31 
+   32 /gate/digitizerMgr/crystal/SinglesDigitizer/cutLowSingles/insert noise (NOT YET IMPLEMENTED)
+   33 /gate/digitizerMgr/crystal/SinglesDigitizer/cutLowSingles/noise setDeltaTDistributions dt_distrib  
+   34 /gate/digitizerMgr/crystal/SinglesDigitizer/cutLowSingles/noise setEnergyDistributions energy_distrib
    35
    36  # D E A D T I M E  
-   37 /gate/digitizer/cutLowSingles/insert deadtime  
-   38 /gate/digitizer/cutLowSingles/deadtime/setDeadTime 2.2 mus  
-   39 /gate/digitizer/cutLowSingles/deadtime/setMode paralysable  
-   40 /gate/digitizer/cutLowSingles/deadtime/chooseDTVolume module 
+   37 /gate/digitizerMgr/crystal/SinglesDigitizer/cutLowSingles/insert deadtime  
+   38 /gate/digitizerMgr/crystal/SinglesDigitizer/cutLowSingles/deadtime/setDeadTime 2.2 mus  
+   39 /gate/digitizerMgr/crystal/SinglesDigitizer/cutLowSingles/deadtime/setMode paralysable  
+   40 /gate/digitizerMgr/crystal/SinglesDigitizer/cutLowSingles/deadtime/chooseDTVolume module 
    41
    42 # H I G H E N E R G Y C U T  
-   43 /gate/digitizer/name cutSingles  
-   44 /gate/digitizer/insert singleChain  
-   45 /gate/digitizer/cutSingles/setInputName cutLowSingles  
-   46 /gate/digitizer/cutSingles/name highThresh  
-   47 /gate/digitizer/cutSingles/insert thresholder  
-   48 /gate/digitizer/cutSingles/highThresh/setThreshold 350. keV  
-   49 /gate/digitizer/cutSingles/insert upholder  
-   50 /gate/digitizer/cutSingles/upholder/setUphold 700. keV 
+   43 /gate/digitizerMgr/name cutSingles  
+   44 /gate/digitizerMgr/insert SinglesDigitizer  
+   45 /gate/digitizerMgr/crystal/SinglesDigitizer/cutSingles/setInputName cutLowSingles  
+   46
+   47 /gate/digitizerMgr/crystal/SinglesDigitizer/cutSingles/insert energyFraming  
+   48 /gate/digitizerMgr/crystal/SinglesDigitizer/cutSingles/energyFraming/setMin 350. keV  
+   49 
+   50 /gate/digitizerMgr/crystal/SinglesDigitizer/cutSingles/energyFraming/setMax 700. keV 
    51 
-   52 /gate/digitizer/cutSingles/name deadtime_cassette 
-   53 /gate/digitizer/cutSingles/insert deadtime 
-   54 /gate/digitizer/cutSingles/deadtime_cassette/setDeadTime 0.55 mus  
-   55 /gate/digitizer/cutSingles/deadtime_cassette/setMode nonparalysable  
-   56 /gate/digitizer/cutSingles/deadtime_cassette/chooseDTVolume cassette  
-   57 /gate/digitizer/cutSingles/name deadtime_group  
-   58 /gate/digitizer/cutSingles/insert deadtime 
-   59 /gate/digitizer/cutSingles/deadtime_group/setDeadTime 0.250 mus  
-   60 /gate/digitizer/cutSingles/deadtime_group/setMode nonparalysable  
-   61 /gate/digitizer/cutSingles/deadtime_group/chooseDTVolume group
+   52 /gate/digitizerMgr/crystal/SinglesDigitizer/cutSingles/name deadtime_cassette 
+   53 /gate/digitizerMgr/crystal/SinglesDigitizer/cutSingles/insert deadtime 
+   54 /gate/digitizerMgr/crystal/SinglesDigitizer/cutSingles/deadtime_cassette/setDeadTime 0.55 mus  
+   55 /gate/digitizerMgr/crystal/SinglesDigitizer/cutSingles/deadtime_cassette/setMode nonparalysable  
+   56 /gate/digitizerMgr/crystal/SinglesDigitizer/cutSingles/deadtime_cassette/chooseDTVolume cassette  
+   57 /gate/digitizerMgr/crystal/SinglesDigitizer/cutSingles/name deadtime_group  
+   58 /gate/digitizerMgr/crystal/SinglesDigitizer/cutSingles/insert deadtime 
+   59 /gate/digitizerMgr/crystal/SinglesDigitizer/cutSingles/deadtime_group/setDeadTime 0.250 mus  
+   60 /gate/digitizerMgr/crystal/SinglesDigitizer/cutSingles/deadtime_group/setMode nonparalysable  
+   61 /gate/digitizerMgr/crystal/SinglesDigitizer/cutSingles/deadtime_group/chooseDTVolume group
    62
    63 
    64 # C O I N C I S O R T E R 65 
-   65 /gate/digitizer/Coincidences/setInputName cutSingles 
-   66 /gate/digitizer/Coincidences/setOffset 0. ns 
-   67 /gate/digitizer/Coincidences/setWindow 24. ns 
-   68 /gate/digitizer/Coincidences/minSectorDifference 3  
+   65 /gate/digitizerMgr/CoincidenceSorter/Coincidences/setInputName cutSingles 
+   66 /gate/digitizerMgr/CoincidenceSorter/Coincidences/setOffset 0. ns 
+   67 /gate/digitizerMgr/CoincidenceSorter/Coincidences/setWindow 24. ns 
+   68 /gate/digitizerMgr/CoincidenceSorter/Coincidences/minSectorDifference 3  
    69 
-   70 /gate/digitizer/name delayedCoincidences  
-   71 /gate/digitizer/insert coincidenceSorter  
-   72 /gate/digitizer/delayedCoincidences/setInputName cutSingles  
-   73 /gate/digitizer/delayedCoincidences/setOffset 100. ns  
-   74 /gate/digitizer/delayedCoincidences/setWindow 24. ns  
-   75 /gate/digitizer/delayedCoincidences/minSectorDifference 3  
+   70 /gate/digitizerMgr/name delayedCoincidences  
+   71 /gate/digitizerMgr/insert coincidenceSorter  
+   72 /gate/digitizerMgr/CoincidenceSorter/delayedCoincidences/setInputName cutSingles  
+   73 /gate/digitizerMgr/CoincidenceSorter/delayedCoincidences/setOffset 100. ns  
+   74 /gate/digitizerMgr/CoincidenceSorter/delayedCoincidences/setWindow 24. ns  
+   75 /gate/digitizerMgr/CoincidenceSorter/delayedCoincidences/minSectorDifference 3  
    76 
-   77 /gate/digitizer/name finalCoinc  
+   77 /gate/digitizer/name finalCoinc  (NOT YET IMPLEMENTED)  
    78 /gate/digitizer/insert coincidenceChain 
    79 /gate/digitizer/finalCoinc/addInputName delay 
    80 /gate/digitizer/finalCoinc/addInputName Coincidences  
@@ -1244,7 +1244,7 @@ Multi-system approaches: how to use more than one system in one simuation set-up
 
 Singles arriving from different systems request different treatment in the digitizer. So we have to use multiple digitizer chains and to separate between theses singles according to their systems.
 
-SystemFilter
+SystemFilter  (NOT YET IMPLEMENTED)
 ~~~~~~~~~~~~
 The systemFilter module separates between the singles coming from systems. This module have one parameter which is the name of the system::
 
