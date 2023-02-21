@@ -314,7 +314,7 @@ The next task is to transform this output *pulse* from the readout module into a
 
 Energy resolution 
 ^^^^^^^^^^^^^^^^^
-*(ex blurring, crystal blurring, local energy blurring)*
+*(Previously blurring, crystal blurring, local energy blurring, Crystal Blurring(partially))*
 
 The *energy resolution* digitizer module simulates Gaussian blurring of the energy spectrum of a pulse after the *readout* module. This is accomplished by introducing a resolution, :math:`R_0` (FWHM), at a given energy, :math:`E_0`. To enable module::
  
@@ -359,7 +359,7 @@ The *time resolution* module introduces a Gaussian blurring in the detection tim
 
 Spatial resolution
 ^^^^^^^^^^^^^^^^^^
-*(ex spatial blurring)*
+*(Previously spatial blurring)*
 
 The spatial resolution is assumed to follow a Gaussian distribution defined by its width::
 
@@ -386,7 +386,7 @@ BEWARE: This relocation procedure is validated only for the first group level of
    
 Energy Framing
 ^^^^^^^^^^^^^^
-*ex Thresholder and Upholder*
+*Previously Thresholder and Upholder*
    
 The *Energy Framing* module allows the user to select an energy window to discard low and high energy events. The low energy cut, supplied by the user, represents a threshold response, below which the detector remains inactive. The user-supplied high energy cut is the maximum energy the detector will register. In both PET and SPECT analysis, the proper setting of these windows is crucial to mimic the behavior of real scanners, in terms of scatter fractions and count rate performances for instance. The energy selection for the photo-peak is performed using the following commands::
 
@@ -432,7 +432,7 @@ In SPECT analysis, subtractive scatter correction methods such as the dual-energ
    
 Efficiency
 ^^^^^^^^^^
-*(ex Energy Efficiency, Local efficiency)*
+*(Previously Energy Efficiency, Local efficiency, Crystal Blurring(partially))*
 The efficiency of an imaging system is an important parameter, as it defines its sensitivity: photoelectron conversion probability, transport efficiency inside of a crystal and on its border on the way toward photocathode, quantum efficiency of the photocathode and other types of efficiencies. 
 
 GATE proposes an efficiency digitizer module to take into account such kind of effects::
