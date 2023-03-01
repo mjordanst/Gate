@@ -621,6 +621,8 @@ To use the Interfile output, the following lines have to be added to the macro::
 The projectionPlane should be chosen correctly, according to the simulated experiment. The pixelSize and the pixelNumber are always 
 described in a fixed XY-axes system.
 
+**Note!** This output is not yet implemented for the case of multiple Sensitive Detectors.
+
 Reading an interfile image with ImageJ
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
