@@ -582,12 +582,51 @@ In the second example, a dead time corresponding to a disk access of 1 µs for a
    ..
    ..
    # DEADTIME 
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/insert deadtime 
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/deadtime/setDeadTime 1 mus 
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/deadtime/setMode nonparalysable 
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/deadtime/chooseDTVolume volume_name 
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/deadtime/setBufferSize 1 MB 
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/deadtime/setBufferMode 0
+   
+   
+   or in case of sensitive detector with a name "crystal":
    /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/insert deadtime 
    /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/deadtime/setDeadTime 1 mus 
    /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/deadtime/setMode nonparalysable 
    /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/deadtime/chooseDTVolume volume_name 
    /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/deadtime/setBufferSize 1 MB 
    /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/deadtime/setBufferMode 0
+
+
+Noise
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Different sources of background noise exist in a PET/SPECT architecture. For example, the electronics can introduce its own noise, or some crystals used for the detection, such as LSO, contains radioactive nucleus, which can contribute to the background detection count rate. Within GATE, the *noise* module adds such background events, in a totally generic way, so that any kind of source of noise can be simulated. To do so, the energy and the inter-event time interval are chosen randomly, for each event, into user defined distributions, by using the mechanism described in :ref:`Distributions-label`.
+
+In the following example, a noise source is introduced, whose energy is distributed according to a Gaussian law, and whose time distribution follows a Poisson process. To do this, one first defines the two necessary distributions. Since the noise description uses the distribution of the time interval between consecutive events, one has to define an exponential distribution. Indeed, if the probability of detecting k events in a time interval of t is distributed along a Poisson law :math:`P_1(k,t) = e^{-\lambda t }\frac{(\lambda t)^k}{k!}`, then the probability density of having a time interval in the range :math:`[t;t+dt]` between two consecutive events is given by :math:`dP_2(t) = \lambda e^{-\lambda t}dt`::
+
+   /gate/distributions/name energy_distrib 
+   /gate/distributions/insert Gaussian 
+   /gate/distributions/energy_distrib/setMean 450 keV 
+   /gate/distributions/energy_distrib/setSigma 1 keV
+   
+   /gate/distributions/name dt_distrib 
+   /gate/distributions/insert Exponential 
+   /gate/distributions/dt_distrib/setLambda 7.57 mus
+   
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/insert noise
+   /gate/digitizerMgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/noise/setDeltaTDistribution dt_distrib 
+   /gate/digitizer/Mgr/<detector_name>/SinglesDigitizer/<singles_digitizer_name>/noise/setEnergyDistribution energy_distrib
+   
+   or in case of sensitive detector with a name "crystal":
+   
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/insert noise 
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/noise/setDeltaTDistribution dt_distrib 
+   /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/noise/setEnergyDistribution energy_distrib
+
+The special event ID, **event_ID=-2**, is assigned to these noise events.
+
 
 
 Modules to be addapted (NOT YET INCLUDED IN GATE NEW DIGITIZER)
@@ -735,29 +774,6 @@ In PET analysis, coincidence events provide the lines of response (LOR) needed f
    /gate/output/sinogram/setTangCrystalBlurring Your_Value_1 mm 
    /gate/output/sinogram/setAxialCrystalBlurring Your_Value_2 mm
 
-Noise
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Different sources of background noise exist in a PET/SPECT architecture. For example, the electronics can introduce its own noise, or some crystals used for the detection, such as LSO, contains radioactive nucleus, which can contribute to the background detection count rate. Within GATE, the *noise* module adds such background events, in a totally generic way, so that any kind of source of noise can be simulated. To do so, the energy and the inter-event time interval are chosen randomly, for each event, into user defined distributions, by using the mechanism described in :ref:`Distributions-label`.
-
-In the following example, a noise source is introduced, whose energy is distributed according to a Gaussian law, and whose time distribution follows a Poisson process. To do this, one first defines the two necessary distributions. Since the noise description uses the distribution of the time interval between consecutive events, one has to define an exponential distribution. Indeed, if the probability of detecting k events in a time interval of t is distributed along a Poisson law :math:`P_1(k,t) = e^{-\lambda t }\frac{(\lambda t)^k}{k!}`, then the probability density of having a time interval in the range :math:`[t;t+dt]` between two consecutive events is given by :math:`dP_2(t) = \lambda e^{-\lambda t}dt`::
-
-   /gate/distributions/name energy_distrib 
-   /gate/distributions/insert Gaussian 
-   /gate/distributions/energy_distrib/setMean 450 keV 
-   /gate/distributions/energy_distrib/setSigma 1 keV
-   
-   /gate/distributions/name dt_distrib 
-   /gate/distributions/insert Exponential 
-   /gate/distributions/dt_distrib/setLambda 7.57 mus
-   
-   /gate/digitizer/Singles/insert noise 
-   /gate/digitizer/Singles/noise/setDeltaTDistribution dt_distrib 
-   /gate/digitizer/Singles/noise/setEnergyDistribution energy_distrib
-
-The special event ID, **event_ID=-2**, is assigned to these noise events.
-
-.. _local_efficiency-label:
 
 
 
