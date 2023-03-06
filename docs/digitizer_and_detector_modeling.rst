@@ -153,7 +153,7 @@ Example of usage::
 
    gt_digi_mac_converter -i digitizer_old.mac -o digitizer_new.mac -sd <SDname> -multi SinglesDigitizer
 
-where *-i* defines input old digitizer macro, *-o* defines output new digitizer macro, *-sd* defines the sensitive detector name (the same as in     /gate/<SDname>/attachCrystalSD), *-multi  <mode>* is the option of you have several SinglesDigitizers or CoincidenceSorters, where <mode> = *SinglesDigitizer* or *CoincidenceSorter*
+where *-i* defines input old digitizer macro, *-o* defines output new digitizer macro, *-sd* defines the sensitive detector name (the same as in     /gate/<SDname>/attachCrystalSD), *-multi  <mode>* is the option if you have several SinglesDigitizers or CoincidenceSorters, where <mode> = *SinglesDigitizer* or *CoincidenceSorter*
 
 
 .. _Distributions-label:
