@@ -64,8 +64,6 @@ Four types:
 *  Coincidences Digitizers (to be added)
 *  Waveform generator (to be added) 
 
-Several SD are possible
-
 Commands for Gate New Digitizer (since Gate 9.3)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -81,15 +79,58 @@ Now the command like looks like::
 
 /gate/digitizerMgr/<sensitive_detector_name>/SinglesDigitizer/<singles_digitizer_name>/setInputCollection Singles
 
-where *<sensitive_detector_name>* is a name of a sensitive detector from which user would like to analyse Hits with a digitizer, *SinglesDigitizer* is a type of functionalities available in the Digitizer Manager (ex, "SinglesDigitizer", "CoincidenceSorter", "CoincidencesDigitizer", "WaveformGenerator"), *<singles_digitizer_name>* is a name of chosen, for example, SinglesDigitizer, it is the same name as the output singles collection (name "Singles" is default value). 
+where *<sensitive_detector_name>* is a name of a sensitive detector from which user would like to analyse Hits with a digitizer (it is the same name that is set in command /gate/<sensitive_detector_name>/attachCrystalSD), *SinglesDigitizer* is a type of functionalities available in the Digitizer Manager (ex, "SinglesDigitizer", "CoincidenceSorter", "CoincidencesDigitizer", "WaveformGenerator"), *<singles_digitizer_name>* is a name of chosen, for example, SinglesDigitizer, it is the same name as the output singles collection (name "Singles" is default value). 
+
+Separate digitizers for multiple sensitive detectors (since Gate 9.3)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Since Gate 9.3 it is possible to apply different Singles Digitizers to different sensitive detectors' hits. 
+In case if your have only one sensitive detector attached with a command:: 
+
+/gate/<sensitive_detector_name>/attachCrystalSD
+
+in the digitizer the commands will look like:: 
+
+/gate/digitizerMgr/<sensitive_detector_name>/SinglesDigitizer/<singles_digitizer_name>/....
+
+and in output file you will have the output as before (ex., Root output):: 
+
+   Hits
+   Singles
+
+In case if your have only several sensitive detector attached with a command:: 
+
+/gate/<sensitive_detector_name1>/attachCrystalSD
+/gate/<sensitive_detector_name2>/attachCrystalSD
+
+in the digitizer the commands will look like:: 
+
+/gate/digitizerMgr/<sensitive_detector_name1>/SinglesDigitizer/<singles_digitizer_name>/....
+/gate/digitizerMgr/<sensitive_detector_name2>/SinglesDigitizer/<singles_digitizer_name>/....
+
+and in output file you will have the output as before (ex., Root output)::
+
+   Hits_<sensitive_detector_name1>
+   Hits_<sensitive_detector_name2>
+   Singles_<sensitive_detector_name1>
+   Singles_<sensitive_detector_name2>
+
+In case if you want to merge at some point the Singles in Detector1 and in Detector2 you can use merger :ref:`_merger-label`.
+
+It also means that in case of multiple sensitive detectors one should pay attention which one should be used as input for CoincidenceSorter (if used)::
+
+ /gate/digitizerMgr/CoincidenceSorter/Coincidences/setInputCollection Singles_<sensitive_detector_name1>
+ or
+ /gate/digitizerMgr/CoincidenceSorter/Coincidences/setInputCollection Singles_<sensitive_detector_name2>
+
 
 Disabling the digitizer
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 If you want to disable the digitizer process and all output (that are already disabled by default), you can use the following commands::
 
-   /gate/output/analysis/disable
-   /gate/output/digi/disable !!!
+  /gate/digitizerMgr/disable
+
 
 Tools
 ---------------
@@ -423,7 +464,7 @@ In SPECT analysis, subtractive scatter correction methods such as the dual-energ
    /gate/digitizerMgr/crystal/SinglesDigitizer/Window3/energyFraming/setMax 400 keV 
 
    
-   !!! NOT TESTED YET IN NEW GATE DIGITIZER !!! When specifying the interfile output (see :ref:`interfile_output_of_projection_set-label`), the different window names must be added with the following commands::
+ When specifying the interfile output (see :ref:`interfile_output_of_projection_set-label`), the different window names must be added with the following commands::
 
    /gate/output/projection/setInputDataName Window1
    /gate/output/projection/addInputDataName Window2
@@ -626,6 +667,58 @@ In the following example, a noise source is introduced, whose energy is distribu
    /gate/digitizerMgr/crystal/SinglesDigitizer/Singles/noise/setEnergyDistribution energy_distrib
 
 The special event ID, **event_ID=-2**, is assigned to these noise events.
+
+
+.. _merger-label:
+
+Merger (for multiple sensitive detectors)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+In case of multiple sensitive detectors::
+
+   /gate/<detector1>/attachCrystalSD
+   /gate/<detector2>/attachCrystalSD
+
+it is possible at some point of your simulation to merge Singles from these different sensitive detectora by doing :: 
+  
+  /gate/digitizerMgr/<detector2>/SinglesDigitizer/<singles_digitizer_name>/insert merger
+  /gate/digitizerMgr/<detector2>/SinglesDigitizer/<singles_digitizer_name>/addInput <FullNameOfInputSinglesCollectionForDetector1>
+
+where <FullNameOfInputSinglesCollection> is **composed specific name**: <lastDigitizerModuleUsedForDetector2>/<singles_digitizer_name>_<detector1>
+
+It is easy to see the correct use of the module on the exemple:: 
+   
+   # ATTACH SD
+   /gate/crystal1/attachCrystalSD
+   /gate/crystal2/attachCrystalSD
+   ...
+   # DIGITIZER
+   /gate/digitizerMgr/crystal1/SinglesDigitizer/Singles/insert adder
+   /gate/digitizerMgr/crystal2/SinglesDigitizer/Singles/insert adder
+   
+   /gate/digitizerMgr/crystal2/SinglesDigitizer/Singles/insert       merger
+   /gate/digitizerMgr/crystal2/SinglesDigitizer/Singles/addInput     adder/Singles_crystal1
+   
+**Important note:** merger must be inserted for the last attached sensitive detector otherwise it will not work.
+
+In the following of merger digitizer module, apply other modules only on the senstivie detector to which the merger was inserted. 
+
+Example:: 
+
+   /gate/digitizerMgr/crystal2/SinglesDigitizer/Singles/insert                        readout
+
+In the output you will have Singles collections stored for both sensitive detectors, however only for the last attached you will have the result corresponding to merged output(ex., in Root):: 
+
+   Singles_crystal1 #(contains the outpout of last digitizer module used for crystal1. adder in this ex.) 
+   Singles_crystal2 #(contains the outpout of last digitizer module used for crystal2. adder+merger+readout in this ex.) 
+
+Thus, the output of *Singles_crystal2* should be used in the following analysis or be inserted for CoincideneSorter::
+
+   /gate/digitizerMgr/CoincidenceSorter/Coincidences/setInputCollection Singles_crystal2
+
+
+
+    
+
 
 
 
@@ -919,6 +1012,11 @@ By default, the offset value is equal to 0, which corresponds to a prompt coinci
 
    /gate/digitizerMgr/CoincidenceSorter/Coincidences/setOffset 100. ns 
 
+To change the size of Presort Buffer (min 32, default 256), the following command should be used::
+
+   /gate/digitizerMgr/CoincidenceSorter/Coincidences/setPresortBufferSize 512
+
+
 To specify the depth of the system hierarchy for which the coincidences have to be sorted, the following command should be used::
 
    /gate/digitizerMgr/CoincidenceSorter/Coincidences/setDepth <system's depth (1 by default)> 
@@ -937,7 +1035,7 @@ Finally, the rule to apply in case of multiple coincidences is specified as foll
 The default multiple policy is keepIfAllAreGoods.
 
 Multiple coincidence sorters
-----------------------------
+~~~~~~~~~~~~
 
 Multiple coincidence sorters can be used in GATE. To create a coincidence sorter, the sorter must be named and a location specified for the input data. In the example below, three new coincidence sorters are created: 
 
@@ -969,6 +1067,23 @@ A schematic view corresponding to this example is shown in :numref:`Readout_sche
    :name: Readout_scheme1
 
    Readout scheme produced by the listing from the sections
+
+
+Coincidence sorters in case of multiple sensitive detectors
+~~~~~~~~~~~~
+In case of multiple sensitive detectors one should pay attention which one should be used as input for CoincidenceSorter (if used)::
+
+   # ATTACH SD
+   /gate/crystal1/attachCrystalSD
+   /gate/crystal2/attachCrystalSD
+   ...
+   #CHOOSE INPUT FOR COINCIDENCE SORTER
+   /gate/digitizerMgr/CoincidenceSorter/Coincidences/setInputCollection Singles_<sensitive_detector_name1>
+   or
+   /gate/digitizerMgr/CoincidenceSorter/Coincidences/setInputCollection Singles_<sensitive_detector_name2>
+
+
+
 
 Coincidence processing and filtering
 ------------------------------------
@@ -1110,7 +1225,7 @@ Example::
    74 /gate/digitizerMgr/CoincidenceSorter/delayedCoincidences/setWindow 24. ns  
    75 /gate/digitizerMgr/CoincidenceSorter/delayedCoincidences/minSectorDifference 3  
    76 
-   77 /gate/digitizer/name finalCoinc  (NOT YET IMPLEMENTED)  
+   77 /gate/digitizer/name finalCoinc  (NOT YET ADDED IN 9.3)  
    78 /gate/digitizer/insert coincidenceChain 
    79 /gate/digitizer/finalCoinc/addInputName delay 
    80 /gate/digitizer/finalCoinc/addInputName Coincidences  
