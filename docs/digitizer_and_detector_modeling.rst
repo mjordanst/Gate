@@ -134,6 +134,28 @@ If you want to disable the digitizer process and all output (that are already di
 
 Tools
 ---------------
+
+.. _digi_mac-convertor-label:
+
+Digitizer Macro converter (9.2 and before to 9.3 and after)
+~~~~~~~~~~~~~
+Since version 9.3 Gate digitizer had a big upgrade, thus, some of macro commands had changed. 
+However, the collaboration provide a tool to convert your old macros to new macros which work quite direct in case of a simulation with pone sensitive detector. In case of multiple senstivie detectors the converter also can be used but special care should be taken in order to obtain correct result. 
+
+To use the macro converte, the following commands to be done:: 
+
+   pip install gatetools
+   git clone --recursive https://github.com/OpenGATE/GateTools.git
+   cd GateTools
+   pip install -e .
+ 
+Example of usage::
+
+   gt_digi_mac_converter -i digitizer_old.mac -o digitizer_new.mac -sd <SDname> -multi SinglesDigitizer
+
+where *-i* defines input old digitizer macro, *-o* defines output new digitizer macro, *-sd* defines the sensitive detector name (the same as in     /gate/<SDname>/attachCrystalSD), *-multi  <mode>* is the option of you have several SinglesDigitizers or CoincidenceSorters, where <mode> = *SinglesDigitizer* or *CoincidenceSorter*
+
+
 .. _Distributions-label:
 
 Distributions
