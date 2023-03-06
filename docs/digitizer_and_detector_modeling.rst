@@ -746,22 +746,6 @@ In this example, a pulse is created in each neighbor of the crystal that receive
 
 **BEWARE:** this module works only for a chosen volume that is an array repeater!!!
 
-Sigmoidal thresholder
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-The *Sigmoidal thresholder* models a threshold discriminator based on a sigmoidal function. A sigmoidal function is an S-shaped function of the form, :math:`\sigma(x)=\frac{1}{1+c\exp(-a x)}`, which acts as an exponential ramp from 0 to 1:
-
-:math:`\sigma(E)=\frac{1}{1+\exp\big(\alpha\;\frac{E-E_0}{E_0}\big)}`
-
-where the parameter :math:`\alpha` is proportional to the slope at symmetrical point :math:`E_0 ( \sigma(E_0)=1/2 )`.  
-
-For this type of threshold discriminator, the user chooses the threshold **setThreshold**, the percentage of acceptance for this threshold **setThresholdPerCent**, and the :math:`\alpha` parameter **setThresholdAlpha**. With these parameters and the input *pulse* energy, the function is calculated. If the result is bigger than a random number generated between 0 and 1, the *pulse* is accepted and copied into the output pulse-list. On the other hand, if this criteria is not met, the input *pulse* is discarded::
-
-   /gate/digitizer/Singles/insert sigmoidalThresholder 
-   /gate/digitizer/Singles/sigmoidalThresholder/setThreshold 250 keV 
-   /gate/digitizer/Singles/sigmoidalThresholder/setThresholdAlpha 60. 
-   /gate/digitizer/Singles/sigmoidalThresholder/setThresholdPerCent 0.95
-
 
 Spatial blurring in sinogrmas
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
