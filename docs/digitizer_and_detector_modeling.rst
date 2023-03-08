@@ -16,7 +16,7 @@ New version of Digitizer was proposed since Gate 9.3.
 
 General architerure and main commends were changed.
 
-**Please, do not hesitate to use a helping script to convert your old digitizer macros to new ones: TODO add path!!!**
+**Please, do not hesitate to use a helping script to convert your old digitizer macros to new ones:**:ref:`_digi_mac-convertor-label`.  
 
 
 From particle detection to coincidences in GATE
@@ -51,18 +51,37 @@ A hit is a snapshot of the physical interaction of a track within a sensitive re
 
 As a result, the history of a particle is saved as a series of *hits* generated along the particles trajectory. In addition to the physical hits, Geant4 saves a special *hit*. This *hit* takes place when a particle moves from one volume to another (this type of *hit* deposits zero energy). The *hit* data represents the basic information that a user has with which to construct the physically observable behaviour of a scanner. To see the information stored in a *hit*, see the file *GateHit.hh*.
 
+A *Hits Collection* is automatically stored by Geant4 for each event. Hits must be stored in a collection of hits, *GateHitsCollection* (instantiated from G4THitsCollection template class). The name of hits collection is declared in SensitiveDetector constructor.
+A SD can declare more than one hits collection per event. 
+
+
+Definition of a digi in Geant4
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+*Digis* in Geant4 are intended to be used to simulate the process of reading-out of the signal: for example “true” energy could be transformed into
+collected charge and electronic noise can be applied. In the case of Gate, it mainly applies distortion due to instrumental effects (detection, readout of electronics, signal processing chain, the response of the photodetection components etc.). 
+
+*Digis* are described by class *GateDigi* inherited from G4VDigi. Digis are stored in a container, an instance of *GateDigiCollection* (from G4TDigiCollection) class which is very similar to hits mechanism. 
+
+
 Digitizer Manager
 ---------------
 
-Here explain the general architerture
-add image
+The general operation of conversion of *Hits* into *Digis*, that are saved as *Singles*, is managed by Digitizer Manager, *GateDigitizerMgr*, inherited from G4DigiManager.
+It manages several functionalities needed for imaging applications (see Figure below):
 
-Four types: 
+*  Construction of *Singles* made by **Singles Digitizers** that in their turn manage sequences of *Digitizer Modules* set by the user.  
+*  Construction of *Coincidences* made by **Coincidence Sorters**
+*  (to be added) Combination of *Coincidences* from different Coincidence Sorters made by **Coincidence Digitizers**
+*  (to be added) Generation of waveforms corresponding to electronic pulse 
 
-*  Singles Digitizers
-*  Coincidence Sorters
-*  Coincidences Digitizers (to be added)
-*  Waveform generator (to be added) 
+.. figure:: DigitizerMgr.jpg
+   :alt: Figure 0: Digitizer Manager
+   :name: DigitizerMgr 
+
+It also manages *GateDigiCollections* created in a simulation, output flags for writing down for Singles and Coincidences, different collections of Singles Digitizers, Coincidence Sorters, Coincidence Digitizers (to be added) and Waveform generators (to be added). 
+
+It also runs all Singles Digitizers, Coincidence Sorters, Coincidence Digitizers and Waveform generators.
 
 Commands for Gate New Digitizer (since Gate 9.3)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -132,6 +151,38 @@ If you want to disable the digitizer process and all output (that are already di
   /gate/digitizerMgr/disable
 
 
+Note for developers (if you want to develop something in digitizer) 
+------------------------------------
+
+If you want to develop something in digitizer, here is some important information that would help:
+
+**Singles Digitizers** 
+
+Singles Digitizers(*GateSinglesDigitizer* class) manage Digitizer Modules. However, it is important to note that DigitizerMgr starts all digitization with *GateDigitizerInitializationModule* that converts *GateHit* into *GateDigi* and *GateHitsCollecion* into *GateDigiCollection*. It also removes hits with zero energy. 
+
+A *GateSinglesDigitizer* uses several names:
+
+* m_digitizerName = users' defined name for a SinglesDigitizer (the default one is "Sinlges", or it is set by /gate/digitizerMgr/name <singles_digitizer_name>) 
+* m_outputName =  <singles_digitizer_name>_<sensitive_detector_name>
+* m_inputName = <input_singles_digitizer_name>_<sensitive_detector_name>, where <input_singles_digitizer_name>=<singles_digitizer_name> by default or can be changed by user with /gate/digitizerMgr/<sensitive_detector_name>/SinglesDigitizer/<singles_digitizer_name>/setInputCollection <input_singles_digitizer_name>.
+
+
+**Digitizer Modules**
+
+If you would like to create a new Digitizer Module, you can use example classes: *GateDummyDigitizerModule* and *GateDummyDigitizerModuleMessenger*. Some development advices also could be found there. 
+Your Digitizer Module should be inherited from *GateVDigitizerModule*.
+In the method *Digitize()* put the action of your Digitizer Module.
+
+It is also important to add your Digitizer Module in *GateSinglesDigitizerMessenger*, method *DoInsertion(const G4String&)*.
+ 
+
+**Coincidence Sorter**
+
+If you would like to create a new Coincidence Sorter, as a Digitizer Module, it should be inherited from *GateVDigitizerModule*. In the method *Digitize()* put the action of your Coincidence Sorter.
+It will operate with *GateCoincidenceDigi* and *GateCoincidenceDigiCollection*.
+
+
+
 Tools
 ---------------
 
@@ -140,9 +191,9 @@ Tools
 Digitizer Macro converter (9.2 and before to 9.3 and after)
 ~~~~~~~~~~~~~
 Since version 9.3 Gate digitizer had a big upgrade, thus, some of macro commands had changed. 
-However, the collaboration provide a tool to convert your old macros to new macros which work quite direct in case of a simulation with pone sensitive detector. In case of multiple senstivie detectors the converter also can be used but special care should be taken in order to obtain correct result. 
+However, the collaboration provide a tool to convert your old macros to new macros which work quite direct in case of a simulation with pone sensitive detector. In case of multiple sensitive detectors the converter also can be used but special care should be taken in order to obtain correct result (Digitizer Module :ref:`_merger-label` could also be useful for you). 
 
-To use the macro converte, the following commands to be done:: 
+To use the macro convert, the following commands to be done:: 
 
    pip install gatetools
    git clone --recursive https://github.com/OpenGATE/GateTools.git
@@ -153,7 +204,8 @@ Example of usage::
 
    gt_digi_mac_converter -i digitizer_old.mac -o digitizer_new.mac -sd <SDname> -multi SinglesDigitizer
 
-where *-i* defines input old digitizer macro, *-o* defines output new digitizer macro, *-sd* defines the sensitive detector name (the same as in     /gate/<SDname>/attachCrystalSD), *-multi  <mode>* is the option if you have several SinglesDigitizers or CoincidenceSorters, where <mode> = *SinglesDigitizer* or *CoincidenceSorter*
+where *-i* defines input old digitizer macro, *-o* defines output new digitizer macro, *-sd* defines the sensitive detector name (the same as in     /gate/<SDname>/attachCrystalSD), *-multi  <mode>* is the option if you have several SinglesDigitizers or CoincidenceSorters, where <mode> = *SinglesDigitizer* or *CoincidenceSorter*.
+
 
 
 .. _Distributions-label:
@@ -284,6 +336,13 @@ The digitization consists of a series of signal processors, *digitizer modules* 
 
 Digitizer modules
 ~~~~~~~~~~~~~~~~~
+
+The *Digitizer module* (electronic read-out simulator) can be used to transform *Hits* to *Digis*.  
+
+The output from a digitizer module corresponds to the signal after it has been processed by the Front End Electronics (FEE).
+
+In order to reproduce in a simulation all distortion effects, generaly, one should use a sequence of Digitizer Modules. Each of them represents a corresponding analytical model. 
+
 
 Adder
 ^^^^^
