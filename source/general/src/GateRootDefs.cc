@@ -18,6 +18,8 @@
 #include "GateOutputMgr.hh"
 #include "GateAnalysis.hh"
 
+#include "GateSystemListManager.hh"
+
 static char *theDefaultOutputIDName[ROOT_OUTPUTIDSIZE] =
   {(char *)"baseID",
    (char *)"unused1ID",
@@ -37,8 +39,9 @@ static char outputIDLeafList2[ROOT_OUTPUTIDSIZE][24];
 
 void GateRootDefs::SetDefaultOutputIDNames()
 {
-  for (size_t depth=0; depth<ROOT_OUTPUTIDSIZE ; ++depth )
-    SetOutputIDName(theDefaultOutputIDName[depth],depth);
+	  if(GateSystemListManager::GetInstance()->GetIsAnySystemDefined())
+		  for (size_t depth=0; depth<ROOT_OUTPUTIDSIZE ; ++depth )
+			  SetOutputIDName(theDefaultOutputIDName[depth],depth);
 }
 
 void GateRootDefs::SetOutputIDName(char * anOutputIDName, size_t depth)
@@ -80,6 +83,7 @@ G4bool GateRootDefs::GetRecordSeptalFlag()
 
 void GateRootHitBuffer::Clear()
 {
+
   PDGEncoding   = 0;
   trackID       = 0;
   parentID      = 0;
@@ -94,39 +98,63 @@ void GateRootHitBuffer::Clear()
   localPosX       = 0./mm;
   localPosY       = 0./mm;
   localPosZ       = 0./mm;
-  momDirX         = 0.;
-  momDirY         = 0.;
-  momDirZ         = 0.;
-  photonID        = -1;
-  nPhantomCompton = -1;
-  nCrystalCompton = -1;
-  nPhantomRayleigh = -1;
-  nCrystalRayleigh = -1;
-  primaryID       = -1;
+
   sourcePosX      = 0./mm;
   sourcePosY      = 0./mm;
   sourcePosZ      = 0./mm;
   sourceID        = -1;
   eventID         = -1;
   runID           = -1;
-  axialPos        = 0.;
-  rotationAngle   = 0.;
-  sourceType = 0;
-  decayType = 0;
-  gammaType = 0;
 
   strcpy (processName, " ");
-  strcpy (comptonVolumeName," ");
-  strcpy (RayleighVolumeName," ");
+
 
   size_t d;
-  for ( d = 0 ; d < ROOT_OUTPUTIDSIZE ; ++d )
-    outputID[d] = -1;
-  for ( d = 0 ; d < ROOT_VOLUMEIDSIZE ; ++d )
-    volumeID[d] = -1;
+  if(GateSystemListManager::GetInstance()->GetIsAnySystemDefined())
+  {
+	  for ( d = 0 ; d < ROOT_OUTPUTIDSIZE ; ++d )
+		  outputID[d] = -1;
+  }
+  	  for ( d = 0 ; d < ROOT_VOLUMEIDSIZE ; ++d )
+  		  volumeID[d] = -1;
+
 
   // HDS : septal
   septalNb = 0;
+
+  // only variables for CC
+  if (!GetCCFlag())
+   	  {
+	  momDirX         = 0.;
+	  momDirY         = 0.;
+	  momDirZ         = 0.;
+	  photonID        = -1;
+	  nPhantomCompton = -1;
+	  nCrystalCompton = -1;
+	  nPhantomRayleigh = -1;
+	  nCrystalRayleigh = -1;
+	  primaryID       = -1;
+	  axialPos        = 0.;
+	  rotationAngle   = 0.;
+	  sourceType = 0;
+	  decayType = 0;
+	  gammaType = 0;
+	  strcpy (comptonVolumeName," ");
+	  strcpy (RayleighVolumeName," ");
+   	  }
+  else
+  {
+	  energyFin           = 0./MeV;
+	  energyIniT            = 0./MeV;
+	  sourceEnergy      = 0./MeV;
+	  sourcePDG      = 0;
+	  nCrystalConv=0;
+	  nCrystalCompt=0;
+	  nCrystalRayl=0;
+	  strcpy (postStepProcess, " ");
+
+
+  }
 }
 
 
@@ -145,26 +173,15 @@ void GateRootHitBuffer::Fill(GateHit* aHit)
   SetPos(           aHit->GetGlobalPos() );
   SetLocalPos(      aHit->GetLocalPos() );
   parentID        = aHit->GetParentID();
-  for (d=0; d<ROOT_OUTPUTIDSIZE ; ++d)
-    outputID[d]   = aHit->GetComponentID(d);
-  photonID        = aHit->GetPhotonID();
-  nPhantomCompton = aHit->GetNPhantomCompton();
-  nCrystalCompton = aHit->GetNCrystalCompton();
-  nPhantomRayleigh = aHit->GetNPhantomRayleigh();
-  nCrystalRayleigh = aHit->GetNCrystalRayleigh();
-  primaryID       = aHit->GetPrimaryID();
+  if(GateSystemListManager::GetInstance()->GetIsAnySystemDefined())
+	  for (d=0; d<ROOT_OUTPUTIDSIZE ; ++d)
+		  outputID[d]   = aHit->GetComponentID(d);
+
   SetSourcePos(     aHit->GetSourcePosition() );
   sourceID        = aHit->GetSourceID();
   eventID         = aHit->GetEventID();
   runID           = aHit->GetRunID();
-  momDirX         = aHit->GetMomentumDir().x();
-  momDirY         = aHit->GetMomentumDir().y();
-  momDirZ         = aHit->GetMomentumDir().z();
-  SetAxialPos(      aHit->GetScannerPos().z() );
-  SetRotationAngle( aHit->GetScannerRotAngle() );
-  sourceType = aHit->GetSourceType();
-  decayType = aHit->GetDecayType();
-  gammaType = aHit->GetGammaType();
+
 
   // HDS : septal
 	septalNb = aHit->GetNSeptal();
@@ -182,8 +199,36 @@ void GateRootHitBuffer::Fill(GateHit* aHit)
       aHit->GetRayleighVolumeName().length()+1 << Gateendl;
 
   aHit->GetVolumeID().StoreDaughterIDs(volumeID,ROOT_VOLUMEIDSIZE);
+  // only variables for CC
+  if (!GetCCFlag())
+   	  {
+	  photonID        = aHit->GetPhotonID();
+	  nPhantomCompton = aHit->GetNPhantomCompton();
+	  nCrystalCompton = aHit->GetNCrystalCompton();
+	  nPhantomRayleigh = aHit->GetNPhantomRayleigh();
+	  nCrystalRayleigh = aHit->GetNCrystalRayleigh();
+	  primaryID       = aHit->GetPrimaryID();
+	  momDirX         = aHit->GetMomentumDir().x();
+	  momDirY         = aHit->GetMomentumDir().y();
+	  momDirZ         = aHit->GetMomentumDir().z();
+	  SetAxialPos(      aHit->GetScannerPos().z() );
+	  SetRotationAngle( aHit->GetScannerRotAngle() );
+	  sourceType = aHit->GetSourceType();
+	  decayType = aHit->GetDecayType();
+	  gammaType = aHit->GetGammaType();
+   	  }
+  else
+  {
 
-
+	  SetSourceEnergy(aHit->GetSourceEnergy());
+	  SetSourcePDG(aHit->GetSourcePDG());
+	  SetNCrystalConv(aHit->GetNCrystalConv());
+	  SetNCrystalCompton(aHit->GetNCrystalCompton());
+	  SetNCrystalRayleigh(aHit->GetNCrystalRayleigh());
+	  strcpy (postStepProcess, aHit->GetPostStepProcess().c_str());
+	  SetEnergyFin(aHit->GetEnergyFin());
+	  SetEnergyIniT(aHit->GetEnergyIniTrack());
+  }
   //G4cout << "RootDefs : runID = " << runID << Gateendl;
 
 
@@ -197,8 +242,9 @@ GateHit* GateRootHitBuffer::CreateHit()
   // Create an output-volumeID from the root-hit data
   GateOutputVolumeID anOutputVolumeID;
   size_t d;
-  for ( d=0 ; d<ROOT_OUTPUTIDSIZE ; ++d)
-    anOutputVolumeID[d] = outputID[d];
+  if(GateSystemListManager::GetInstance()->GetIsAnySystemDefined())
+	  for ( d=0 ; d<ROOT_OUTPUTIDSIZE ; ++d)
+		  anOutputVolumeID[d] = outputID[d];
 
   // Create a new hit
   GateHit* aHit = new GateHit();
@@ -238,6 +284,17 @@ GateHit* GateRootHitBuffer::CreateHit()
   aHit->SetSourceType(sourceType);
   aHit->SetDecayType(decayType);
   aHit->SetGammaType(gammaType);  
+
+  aHit->SetSourceEnergy(GetSourceEnergy());
+  aHit->SetSourcePDG(GetSourcePDG());
+  aHit->SetNCrystalConv(GetNCrystalConv());
+  aHit->SetNCrystalCompton(GetNCrystalCompton());
+  aHit->SetNCrystalRayleigh(GetNCrystalRayleigh());
+
+  aHit->SetPostStepProcess( postStepProcess);
+  aHit->SetEnergyFin(GetEnergyFin());
+  aHit->SetEnergyIniTrack(GetEnergyIniT());
+
   return aHit;
 }
 
@@ -258,36 +315,59 @@ void GateHitTree::Init(GateRootHitBuffer& buffer)
   Branch("localPosX",      &buffer.localPosX,"localPosX/F");
   Branch("localPosY",      &buffer.localPosY,"localPosY/F");
   Branch("localPosZ",      &buffer.localPosZ,"localPosZ/F");
-  Branch("momDirX",      &buffer.momDirX,"momDirX/F");
-  Branch("momDirY",      &buffer.momDirY,"momDirY/F");
-  Branch("momDirZ",      &buffer.momDirZ,"momDirZ/F");
-
-  for (size_t d=0; d<ROOT_OUTPUTIDSIZE ; ++d)
-    Branch(outputIDName[d],(void *)(buffer.outputID+d),outputIDLeafList[d]);
-  Branch("photonID",       &buffer.photonID,"photonID/I");
-  Branch("nPhantomCompton",&buffer.nPhantomCompton,"nPhantomCompton/I");
-  Branch("nCrystalCompton",&buffer.nCrystalCompton,"nCrystalCompton/I");
-  Branch("nPhantomRayleigh",&buffer.nPhantomRayleigh,"nPhantomRayleigh/I");
-  Branch("nCrystalRayleigh",&buffer.nCrystalRayleigh,"nCrystalRayleigh/I");
-  Branch("primaryID",      &buffer.primaryID,"primaryID/I");
   Branch("sourcePosX",     &buffer.sourcePosX,"sourcePosX/F");
   Branch("sourcePosY",     &buffer.sourcePosY,"sourcePosY/F");
   Branch("sourcePosZ",     &buffer.sourcePosZ,"sourcePosZ/F");
   Branch("sourceID",       &buffer.sourceID,"sourceID/I");
   Branch("eventID",        &buffer.eventID,"eventID/I");
   Branch("runID",          &buffer.runID,"runID/I");
-  Branch("axialPos",       &buffer.axialPos,"axialPos/F");
-  Branch("rotationAngle",  &buffer.rotationAngle,"rotationAngle/F");
   Branch("volumeID",       (void *)buffer.volumeID,"volumeID[10]/I");
   Branch("processName",    (void *)buffer.processName,"processName/C");
-  Branch("comptVolName",   (void *)buffer.comptonVolumeName,"comptVolName/C");
-  Branch("RayleighVolName",   (void *)buffer.RayleighVolumeName,"RayleighVolName/C");
-  // HDS : record septal penetration
-  if (GateRootDefs::GetRecordSeptalFlag())	Branch("septalNb",   &buffer.septalNb,"septalNb/I");
+
+  if(GateSystemListManager::GetInstance()->GetIsAnySystemDefined())
+	  for (size_t d=0; d<ROOT_OUTPUTIDSIZE ; ++d)
+		  Branch(outputIDName[d],(void *)(buffer.outputID+d),outputIDLeafList[d]);
+
+
+  //Save only variables for CC
+  if (!buffer.GetCCFlag())
+   	  {
+	  Branch("momDirX",      &buffer.momDirX,"momDirX/F");
+	  Branch("momDirY",      &buffer.momDirY,"momDirY/F");
+	  Branch("momDirZ",      &buffer.momDirZ,"momDirZ/F");
+
+	  Branch("photonID",       &buffer.photonID,"photonID/I");
+	  Branch("nPhantomCompton",&buffer.nPhantomCompton,"nPhantomCompton/I");
+	  Branch("nCrystalCompton",&buffer.nCrystalCompton,"nCrystalCompton/I");
+	  Branch("nPhantomRayleigh",&buffer.nPhantomRayleigh,"nPhantomRayleigh/I");
+	  Branch("nCrystalRayleigh",&buffer.nCrystalRayleigh,"nCrystalRayleigh/I");
+	  Branch("primaryID",      &buffer.primaryID,"primaryID/I");
+
+	  Branch("axialPos",       &buffer.axialPos,"axialPos/F");
+	  Branch("rotationAngle",  &buffer.rotationAngle,"rotationAngle/F");
+
+	  Branch("comptVolName",   (void *)buffer.comptonVolumeName,"comptVolName/C");
+	  Branch("RayleighVolName",   (void *)buffer.RayleighVolumeName,"RayleighVolName/C");
+	  // HDS : record septal penetration
+	  if (GateRootDefs::GetRecordSeptalFlag())	Branch("septalNb",   &buffer.septalNb,"septalNb/I");
   
-  Branch("sourceType", &buffer.sourceType,"sourceType/I");
-  Branch("decayType", &buffer.decayType,"decayType/I");
-  Branch("gammaType", &buffer.gammaType,"gammaType/I");
+	  Branch("sourceType", &buffer.sourceType,"sourceType/I");
+	  Branch("decayType", &buffer.decayType,"decayType/I");
+	  Branch("gammaType", &buffer.gammaType,"gammaType/I");
+   	  }
+  else
+  {
+	  Branch("sourceEnergy",    &buffer.sourceEnergy,"sourceEnergy/F");
+	  Branch("sourcePDG",    &buffer.sourcePDG,"sourcePDG/I");
+	  Branch("nCrystalConv",    &buffer.nCrystalConv,"nCrystalConv/I");
+	  Branch("nCrystalCompt",    &buffer.nCrystalCompt,"nCrystalCompt/I");
+	  Branch("nCrystalRayl",    &buffer.nCrystalRayl,"nCrystalRayl/I");
+	  Branch("energyFinal",    &buffer.energyFin,"energyFinal/F");
+	  Branch("energyIniT",     &buffer.energyIniT,"energyIniT/F");
+	  Branch("postStepProcess", (void *)buffer.postStepProcess,"postStepProcess/C");
+
+
+  }
 }
 
 void GateHitTree::SetBranchAddresses(TTree* hitTree,GateRootHitBuffer& buffer)
@@ -305,32 +385,59 @@ void GateHitTree::SetBranchAddresses(TTree* hitTree,GateRootHitBuffer& buffer)
   hitTree->SetBranchAddress("localPosX",&buffer.localPosX);
   hitTree->SetBranchAddress("localPosY",&buffer.localPosY);
   hitTree->SetBranchAddress("localPosZ",&buffer.localPosZ);
-  hitTree->SetBranchAddress("momDirX",&buffer.momDirX);
-  hitTree->SetBranchAddress("momDirY",&buffer.momDirY);
-  hitTree->SetBranchAddress("momDirZ",&buffer.momDirZ);
-  for (size_t d=0; d<ROOT_OUTPUTIDSIZE ; ++d)
-    hitTree->SetBranchAddress(outputIDName[d],(void *)(buffer.outputID+d));
-  hitTree->SetBranchAddress("photonID",&buffer.photonID);
-  hitTree->SetBranchAddress("nPhantomCompton",&buffer.nPhantomCompton);
-  hitTree->SetBranchAddress("nCrystalCompton",&buffer.nCrystalCompton);
-  hitTree->SetBranchAddress("nPhantomRayleigh",&buffer.nPhantomRayleigh);
-  hitTree->SetBranchAddress("nCrystalRayleigh",&buffer.nCrystalRayleigh);
-  hitTree->SetBranchAddress("primaryID",&buffer.primaryID);
+
   hitTree->SetBranchAddress("sourcePosX",&buffer.sourcePosX);
   hitTree->SetBranchAddress("sourcePosY",&buffer.sourcePosY);
   hitTree->SetBranchAddress("sourcePosZ",&buffer.sourcePosZ);
   hitTree->SetBranchAddress("sourceID",&buffer.sourceID);
   hitTree->SetBranchAddress("eventID",&buffer.eventID);
   hitTree->SetBranchAddress("runID",&buffer.runID);
-  hitTree->SetBranchAddress("axialPos",&buffer.axialPos);
-  hitTree->SetBranchAddress("rotationAngle",&buffer.rotationAngle);
+
   hitTree->SetBranchAddress("processName",&buffer.processName);
-  hitTree->SetBranchAddress("comptVolName",&buffer.comptonVolumeName);
-  hitTree->SetBranchAddress("RayleighVolName",&buffer.RayleighVolumeName);
+
   hitTree->SetBranchAddress("volumeID",buffer.volumeID);
-  hitTree->SetBranchAddress("sourceType",&buffer.sourceType);
-  hitTree->SetBranchAddress("decayType",&buffer.decayType);
-  hitTree->SetBranchAddress("gammaType",&buffer.gammaType);
+
+  if(GateSystemListManager::GetInstance()->GetIsAnySystemDefined())
+  		  for (size_t d=0; d<ROOT_OUTPUTIDSIZE ; ++d)
+  			  hitTree->SetBranchAddress(outputIDName[d],(void *)(buffer.outputID+d));
+
+  // only variables for CC
+  if (!buffer.GetCCFlag())
+   	  {
+	  hitTree->SetBranchAddress("momDirX",&buffer.momDirX);
+	  hitTree->SetBranchAddress("momDirY",&buffer.momDirY);
+	  hitTree->SetBranchAddress("momDirZ",&buffer.momDirZ);
+
+	  hitTree->SetBranchAddress("photonID",&buffer.photonID);
+	  hitTree->SetBranchAddress("nPhantomCompton",&buffer.nPhantomCompton);
+	  hitTree->SetBranchAddress("nCrystalCompton",&buffer.nCrystalCompton);
+	  hitTree->SetBranchAddress("nPhantomRayleigh",&buffer.nPhantomRayleigh);
+	  hitTree->SetBranchAddress("nCrystalRayleigh",&buffer.nCrystalRayleigh);
+	  hitTree->SetBranchAddress("primaryID",&buffer.primaryID);
+
+	  hitTree->SetBranchAddress("axialPos",&buffer.axialPos);
+	  hitTree->SetBranchAddress("rotationAngle",&buffer.rotationAngle);
+
+	  hitTree->SetBranchAddress("comptVolName",&buffer.comptonVolumeName);
+	  hitTree->SetBranchAddress("RayleighVolName",&buffer.RayleighVolumeName);
+
+	  hitTree->SetBranchAddress("sourceType",&buffer.sourceType);
+	  hitTree->SetBranchAddress("decayType",&buffer.decayType);
+	  hitTree->SetBranchAddress("gammaType",&buffer.gammaType);
+
+   	  }
+  else
+  {
+	  hitTree->SetBranchAddress("sourceEnergy",&buffer.sourceEnergy);
+	  hitTree->SetBranchAddress("sourcePDG",&buffer.sourcePDG);
+	  hitTree->SetBranchAddress("nCrystalConv",&buffer.nCrystalConv);
+	  hitTree->SetBranchAddress("nCrystalCompt",&buffer.nCrystalCompt);
+	  hitTree->SetBranchAddress("nCrystalRayl",&buffer.nCrystalRayl);
+
+	  hitTree->SetBranchAddress("energyFinal",&buffer.energyFin);
+	  hitTree->SetBranchAddress("energyIniT",&buffer.energyIniT);
+	  hitTree->SetBranchAddress("postStepProcess",&buffer.postStepProcess);
+  }
 }
 
 
@@ -349,8 +456,9 @@ void GateRootSingleBuffer::Clear()
   globalPosX       = 0./mm;
   globalPosY       = 0./mm;
   globalPosZ       = 0./mm;
-  for (d=0; d<ROOT_OUTPUTIDSIZE ; ++d)
-    outputID[d]      = -1;
+  if(GateSystemListManager::GetInstance()->GetIsAnySystemDefined())
+	  for (d=0; d<ROOT_OUTPUTIDSIZE ; ++d)
+		  outputID[d]      = -1;
   axialPos         = 0.;
   rotationAngle    = 0.;
   comptonPhantom   = -1;
@@ -363,6 +471,7 @@ void GateRootSingleBuffer::Clear()
   septalNb = 0;
   for ( d = 0 ; d < ROOT_VOLUMEIDSIZE ; ++d )
       volumeID[d] = -1;
+
 }
 
 
@@ -381,8 +490,9 @@ void GateRootSingleBuffer::Fill(GateDigi* aDigi)
   globalPosX    = (aDigi->GetGlobalPos()).x()/mm;
   globalPosY    = (aDigi->GetGlobalPos()).y()/mm;
   globalPosZ    = (aDigi->GetGlobalPos()).z()/mm;
-  for (d=0; d<ROOT_OUTPUTIDSIZE ; ++d)
-	  outputID[d] =  aDigi->GetComponentID(d);
+  if(GateSystemListManager::GetInstance()->GetIsAnySystemDefined())
+	  for (d=0; d<ROOT_OUTPUTIDSIZE ; ++d)
+		  outputID[d] =  aDigi->GetComponentID(d);
   comptonPhantom=  aDigi->GetNPhantomCompton();
   comptonCrystal=  aDigi->GetNCrystalCompton();
   RayleighPhantom=  aDigi->GetNPhantomRayleigh();
@@ -428,8 +538,9 @@ void GateSingleTree::Init(GateRootSingleBuffer& buffer)
   if ( GateDigi::GetSingleASCIIMask(11) )
     Branch("globalPosZ",     &buffer.globalPosZ,"globalPosZ/F");
   if ( GateDigi::GetSingleASCIIMask(6) )
-    for (size_t d=0; d<ROOT_OUTPUTIDSIZE ; ++d)
-      Branch(outputIDName[d],(void *)(buffer.outputID+d),outputIDLeafList[d]);
+	  if(GateSystemListManager::GetInstance()->GetIsAnySystemDefined())
+		  for (size_t d=0; d<ROOT_OUTPUTIDSIZE ; ++d)
+			  Branch(outputIDName[d],(void *)(buffer.outputID+d),outputIDLeafList[d]);
   if ( GateDigi::GetSingleASCIIMask(12) )
     Branch("comptonPhantom", &buffer.comptonPhantom,"comptonPhantom/I");
   if ( GateDigi::GetSingleASCIIMask(13) )
@@ -472,8 +583,9 @@ void GateRootCoincBuffer::Clear()
   globalPosX1     = 0./mm;
   globalPosY1     = 0./mm;
   globalPosZ1     = 0./mm;
-  for (d=0; d<ROOT_OUTPUTIDSIZE ; ++d)
-    outputID1[d]  = -1;
+  if(GateSystemListManager::GetInstance()->GetIsAnySystemDefined())
+	  for (d=0; d<ROOT_OUTPUTIDSIZE ; ++d)
+		  outputID1[d]  = -1;
   comptonPhantom1 = -1;
   comptonCrystal1 = -1;
   RayleighPhantom1 = -1;
@@ -491,8 +603,9 @@ void GateRootCoincBuffer::Clear()
   globalPosX2     = 0./mm;
   globalPosY2     = 0./mm;
   globalPosZ2     = 0./mm;
-  for (d=0; d<ROOT_OUTPUTIDSIZE ; ++d)
-    outputID2[d]  = -1;
+  if(GateSystemListManager::GetInstance()->GetIsAnySystemDefined())
+	  for (d=0; d<ROOT_OUTPUTIDSIZE ; ++d)
+		  outputID2[d]  = -1;
   comptonPhantom2 = -1;
   comptonCrystal2 = -1;
   RayleighPhantom2 = -1;
@@ -521,8 +634,9 @@ void GateRootCoincBuffer::Fill(GateCoincidenceDigi* aDigi)
     globalPosX1    = (aDigi->GetDigi(0))->GetGlobalPos().x()/mm;
     globalPosY1    = (aDigi->GetDigi(0))->GetGlobalPos().y()/mm;
     globalPosZ1    = (aDigi->GetDigi(0))->GetGlobalPos().z()/mm;
-    for (d=0; d<ROOT_OUTPUTIDSIZE ; ++d)
-      outputID1[d] = (aDigi->GetDigi(0))->GetComponentID(d);
+    if(GateSystemListManager::GetInstance()->GetIsAnySystemDefined())
+    	for (d=0; d<ROOT_OUTPUTIDSIZE ; ++d)
+    		outputID1[d] = (aDigi->GetDigi(0))->GetComponentID(d);
     comptonPhantom1       = (aDigi->GetDigi(0))->GetNPhantomCompton();
     comptonCrystal1       = (aDigi->GetDigi(0))->GetNCrystalCompton();
     RayleighPhantom1       = (aDigi->GetDigi(0))->GetNPhantomRayleigh();
@@ -541,8 +655,9 @@ void GateRootCoincBuffer::Fill(GateCoincidenceDigi* aDigi)
     globalPosX2    = (aDigi->GetDigi(1))->GetGlobalPos().x()/mm;
     globalPosY2    = (aDigi->GetDigi(1))->GetGlobalPos().y()/mm;
     globalPosZ2    = (aDigi->GetDigi(1))->GetGlobalPos().z()/mm;
-    for (d=0; d<ROOT_OUTPUTIDSIZE ; ++d)
-      outputID2[d] = (aDigi->GetDigi(1))->GetComponentID(d);
+    if(GateSystemListManager::GetInstance()->GetIsAnySystemDefined())
+    	for (d=0; d<ROOT_OUTPUTIDSIZE ; ++d)
+    		outputID2[d] = (aDigi->GetDigi(1))->GetComponentID(d);
     comptonPhantom2       = (aDigi->GetDigi(1))->GetNPhantomCompton();
     comptonCrystal2       = (aDigi->GetDigi(1))->GetNCrystalCompton();
     RayleighPhantom2       = (aDigi->GetDigi(1))->GetNPhantomRayleigh();
@@ -629,8 +744,9 @@ void GateCoincTree::Init(GateRootCoincBuffer& buffer)
     Branch("globalPosZ1",    &buffer.globalPosZ1,"globalPosZ1/F");
   size_t d;
   if ( GateCoincidenceDigi::GetCoincidenceASCIIMask(11) )
-    for (d=0; d<ROOT_OUTPUTIDSIZE ; ++d)
-      Branch(outputIDName1[d],(void*)( buffer.outputID1 +d ),outputIDLeafList1[d]);
+	  if(GateSystemListManager::GetInstance()->GetIsAnySystemDefined())
+		  for (d=0; d<ROOT_OUTPUTIDSIZE ; ++d)
+			  Branch(outputIDName1[d],(void*)( buffer.outputID1 +d ),outputIDLeafList1[d]);
   if ( GateCoincidenceDigi::GetCoincidenceASCIIMask(12) )
     Branch("comptonPhantom1",&buffer.comptonPhantom1,"comptonPhantom1/I");
   if ( GateCoincidenceDigi::GetCoincidenceASCIIMask(13) )
@@ -661,8 +777,9 @@ void GateCoincTree::Init(GateRootCoincBuffer& buffer)
   if ( GateCoincidenceDigi::GetCoincidenceASCIIMask(10) )
     Branch("globalPosZ2",    &buffer.globalPosZ2,"globalPosZ2/F");
   if ( GateCoincidenceDigi::GetCoincidenceASCIIMask(11) )
-    for (d=0; d<ROOT_OUTPUTIDSIZE ; ++d)
-      Branch(outputIDName2[d],(void*)( buffer.outputID2 + d),outputIDLeafList2[d]);
+	  if(GateSystemListManager::GetInstance()->GetIsAnySystemDefined())
+		  for (d=0; d<ROOT_OUTPUTIDSIZE ; ++d)
+			  Branch(outputIDName2[d],(void*)( buffer.outputID2 + d),outputIDLeafList2[d]);
   if ( GateCoincidenceDigi::GetCoincidenceASCIIMask(12) )
     Branch("comptonPhantom2",&buffer.comptonPhantom2,"comptonPhantom2/I");
   if ( GateCoincidenceDigi::GetCoincidenceASCIIMask(13) )
