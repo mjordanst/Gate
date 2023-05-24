@@ -168,7 +168,7 @@ For the solid angle weighted energy policy, the effective energy for each pulse 
 	/gate/digitizer/layers/energyThresholder/setLaw/solidAngleWeighted
 	/gate/digitizer/layers/energyThresholder/solidAngleWeighted/setRentangleLengthX [szX]
 	/gate/digitizer/layers/energyThresholder/solidAngleWeighted/setRentangleLengthY [szY]
-	/gate/digitizer/layers/energyThresholder/solidAngleWeighted/setZSense4Readout [1/-1]
+	/gate/digitizer/layers/energyThresholder/solidAngleWeighted/setZSense4Readout [1/-1] 
 
 or for the local counterpart::
 
