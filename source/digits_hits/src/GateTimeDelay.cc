@@ -50,7 +50,7 @@ GateTimeDelay::~GateTimeDelay()
 
 void GateTimeDelay::Digitize()
 {
-    //G4cout<< "Time delay = "<<m_TimeDelay<<G4endl;
+        //G4cout<< "Time delay = "<<m_TimeDelay<<G4endl;
 
 	G4String digitizerName = m_digitizer->m_digitizerName;
 	G4String outputCollName = m_digitizer-> GetOutputName();

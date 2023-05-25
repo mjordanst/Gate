@@ -44,8 +44,6 @@ public:
   
   void Digitize() override;
 
-
-  // *******implement your methods here
   
   void SetTimeDelay(G4double val)   { m_TimeDelay = val; };
 
