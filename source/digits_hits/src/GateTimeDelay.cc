@@ -62,7 +62,7 @@ void GateTimeDelay::Digitize()
 	GateDigiCollection* IDC = 0;
 	IDC = (GateDigiCollection*) (DigiMan->GetDigiCollection(m_DCID));
 
-	GateDigi* inputDigi = new GateDigi();
+	GateDigi* inputDigi;
 
 	std::vector< GateDigi* >* OutputDigiCollectionVector = m_OutputDigiCollection->GetVector ();
 	std::vector<GateDigi*>::iterator iter;
